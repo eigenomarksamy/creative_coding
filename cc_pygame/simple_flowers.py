@@ -38,7 +38,7 @@ def randomize(width_limits: tuple, height_limits: tuple,
         color = colors[random.randint(0, len(colors) - 1)]
     return random_width, random_height, color
 
-def main():
+def main() -> int:
     pygame.init()
     res = (1280, 720)
     max_iterations = 35
@@ -69,6 +69,7 @@ def main():
         pygame.display.flip()
         clock.tick(60)
     pygame.quit()
+    return 0
 
 if __name__ == "__main__":
     sys.exit(main())
