@@ -179,6 +179,28 @@ def draw_center_background_flowers(screen: pygame.SurfaceType, radius: int,
                         decrement=5, color1=color,
                         color2="black")
 
+def draw_center_flowers(screen: pygame.SurfaceType, radius: int,
+                        color: pygame.Color):
+    width, height = screen.get_size()
+    pos_x = width / 4 + radius
+    pos_y = height / 2
+    draw_nested_flowers(screen, pygame.Vector2(pos_x, pos_y),
+                        radius, min_radius=15,
+                        decrement=5, color1=color,
+                        color2="black")
+    pos_x = 3 * width / 4 - radius
+    pos_y = height / 2
+    draw_nested_flowers(screen, pygame.Vector2(pos_x, pos_y),
+                        radius, min_radius=15,
+                        decrement=5, color1=color,
+                        color2="black")
+    pos_x = width / 2
+    pos_y = height / 2
+    draw_nested_flowers(screen, pygame.Vector2(pos_x, pos_y),
+                        radius, min_radius=15,
+                        decrement=5, color1=color,
+                        color2="black")
+
 def draw_nested_flowers(screen: pygame.SurfaceType, pos: pygame.Vector2,
                         max_radius: int, min_radius: int, decrement: int,
                         color1: pygame.Color, color2: pygame.Color,
@@ -197,16 +219,11 @@ def main() -> int:
     pygame.init()
     res = (720, 720)
     radius = 50
-    min_radius = 15
-    radius_decrement = 5
-    colors = ["white", "crimson", "teal", "cyan", "violet", "indigo",
-              "orange", "red", "yellow", "green", "grey", "black"]
     screen = pygame.display.set_mode(res)
     clock = pygame.time.Clock()
     running = True
-    screen_color = colors[-1]
+    screen_color = "black"
     screen.fill(screen_color)
-    colors.remove(screen_color)
     while running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -216,15 +233,7 @@ def main() -> int:
         draw_center_background_flowers(screen, radius, "teal")
         draw_vertical_side_flowers(screen, radius, "crimson")
         draw_horizontal_side_flowers(screen, radius, "midnightblue")
-        draw_nested_flowers(screen,
-                            pygame.Vector2(screen.get_width() / 4 + radius, screen.get_height() / 2),
-                            radius, min_radius, radius_decrement, "gray58", "black")
-        draw_nested_flowers(screen,
-                            pygame.Vector2(3 * screen.get_width() / 4 - radius, screen.get_height() / 2),
-                            radius, min_radius, radius_decrement, "gray58", "black")
-        draw_nested_flowers(screen,
-                            pygame.Vector2(screen.get_width() / 2, screen.get_height() / 2),
-                            radius, min_radius, radius_decrement, "gray58", "black")
+        draw_center_flowers(screen, radius, "gray58")
         pygame.display.flip()
         clock.tick(60)
     pygame.quit()
