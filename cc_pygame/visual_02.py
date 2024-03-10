@@ -1,8 +1,10 @@
 import sys
-import random
 import pygame
 from flowers import draw_flower
-from utils.randomization import get_random_color_list, get_random_pos_on_screen
+from utils.randomization import get_random_color_list, \
+                                get_random_pos_on_screen, \
+                                get_eliminate_color_list, \
+                                get_random_angle
 
 def main() -> int:
     pygame.init()
@@ -16,9 +18,8 @@ def main() -> int:
     screen = pygame.display.set_mode(res)
     clock = pygame.time.Clock()
     running = True
-    screen_color = colors[random.randint(0, len(colors) - 1)]
+    screen_color = get_eliminate_color_list(colors)
     screen.fill(screen_color)
-    colors.remove(screen_color)
     while running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -29,7 +30,7 @@ def main() -> int:
                                                           (2 * radius, 2 * radius))
             random_color = get_random_color_list(colors)
             draw_flower(screen=screen, circles=circles, center_pos_w=random_x,
-                        center_pos_h=random_y, radius=radius,
+                        center_pos_h=random_y, radius=radius, angle=get_random_angle(),
                         color=random_color)
             iterations += 1
         pygame.display.flip()

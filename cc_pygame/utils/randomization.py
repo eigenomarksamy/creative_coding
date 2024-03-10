@@ -39,3 +39,6 @@ def get_eliminate_color_list(colors: list[pygame.Color]) -> pygame.Color:
     color = get_random_color_list(colors)
     colors.remove(color)
     return color
+
+def get_random_angle(range: tuple = (0, 90, 5)) -> int:
+    return random.randrange(range[0], range[1], range[2])

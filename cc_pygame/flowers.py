@@ -4,9 +4,9 @@ from shapes.pygame_circle import Circle, draw_circles
 def draw_flower(screen: pygame.SurfaceType, circles: list[Circle],
                 center_pos_w: int, center_pos_h: int, radius: int,
                 color: pygame.Color, color_extra: pygame.Color = None,
-                center_piece_top: bool = True,
+                center_on_top: bool = True, angle: float = 0,
                 width_center: int = 0, width_corners: int = 0) -> None:
-    if not center_piece_top:
+    if not center_on_top:
         if color_extra != None:
             circles.append(Circle(screen, color_extra,
                                 pygame.Vector2(center_pos_w, center_pos_h),
@@ -15,23 +15,31 @@ def draw_flower(screen: pygame.SurfaceType, circles: list[Circle],
             circles.append(Circle(screen, color,
                                 pygame.Vector2(center_pos_w, center_pos_h),
                                 radius, width_center))
-    circles.append(Circle(screen, color,
-                          pygame.Vector2(center_pos_w - radius,
-                                         center_pos_h - radius),
+    pos_x = center_pos_w - radius
+    pos_y = center_pos_h - radius
+    position = pygame.Vector2(pos_x, pos_y) - pygame.Vector2(center_pos_w, center_pos_h)
+    position = position.rotate(angle) + pygame.Vector2(center_pos_w, center_pos_h)
+    circles.append(Circle(screen, color, position,
                           radius, width_corners))
-    circles.append(Circle(screen, color,
-                          pygame.Vector2(center_pos_w + radius,
-                                         center_pos_h + radius),
+    pos_x = center_pos_w + radius
+    pos_y = center_pos_h + radius
+    position = pygame.Vector2(pos_x, pos_y) - pygame.Vector2(center_pos_w, center_pos_h)
+    position = position.rotate(angle) + pygame.Vector2(center_pos_w, center_pos_h)
+    circles.append(Circle(screen, color, position,
                           radius, width_corners))
-    circles.append(Circle(screen, color,
-                          pygame.Vector2(center_pos_w + radius,
-                                         center_pos_h - radius),
+    pos_x = center_pos_w + radius
+    pos_y = center_pos_h - radius
+    position = pygame.Vector2(pos_x, pos_y) - pygame.Vector2(center_pos_w, center_pos_h)
+    position = position.rotate(angle) + pygame.Vector2(center_pos_w, center_pos_h)
+    circles.append(Circle(screen, color, position,
                           radius, width_corners))
-    circles.append(Circle(screen, color,
-                          pygame.Vector2(center_pos_w - radius,
-                                         center_pos_h + radius),
+    pos_x = center_pos_w - radius
+    pos_y = center_pos_h + radius
+    position = pygame.Vector2(pos_x, pos_y) - pygame.Vector2(center_pos_w, center_pos_h)
+    position = position.rotate(angle) + pygame.Vector2(center_pos_w, center_pos_h)
+    circles.append(Circle(screen, color, position,
                           radius, width_corners))
-    if center_piece_top:
+    if center_on_top:
         if color_extra != None:
             circles.append(Circle(screen, color_extra,
                                 pygame.Vector2(center_pos_w, center_pos_h),
