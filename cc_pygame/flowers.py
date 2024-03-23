@@ -63,3 +63,14 @@ def draw_nested_flowers(screen: pygame.SurfaceType, pos: pygame.Vector2,
             color = color2
         draw_flower(screen, circles, pos.x, pos.y, r,
                     color, width_center, width_corners)
+
+def draw_multi_nested_flowers(screen: pygame.SurfaceType, pos: list[pygame.Vector2],
+                              max_radius: int, min_radius: int, decrement: int,
+                              color1: pygame.Color, color2: pygame.Color,
+                              width_center: int = 0, width_corners: int = 0) -> None:
+    for p in pos:
+        draw_nested_flowers(screen=screen, pos=p, max_radius=max_radius,
+                            min_radius=min_radius, decrement=decrement,
+                            color1=color1, color2=color2,
+                            width_center=width_center,
+                            width_corners=width_corners)

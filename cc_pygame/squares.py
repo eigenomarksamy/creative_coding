@@ -46,3 +46,14 @@ def draw_nested_angle_alternating_squares(surface: pygame.SurfaceType,
                side, angle, width).draw()
         side /= math.sqrt(2)
         iteration += 1
+
+def draw_frame(surface: pygame.SurfaceType,
+               center_pos_x: int,
+               center_pos_y: int,
+               color: pygame.Color,
+               side_len: int,
+               angle: int = 0,
+               width: int = 0) -> None:
+    Square(surface=surface, color=color,
+           pos=pygame.Vector2(center_pos_x, center_pos_y),
+           side_length=side_len, angle=angle, width=width).draw()
