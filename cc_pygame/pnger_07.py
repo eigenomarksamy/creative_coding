@@ -18,9 +18,10 @@ def main() -> int:
         s += 40
     s = screen.get_height() / 2
     while s >= 0:
-        pygame.draw.circle(screen, generate_random_color(True), pygame.Vector2(screen.get_width() / 2, screen.get_height() / 2), s, 30)
+        pygame.draw.circle(screen, generate_random_color(True), pygame.Vector2(screen.get_width() / 2, screen.get_height() / 2), s)
+        pygame.draw.circle(screen, "black", pygame.Vector2(screen.get_width() / 2, screen.get_height() / 2), s - 30)
         s -= 40
-    pygame.image.save(screen, 'cc_pygame/gen/jpger_06.jpg')
+    pygame.image.save(screen, 'cc_pygame/gen/jpger_07.jpg')
     pygame.quit()
     return 0
 

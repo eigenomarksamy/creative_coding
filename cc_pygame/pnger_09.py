@@ -10,17 +10,17 @@ def main() -> int:
     screen.fill(screen_color)
     s = 0
     while s <= screen.get_width():
-        pygame.draw.line(screen, generate_random_color(True), pygame.Vector2(s, 0), pygame.Vector2(screen.get_width() - s, screen.get_height()), 30)
+        pygame.draw.line(screen, "white", pygame.Vector2(s, 0), pygame.Vector2(screen.get_width() - s, screen.get_height()), 5)
         s += 40
     s = 0
     while s <= screen.get_height():
-        pygame.draw.line(screen, generate_random_color(True), pygame.Vector2(0, s), pygame.Vector2(screen.get_width(), screen.get_height() - s), 30)
+        pygame.draw.line(screen, "white", pygame.Vector2(0, s), pygame.Vector2(screen.get_width(), screen.get_height() - s), 5)
         s += 40
     s = screen.get_height() / 2
     while s >= 0:
-        pygame.draw.circle(screen, generate_random_color(True), pygame.Vector2(screen.get_width() / 2, screen.get_height() / 2), s, 30)
+        pygame.draw.circle(screen, "white", pygame.Vector2(screen.get_width() / 2, screen.get_height() / 2), s, 5)
         s -= 40
-    pygame.image.save(screen, 'cc_pygame/gen/jpger_06.jpg')
+    pygame.image.save(screen, 'cc_pygame/gen/jpger_09.jpg')
     pygame.quit()
     return 0
 
