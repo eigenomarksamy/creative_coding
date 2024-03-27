@@ -16,3 +16,7 @@ class Circle:
 def draw_circles(circles: list[Circle]) -> None:
     for circle in circles:
         circle.draw()
+
+def draw_circle(surface: pygame.SurfaceType, color: pygame.Color,
+                pos: pygame.Vector2, radius: int, width: int = 0) -> None:
+    Circle(surface, color, pos, radius, width).draw()
