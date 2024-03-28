@@ -1,6 +1,6 @@
 import sys
 import pygame
-from squares import draw_nested_squares, draw_frame
+from squares import draw_frame
 
 
 def main() -> int:

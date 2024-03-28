@@ -5,8 +5,8 @@ from squares import draw_nested_angle_alternating_squares
 
 def main() -> int:
     pygame.init()
-    res = (720, 720)
-    side_length = 700
+    res = (1000, 1000)
+    side_length = 1000
     screen = pygame.display.set_mode(res)
     clock = pygame.time.Clock()
     running = True
