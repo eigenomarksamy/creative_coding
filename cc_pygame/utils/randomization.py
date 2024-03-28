@@ -27,6 +27,12 @@ def get_random_pos_on_screen(surface: pygame.SurfaceType,
     min_dim_h += height_bounds[0]
     return get_random_dimensions(max_dim_w, max_dim_h, min_dim_w, min_dim_h)
 
+def get_random_int(lower_bound: int, upper_bound: int) -> int:
+    return random.randint(lower_bound, upper_bound)
+
+def get_random_float(lower_bound: int, upper_bound: int) -> int:
+    return random.random(lower_bound, upper_bound)
+
 def generate_random_color(pre_set_a: bool = False,
                           not_this_color: list[pygame.Color] = None) -> pygame.Color:
     if pre_set_a:
