@@ -1,9 +1,6 @@
 import sys
 import pygame
-
-def draw_point(screen: pygame.SurfaceType, color: pygame.Color,
-               pos: pygame.Vector2) -> None:
-    pygame.draw.circle(screen, color, pos, 1)
+from shapes.pygame_circle import draw_point
 
 def draw_sierpinski(screen: pygame.SurfaceType, color: pygame.Color,
                     depth: int, vertices: list[tuple[int]]) -> None:
