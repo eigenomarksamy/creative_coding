@@ -1,7 +1,7 @@
 import sys
 import pygame
 import math
-from shapes.pygame_circle import draw_point, draw_circle
+from shapes.pygame_circle import draw_circle
 
 def main() -> int:
     pygame.init()
