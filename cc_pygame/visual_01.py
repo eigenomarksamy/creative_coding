@@ -1,200 +1,38 @@
 import sys
 import pygame
-from flowers import draw_nested_flowers
-
-def draw_vertical_side_flowers(screen: pygame.SurfaceType, radius: int,
-                               color: pygame.Color) -> None:
-    width, height = screen.get_size()
-    pos_x = width - 2 * radius
-    pos_y = height - 2 * radius
-    draw_nested_flowers(screen, pygame.Vector2(pos_x, pos_y),
-                        max_radius=radius, min_radius=15,
-                        decrement=5, color1=color,
-                        color2="black")
-    pos_x = 2 * radius
-    pos_y = 2 * radius
-    draw_nested_flowers(screen, pygame.Vector2(pos_x, pos_y),
-                        max_radius=radius, min_radius=15,
-                        decrement=5, color1=color,
-                        color2="black")
-    pos_x = width - 2 * radius
-    pos_y = 2 * radius
-    draw_nested_flowers(screen, pygame.Vector2(pos_x, pos_y),
-                        max_radius=radius, min_radius=15,
-                        decrement=5, color1=color,
-                        color2="black")
-    pos_x = 2 * radius
-    pos_y = height - 2 * radius
-    draw_nested_flowers(screen, pygame.Vector2(pos_x, pos_y),
-                        max_radius=radius, min_radius=15,
-                        decrement=5, color1=color,
-                        color2="black")
-    pos_x = width - 2 * radius
-    pos_y = height / 2
-    draw_nested_flowers(screen, pygame.Vector2(pos_x, pos_y),
-                        max_radius=radius, min_radius=15,
-                        decrement=5, color1=color,
-                        color2="black")
-    pos_x = 2 * radius
-    pos_y = height / 2
-    draw_nested_flowers(screen, pygame.Vector2(pos_x, pos_y),
-                        max_radius=radius, min_radius=15,
-                        decrement=5, color1=color,
-                        color2="black")
-
-def draw_horizontal_side_flowers(screen: pygame.SurfaceType, radius: int,
-                                 color: pygame.Color) -> None:
-    width, height = screen.get_size()
-    pos_x = width / 2
-    pos_y = height - 2 * radius
-    draw_nested_flowers(screen, pygame.Vector2(pos_x, pos_y),
-                        max_radius=radius, min_radius=15,
-                        decrement=5, color1=color,
-                        color2="black")
-    pos_x = width / 2
-    pos_y = 2 * radius
-    draw_nested_flowers(screen, pygame.Vector2(pos_x, pos_y),
-                        max_radius=radius, min_radius=15,
-                        decrement=5, color1=color,
-                        color2="black")
-    pos_x = width / 4 + radius
-    pos_y = 2 * radius
-    draw_nested_flowers(screen, pygame.Vector2(pos_x, pos_y),
-                        max_radius=radius, min_radius=15,
-                        decrement=5, color1=color,
-                        color2="black")
-    pos_x = width / 2 + width / 4 - radius
-    pos_y = 2 * radius
-    draw_nested_flowers(screen, pygame.Vector2(pos_x, pos_y),
-                        max_radius=radius, min_radius=15,
-                        decrement=5, color1=color,
-                        color2="black")
-    pos_x = width / 2 + width / 4 - radius
-    pos_y = height - 2 * radius
-    draw_nested_flowers(screen, pygame.Vector2(pos_x, pos_y),
-                        max_radius=radius, min_radius=15,
-                        decrement=5, color1=color,
-                        color2="black")
-    pos_x = width / 4 + radius
-    pos_y = height - 2 * radius
-    draw_nested_flowers(screen, pygame.Vector2(pos_x, pos_y),
-                        max_radius=radius, min_radius=15,
-                        decrement=5, color1=color,
-                        color2="black")
-
-def draw_real_center_background_flowers(screen: pygame.SurfaceType, radius: int,
-                                        color: pygame.Color) -> None:
-    width, height = screen.get_size()
-    pos_x = width / 2
-    pos_y = height / 4 + radius
-    draw_nested_flowers(screen, pygame.Vector2(pos_x, pos_y),
-                        max_radius=radius, min_radius=15,
-                        decrement=5, color1=color,
-                        color2="black")
-    pos_x = width / 2
-    pos_y = height - height / 4 - radius
-    draw_nested_flowers(screen, pygame.Vector2(pos_x, pos_y),
-                        max_radius=radius, min_radius=15,
-                        decrement=5, color1=color,
-                        color2="black")
-
-def draw_background_flowers(screen: pygame.SurfaceType, radius: int,
-                            color: pygame.Color) -> None:
-    width, height = screen.get_size()
-    pos_x = width / 4 - 1.75 * radius
-    pos_y = height / 4 + radius
-    draw_nested_flowers(screen, pygame.Vector2(pos_x, pos_y),
-                        max_radius=radius, min_radius=15,
-                        decrement=5, color1=color,
-                        color2="black")
-    pos_x = width - width / 4 + 1.75 * radius
-    pos_y = height / 4 + radius
-    draw_nested_flowers(screen, pygame.Vector2(pos_x, pos_y),
-                        max_radius=radius, min_radius=15,
-                        decrement=5, color1=color,
-                        color2="black")
-    pos_x = width / 4 - 1.75 * radius
-    pos_y = height - height / 4 - radius
-    draw_nested_flowers(screen, pygame.Vector2(pos_x, pos_y),
-                        max_radius=radius, min_radius=15,
-                        decrement=5, color1=color,
-                        color2="black")
-    pos_x = width - width / 4 + 1.75 * radius
-    pos_y = height - height / 4 - radius
-    draw_nested_flowers(screen, pygame.Vector2(pos_x, pos_y),
-                        max_radius=radius, min_radius=15,
-                        decrement=5, color1=color,
-                        color2="black")
-
-def draw_center_background_flowers(screen: pygame.SurfaceType, radius: int,
-                                   color: pygame.Color) -> None:
-    width, height = screen.get_size()
-    pos_x = width / 2 + 2.75 * radius
-    pos_y = height / 4 + radius
-    draw_nested_flowers(screen, pygame.Vector2(pos_x, pos_y),
-                        max_radius=radius, min_radius=15,
-                        decrement=5, color1=color,
-                        color2="black")
-    pos_x = width / 2 - 2.75 * radius
-    pos_y = height / 4 + radius
-    draw_nested_flowers(screen, pygame.Vector2(pos_x, pos_y),
-                        max_radius=radius, min_radius=15,
-                        decrement=5, color1=color,
-                        color2="black")
-    pos_x = width / 2 + 2.75 * radius
-    pos_y = height - height / 4 - radius
-    draw_nested_flowers(screen, pygame.Vector2(pos_x, pos_y),
-                        max_radius=radius, min_radius=15,
-                        decrement=5, color1=color,
-                        color2="black")
-    pos_x = width / 2 - 2.75 * radius
-    pos_y = height - height / 4 - radius
-    draw_nested_flowers(screen, pygame.Vector2(pos_x, pos_y),
-                        max_radius=radius, min_radius=15,
-                        decrement=5, color1=color,
-                        color2="black")
-
-def draw_center_flowers(screen: pygame.SurfaceType, radius: int,
-                        color: pygame.Color):
-    width, height = screen.get_size()
-    pos_x = width / 4 + radius
-    pos_y = height / 2
-    draw_nested_flowers(screen, pygame.Vector2(pos_x, pos_y),
-                        radius, min_radius=15,
-                        decrement=5, color1=color,
-                        color2="black")
-    pos_x = 3 * width / 4 - radius
-    pos_y = height / 2
-    draw_nested_flowers(screen, pygame.Vector2(pos_x, pos_y),
-                        radius, min_radius=15,
-                        decrement=5, color1=color,
-                        color2="black")
-    pos_x = width / 2
-    pos_y = height / 2
-    draw_nested_flowers(screen, pygame.Vector2(pos_x, pos_y),
-                        radius, min_radius=15,
-                        decrement=5, color1=color,
-                        color2="black")
+from flowers import draw_flower
+from utils.randomization import get_random_color_list, \
+                                get_random_pos_on_screen, \
+                                get_eliminate_color_list, \
+                                get_random_angle
 
 def main() -> int:
     pygame.init()
-    res = (720, 720)
+    res = (1280, 720)
+    max_iterations = 35
+    iterations = 0
     radius = 50
+    colors = ["white", "crimson", "teal", "cyan", "violet", "indigo",
+              "orange", "red", "yellow", "green", "grey", "black"]
+    circles = []
     screen = pygame.display.set_mode(res)
     clock = pygame.time.Clock()
     running = True
-    screen_color = "black"
+    screen_color = get_eliminate_color_list(colors)
     screen.fill(screen_color)
     while running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
-        draw_real_center_background_flowers(screen, radius, "cornflowerblue")
-        draw_background_flowers(screen, radius, "indigo")
-        draw_center_background_flowers(screen, radius, "teal")
-        draw_vertical_side_flowers(screen, radius, "crimson")
-        draw_horizontal_side_flowers(screen, radius, "midnightblue")
-        draw_center_flowers(screen, radius, "gray58")
+        if iterations < max_iterations:
+            random_x, random_y = get_random_pos_on_screen(screen,
+                                                          (2 * radius, 2 * radius),
+                                                          (2 * radius, 2 * radius))
+            random_color = get_random_color_list(colors)
+            draw_flower(screen=screen, circles=circles, center_pos_w=random_x,
+                        center_pos_h=random_y, radius=radius, angle=get_random_angle(),
+                        color=random_color)
+            iterations += 1
         pygame.display.flip()
         clock.tick(60)
     pygame.quit()
@@ -202,4 +40,3 @@ def main() -> int:
 
 if __name__ == "__main__":
     sys.exit(main())
-
