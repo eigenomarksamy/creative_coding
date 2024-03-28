@@ -12,33 +12,55 @@ def main() -> int:
     screen_color = "black"
     screen.fill(screen_color)
     s = 0
+    # count = 0
+    # l_cl = generate_random_color(True)
+    # colors_used = [l_cl]
     while s <= screen.get_width():
         draw_line_cartesian(screen, pygame.Vector2(s, 0), pygame.Vector2(screen.get_width() - s, screen.get_height()), "white", 5)
+        # if count >= 15:
+        #     l_cl = generate_random_color(True, colors_used)
+        #     colors_used.append(l_cl)
+        #     count = 0
+        # count += 1
         s += 40
     s = 0
+    # count = 0
+    # l_cl = generate_random_color(True, colors_used)
     while s <= screen.get_height():
         draw_line_cartesian(screen, pygame.Vector2(0, s), pygame.Vector2(screen.get_width(), screen.get_height() - s), "white", 5)
+        # if count >= 15:
+        #     l_cl = generate_random_color(True, colors_used)
+        #     colors_used.append(l_cl)
+        #     count = 0
+        # count += 1
         s += 40
     s = screen.get_height() / 2
+    # count = 0
+    # l_cl = generate_random_color(True, colors_used)
     while s >= 0:
         draw_circle(screen, "white", pygame.Vector2(screen.get_width() / 2, screen.get_height() / 2), s, 5)
         s -= 40
-        l = screen.get_width() / 2
-    a = 0
-    cc = 0
-    c = generate_random_color(True)
-    cs = [c]
-    while l > 0:
-        draw_line_polar(screen, pygame.Vector2(screen.get_width() / 2,
-                                               screen.get_height() / 2),
-                        l, a, c, 5)
-        cc += 1
-        l -= 1
-        a += 1
-        if cc >= 1:
-            c = generate_random_color(True, not_this_color=cs)
-            cs.append(c)
-            cc = 0
+        # if count >= 5:
+        #     l_cl = generate_random_color(True, colors_used)
+        #     colors_used.append(l_cl)
+        #     count = 0
+        # count += 1
+    # l = screen.get_width() / 2
+    # a = 0
+    # cc = 0
+    # c = generate_random_color(True)
+    # cs = [c]
+    # while l > 0:
+    #     draw_line_polar(screen, pygame.Vector2(screen.get_width() / 2,
+    #                                            screen.get_height() / 2),
+    #                     l, a, c, 5)
+    #     cc += 1
+    #     l -= 1
+    #     a += 1
+    #     if cc >= 1:
+    #         c = generate_random_color(True, not_this_color=cs)
+    #         cs.append(c)
+    #         cc = 0
     pygame.image.save(screen, 'cc_pygame/gen/jpger_09.jpg')
     pygame.quit()
     return 0
