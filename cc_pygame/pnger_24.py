@@ -69,7 +69,10 @@ def draw_down(screen: pygame.SurfaceType) -> None:
         x = left_w
         while x <= right_w:
             draw_line_polar(screen, pygame.Vector2(x, point2.y), 64, 270, "black", 8)
-            draw_circle(screen, "black", pygame.Vector2(x + 64, (point2.y + point0.y) / 2), 16)
+            if x < right_w:
+                draw_circle(screen, "black",
+                            pygame.Vector2(x + 64, (point2.y + point0.y) / 2),
+                            16)
             x += 128
         draw_line_cartesian(screen, point0, point1, "black", 8)
         point2 = point0
