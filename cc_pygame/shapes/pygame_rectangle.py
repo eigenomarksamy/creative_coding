@@ -31,3 +31,8 @@ def draw_quick_rect(surface: pygame.SurfaceType, color: pygame.Color,
                     pos: pygame.Vector2, width: int, height: int,
                     angle: float = 0, border_width: int = 0) -> None:
     Rectangle(surface, color, pos, width, height, angle, border_width).draw()
+
+def draw_quick_square(surface: pygame.SurfaceType, color: pygame.Color,
+                      pos: pygame.Vector2, side_length: int,
+                      angle: float = 0, border_width: int = 0) -> None:
+    Square(surface, color, pos, side_length, angle, border_width).draw()
