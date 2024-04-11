@@ -47,10 +47,14 @@ a repo where i'm learning creative coding
 
 ![gen22](cc_pygame/gen/jpger_22.jpg)
 
-![gen22](cc_pygame/gen/jpger_23.jpg)
+![gen23](cc_pygame/gen/jpger_23.jpg)
 
-![gen22](cc_pygame/gen/jpger_24.jpg)
+![gen24](cc_pygame/gen/jpger_24.jpg)
 
-![gen22](cc_pygame/gen/jpger_25.jpg)
+![gen25](cc_pygame/gen/jpger_25.jpg)
 
-![gen22](cc_pygame/gen/jpger_26.jpg)
+![gen26](cc_pygame/gen/jpger_26.jpg)
+
+![gen27](cc_pygame/gen/jpger_27.jpg)
+
+![gen28](cc_pygame/gen/jpger_28.jpg)

@@ -34,3 +34,9 @@ def draw_spiral(surface: pygame.SurfaceType, color: pygame.Color,
                           points=points, width=width)
     else:
         return
+
+def draw_curve(surface: pygame.SurfaceType, color: pygame.Color,
+               points: list[pygame.Vector2], width: int = 1,
+               is_connected: bool = False) -> None:
+    pygame.draw.lines(surface=surface, color=color, closed=is_connected,
+                      points=points, width=width)
