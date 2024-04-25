@@ -6,17 +6,17 @@ from arrow import draw_quick_arrow
 
 def main() -> int:
     pygame.init()
-    res = (1600, 1600)
+    res = (400, 400)
     screen = pygame.display.set_mode(res)
-    screen_color = "black"
+    screen_color = "gray30"
     screen.fill(screen_color)
     draw_quick_arrow(screen, pygame.Vector2(screen.get_width() / 2 - 25,
                                             screen.get_height() / 2),
-                     "white", 0, 0, 45, 50, 5, 5)
-    draw_circle(screen, "white", pygame.Vector2(screen.get_width() / 2,
+                     "gray1", 0, 0, 45, 50, 5, 5)
+    draw_circle(screen, "gray1", pygame.Vector2(screen.get_width() / 2,
                                                 screen.get_height() / 2),
                  50, 5)
-    draw_equilateral_from_center(screen, "white",
+    draw_equilateral_from_center(screen, "gray1",
                                  pygame.Vector2(screen.get_width() / 2,
                                             screen.get_height() / 2), 50,
                                             50, angle=90)
