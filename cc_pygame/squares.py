@@ -56,4 +56,4 @@ def draw_frame(surface: pygame.SurfaceType,
                width: int = 0) -> None:
     Square(surface=surface, color=color,
            pos=pygame.Vector2(center_pos_x, center_pos_y),
-           side_length=side_len, angle=angle, width=width).draw()
+           side_length=side_len, angle=angle, border_width=width).draw()
