@@ -2,6 +2,7 @@ import random
 import pygame
 from shapes.pygame_circle import draw_point, draw_circle
 from shapes.pygame_line import draw_line_cartesian
+from shapes.pygame_rectangle import draw_quick_square
 
 class Node:
 
@@ -149,6 +150,20 @@ def generate_random_graph(node_spacing: int, width: int, height: int) -> Graph:
         else:
             break
     return Graph(nodes, edges)
+
+def draw_chess_board(surface: pygame.SurfaceType, size: int) -> None:
+    start_color = "white"
+    for posx in range(int(size / 2), surface.get_width(), size):
+        for posy in range(int(size / 2), surface.get_height(), size):
+            draw_quick_square(surface, start_color, pygame.Vector2(posx, posy), size)
+            if start_color == "white":
+                start_color = "black"
+            else:
+                start_color = "white"
+        if start_color == "white":
+            start_color = "black"
+        else:
+            start_color = "white"
 
 def gamify_life(surface: pygame.SurfaceType, base_color: pygame.Color,
                 overlay_color: pygame.Color, spacing: int) -> None:

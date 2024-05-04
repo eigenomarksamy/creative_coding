@@ -34,6 +34,7 @@ def get_random_float(lower_bound: int, upper_bound: int) -> int:
     return random.random(lower_bound, upper_bound)
 
 def generate_random_color(pre_set_a: bool = False,
+                          a: int = 255,
                           not_this_color: list[pygame.Color] = None) -> pygame.Color:
     if pre_set_a:
         if not_this_color:
@@ -51,11 +52,11 @@ def generate_random_color(pre_set_a: bool = False,
         if not_this_color:
             generated_color = pygame.Color(random.randint(0, 255),
                                            random.randint(0, 255),
-                                           random.randint(0, 255))
+                                           random.randint(0, 255), a)
             while generated_color in not_this_color:
                 generated_color = pygame.Color(random.randint(0, 255),
                                                random.randint(0, 255),
-                                               random.randint(0, 255))
+                                               random.randint(0, 255), a)
             return generated_color
         return pygame.Color(random.randint(0, 255), random.randint(0, 255),
                             random.randint(0, 255), random.randint(0, 255))
