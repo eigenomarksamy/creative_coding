@@ -11,7 +11,7 @@ from shapes.pygame_shape import draw_object
 
 def draw_random_object(surface: pygame.SurfaceType,
                        excl_colors: list[pygame.Color]=[],
-                       max_num_vertex: int=5) -> pygame.Color:
+                       max_num_vertex: int=4) -> pygame.Color:
     x, y = get_random_pos_on_screen(surface)
     point0 = pygame.Vector2(x, y)
     color = generate_random_color(not_this_color=excl_colors)
