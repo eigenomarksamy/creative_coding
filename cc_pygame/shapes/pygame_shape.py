@@ -12,3 +12,7 @@ class Shape:
 
     def rotate(self) -> pygame.SurfaceType:
         return pygame.transform.rotate(self._surface, self._angle)
+
+def draw_object(surface: pygame.SurfaceType, points: list[pygame.Vector2],
+                color: pygame.Color) -> None:
+    pygame.draw.polygon(surface, color, points)

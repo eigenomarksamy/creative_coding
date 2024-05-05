@@ -68,3 +68,24 @@ def get_eliminate_color_list(colors: list[pygame.Color]) -> pygame.Color:
 
 def get_random_angle(range: tuple = (0, 90, 5)) -> int:
     return random.randrange(range[0], range[1], range[2])
+
+def generate_random_points(surface: pygame.SurfaceType,
+                           start: pygame.Vector2 = None,
+                           number: int = 0,
+                           spacing: int = 0,
+                           spacing_bounds: tuple[int] = None,
+                           num_bounds: tuple[int] = None) -> list[pygame.Vector2]:
+    if number == 0 and num_bounds:
+        number = random.randint(num_bounds[0], num_bounds[1])
+    if spacing == 0 and spacing_bounds:
+        spacing = random.randint(spacing_bounds[0], spacing_bounds[1])
+    if not start:
+        start = pygame.Vector2(random.randint(0, surface.get_width()),
+                               random.randint(0, surface.get_height()))
+    points = [start]
+    for _ in range(number):
+        xy = pygame.Vector2(random.randint(start.x - spacing, start.x + spacing),
+                            random.randint(start.y - spacing, start.y + spacing))
+        points.append(xy)
+        start = xy
+    return points
