@@ -11,7 +11,7 @@ def get_random_color_list(og_list: list[pygame.Color]) -> pygame.Color:
     return og_list[random.randrange(0, len(og_list))]
 
 def get_random_pos(pos_limits: tuple[pygame.Vector2,
-                                            pygame.Vector2]) -> pygame.Vector2:
+                                     pygame.Vector2]) -> pygame.Vector2:
     x, y = get_random_dimensions(pos_limits[1].x, pos_limits[1].y,
                                  pos_limits[0].x, pos_limits[0].y)
     return pygame.Vector2(x, y)
