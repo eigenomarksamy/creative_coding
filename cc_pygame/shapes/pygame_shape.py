@@ -14,5 +14,35 @@ class Shape:
         return pygame.transform.rotate(self._surface, self._angle)
 
 def draw_object(surface: pygame.SurfaceType, points: list[pygame.Vector2],
-                color: pygame.Color) -> None:
-    pygame.draw.polygon(surface, color, points)
+                color: pygame.Color, width: int = 0) -> None:
+    pygame.draw.polygon(surface, color, points, width)
+
+def mirror_on_vertical(surface: pygame.SurfaceType,
+                       points: list[pygame.Vector2]) -> list[pygame.Vector2]:
+    ret_points = []
+    for p in points:
+        ret_points.append(pygame.Vector2(surface.get_width() - p.x, p.y))
+    return ret_points
+
+def mirror_on_horizontal(surface: pygame.SurfaceType,
+                         points: list[pygame.Vector2]) -> list[pygame.Vector2]:
+    ret_points = []
+    for p in points:
+        ret_points.append(pygame.Vector2(p.x, surface.get_height() - p.y))
+    return ret_points
+
+def mirror_on_diagonal(surface: pygame.SurfaceType,
+                       points: list[pygame.Vector2]) -> list[pygame.Vector2]:
+    ret_points = []
+    for p in points:
+        ret_points.append(pygame.Vector2(surface.get_width() - p.x,
+                                         surface.get_height() - p.y))
+    return ret_points
+
+def mirror_4_quads(surface: pygame.SurfaceType,
+                   points: list[pygame.Vector2]) -> list[list[pygame.Vector2]]:
+    ret_points = [points]
+    ret_points.append(mirror_on_vertical(surface, points))
+    ret_points.append(mirror_on_horizontal(surface, points))
+    ret_points.append(mirror_on_diagonal(surface, points))
+    return ret_points
