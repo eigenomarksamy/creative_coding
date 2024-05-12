@@ -1,11 +1,9 @@
 import sys
 import pygame
-from utils.randomization import (generate_random_color,
-                                 get_random_pos_on_screen,
-                                 get_random_int)
+from utils.randomization import generate_random_color
 from shapes.pygame_circle import draw_circle
 from shapes.pygame_triangle import draw_triangle
-from shapes.pygame_rectangle import draw_quick_rect
+from shapes.pygame_rectangle import draw_quick_rect, draw_quick_square
 
 def main() -> int:
     pygame.init()
@@ -75,6 +73,22 @@ def main() -> int:
     inv_ear_pos3 = pygame.Vector2(screen.get_width() - ear_pos3.x, ear_pos3.y)
     draw_triangle(screen, color, [ear_pos1, ear_pos2, ear_pos3])
     draw_triangle(screen, color, [inv_ear_pos1, inv_ear_pos2, inv_ear_pos3], def_width)
+    color = generate_random_color(not_this_color=used_clrs)
+    used_clrs.append(color)
+    ear_piercing_1 = pygame.Vector2(ear_pos1.x + 40, ear_pos1.y - 50)
+    ear_piercing_2 = pygame.Vector2(ear_pos1.x + 40, ear_pos1.y + 50)
+    ear_piercing_3 = pygame.Vector2(ear_pos1.x + 60, ear_pos1.y)
+    inv_ear_piercing_1 = pygame.Vector2(screen.get_width() - ear_piercing_1.x, ear_piercing_1.y)
+    inv_ear_piercing_2 = pygame.Vector2(screen.get_width() - ear_piercing_2.x, ear_piercing_2.y)
+    inv_ear_piercing_3 = pygame.Vector2(screen.get_width() - ear_piercing_3.x, ear_piercing_3.y)
+    draw_quick_square(screen, color, ear_piercing_1, 50, 30)
+    draw_quick_square(screen, color, ear_piercing_2, 50, 30)
+    draw_quick_square(screen, color, inv_ear_piercing_1, 50, 30, def_width)
+    draw_quick_square(screen, color, inv_ear_piercing_2, 50, 30, def_width)
+    color = generate_random_color(not_this_color=used_clrs)
+    used_clrs.append(color)
+    draw_quick_square(screen, color, ear_piercing_3, 60, 25)
+    draw_quick_square(screen, color, inv_ear_piercing_3, 60, 25, def_width)
     color = generate_random_color(not_this_color=used_clrs)
     used_clrs.append(color)
     hair_center = pygame.Vector2(rect_center.x, rect_center.y - 600)
