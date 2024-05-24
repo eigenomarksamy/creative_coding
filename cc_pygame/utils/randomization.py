@@ -89,3 +89,6 @@ def generate_random_points(surface: pygame.SurfaceType,
         points.append(xy)
         start = xy
     return points
+
+def get_random_int_list(num_list: list[int]) -> int:
+    return random.choice(num_list)
