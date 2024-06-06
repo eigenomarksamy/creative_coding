@@ -3,8 +3,7 @@ import pygame
 from shapes.pygame_rectangle import draw_quick_square
 from shapes.pygame_circle import draw_circle
 from shapes.pygame_triangle import draw_equilateral_from_center
-from shapes.pygame_line import draw_line_polar
-from utils.randomization import generate_random_color_append, get_random_angle, get_random_pos_on_screen, generate_random_color, random
+from utils.randomization import generate_random_color_append
 
 def shade_to_neutral(color: pygame.Color, min_step: int = 1,
                      target_color: pygame.Color = pygame.Color("white")) -> list[pygame.Color]:

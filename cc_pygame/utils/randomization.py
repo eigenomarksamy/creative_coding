@@ -64,6 +64,8 @@ def generate_random_color(pre_set_a: bool = False,
 def generate_random_color_append(not_this_color: list[pygame.Color] = None,
                                  pre_set_a: bool = False,
                                  a: int = 255) -> Tuple[pygame.Color, list[pygame.Color]]:
+    if not_this_color == None:
+        not_this_color = []
     if pre_set_a:
         if not_this_color:
             generated_color = pygame.Color(random.randint(0, 255),
