@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Snake with Random Colors</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background: black;
+        }
+        canvas {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="snakeCanvas"></canvas>
+
+    <script>
+        const canvas = document.getElementById('snakeCanvas');
+        const ctx = canvas.getContext('2d');
+
+        const cellSize = 20; // Size of each cell
+        let rows, cols;
+        let snake, direction, food, snakeColor, foodColor;
+
+        // Resize the canvas
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            rows = Math.floor(canvas.height / cellSize);
+            cols = Math.floor(canvas.width / cellSize);
+            resetGame();
+        }
+
+        // Initialize/reset the game
+        function resetGame() {
+            snake = [{ x: Math.floor(cols / 2), y: Math.floor(rows / 2) }];
+            direction = { x: 0, y: 0 }; // Initial direction: stationary
+            spawnFood();
+            randomizeColors(); // Set initial colors
+        }
+
+        // Spawn food at a random position
+        function spawnFood() {
+            food = {
+                x: Math.floor(Math.random() * cols),
+                y: Math.floor(Math.random() * rows),
+            };
+        }
+
+        // Randomize colors for the snake and food
+        function randomizeColors() {
+            snakeColor = `hsl(${Math.random() * 360}, 50%, 50%)`;
+            foodColor = `hsl(${Math.random() * 360}, 80%, 60%)`;
+        }
+
+        // Draw the grid (snake and food)
+        function drawGrid() {
+            ctx.fillStyle = "black";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Draw the food
+            ctx.fillStyle = foodColor;
+            ctx.fillRect(food.x * cellSize, food.y * cellSize, cellSize, cellSize);
+
+            // Draw the snake
+            snake.forEach((segment, index) => {
+                const lightness = 30 + (index * 5) % 50; // Create a gradient effect
+                ctx.fillStyle = `hsl(${Math.random() * 360}, 50%, ${lightness}%)`; // Snake gradient
+                ctx.fillRect(segment.x * cellSize, segment.y * cellSize, cellSize, cellSize);
+            });
+        }
+
+        // Move the snake
+        function moveSnake() {
+            const head = { ...snake[0] };
+
+            // AI Logic: Decide direction
+            if (food.x > head.x) direction = { x: 1, y: 0 }; // Move right
+            else if (food.x < head.x) direction = { x: -1, y: 0 }; // Move left
+            else if (food.y > head.y) direction = { x: 0, y: 1 }; // Move down
+            else if (food.y < head.y) direction = { x: 0, y: -1 }; // Move up
+
+            head.x += direction.x;
+            head.y += direction.y;
+
+            // Check for collisions (walls or itself)
+            if (
+                head.x < 0 || head.y < 0 ||
+                head.x >= cols || head.y >= rows ||
+                snake.some(segment => segment.x === head.x && segment.y === head.y)
+            ) {
+                resetGame();
+                return;
+            }
+
+            // Add the new head
+            snake.unshift(head);
+
+            // Check if eating food
+            if (head.x === food.x && head.y === food.y) {
+                spawnFood(); // Spawn new food
+                randomizeColors(); // Change colors when eating
+            } else {
+                snake.pop(); // Remove the tail if not eating
+            }
+        }
+
+        // Animation loop
+        function animate() {
+            drawGrid();
+            moveSnake();
+            setTimeout(animate, 100); // Adjust speed by changing this value
+        }
+
+        // Initialize
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+        animate();
+    </script>
+</body>
+</html>
