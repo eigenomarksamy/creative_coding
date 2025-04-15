@@ -62,3 +62,6 @@ def get_equ_tri_vertices_from_center(x: float, y: float, len: float,
     x3 = x + radius * math.cos(angle_rad3)
     y3 = y + radius * math.sin(angle_rad3)
     return [(x1, y1), (x2, y2), (x3, y3)]
+
+def get_abs_distance(x1: float, x2: float, y1: float, y2: float) -> float:
+    return ((x2 - x1) ** 2 + (y2 - y1) ** 2) ** 0.5
