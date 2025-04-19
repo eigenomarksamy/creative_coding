@@ -37,3 +37,7 @@ def draw_quick_arrow(surface: pygame.SurfaceType, head_pos: pygame.Vector2,
                      tail_width: int, hollow_width: int = 0) -> None:
     Arrow(head_pos, color, angle, tail_length, head_angle, head_length,
           head_width, tail_width, hollow_width).draw(surface)
+
+
+class SophisticatedArrow:
+    pass
