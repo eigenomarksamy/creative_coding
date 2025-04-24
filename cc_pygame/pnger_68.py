@@ -55,7 +55,7 @@ def main() -> int:
     m = -height / width
     c = height
     while True:
-        color, colors = generate_random_color_append(colors)
+        # color, colors = generate_random_color_append(colors)
         shades = shade_to_neutral(pygame.Color("gold"), target_color=pygame.Color("black"))
         for i in range(len(shades)):
             shade = shades[i]
@@ -63,7 +63,7 @@ def main() -> int:
             r = diff * i + r_init
             draw_circle(screen, shade, pygame.Vector2(center.x, center.y), r)
         center = pygame.Vector2(center.x + inc, m * center.x + c)
-        if center.x > screen.get_width() or center.y < 0:
+        if center.x > screen.get_width() + inc or center.y < -inc:
             break
     pygame.image.save(screen, 'cc_pygame/gen/jpger_68.jpg')
     pygame.quit()

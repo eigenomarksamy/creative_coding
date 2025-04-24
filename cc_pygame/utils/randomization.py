@@ -63,41 +63,43 @@ def generate_random_color(pre_set_a: bool = False,
 
 def generate_random_color_append(not_this_color: list[pygame.Color] = None,
                                  pre_set_a: bool = False,
-                                 a: int = 255) -> Tuple[pygame.Color, list[pygame.Color]]:
+                                 a: int = 255,
+                                 max_color: int = 255,
+                                 min_color: int = 0) -> Tuple[pygame.Color, list[pygame.Color]]:
     if not_this_color == None:
         not_this_color = []
     if pre_set_a:
         if not_this_color:
-            generated_color = pygame.Color(random.randint(0, 255),
-                                           random.randint(0, 255),
-                                           random.randint(0, 255))
+            generated_color = pygame.Color(random.randint(min_color, max_color),
+                                           random.randint(min_color, max_color),
+                                           random.randint(min_color, max_color))
             while generated_color in not_this_color:
-                generated_color = pygame.Color(random.randint(0, 255),
-                                               random.randint(0, 255),
-                                               random.randint(0, 255))
+                generated_color = pygame.Color(random.randint(min_color, max_color),
+                                               random.randint(min_color, max_color),
+                                               random.randint(min_color, max_color))
             not_this_color.append(generated_color)
             return generated_color, not_this_color
-        generated_color = pygame.Color(random.randint(0, 255),
-                                       random.randint(0, 255),
-                                       random.randint(0, 255),
-                                       random.randint(0, 255))
+        generated_color = pygame.Color(random.randint(min_color, max_color),
+                                       random.randint(min_color, max_color),
+                                       random.randint(min_color, max_color),
+                                       random.randint(min_color, max_color))
         not_this_color.append(generated_color)
         return generated_color, not_this_color
     else:
         if not_this_color:
-            generated_color = pygame.Color(random.randint(0, 255),
-                                           random.randint(0, 255),
-                                           random.randint(0, 255), a)
+            generated_color = pygame.Color(random.randint(min_color, max_color),
+                                           random.randint(min_color, max_color),
+                                           random.randint(min_color, max_color), a)
             while generated_color in not_this_color:
-                generated_color = pygame.Color(random.randint(0, 255),
-                                               random.randint(0, 255),
-                                               random.randint(0, 255), a)
+                generated_color = pygame.Color(random.randint(min_color, max_color),
+                                               random.randint(min_color, max_color),
+                                               random.randint(min_color, max_color), a)
             not_this_color.append(generated_color)
             return generated_color, not_this_color
-        generated_color = pygame.Color(random.randint(0, 255),
-                                       random.randint(0, 255),
-                                       random.randint(0, 255),
-                                       random.randint(0, 255))
+        generated_color = pygame.Color(random.randint(min_color, max_color),
+                                       random.randint(min_color, max_color),
+                                       random.randint(min_color, max_color),
+                                       random.randint(min_color, max_color))
         not_this_color.append(generated_color)
         return generated_color, not_this_color
 
