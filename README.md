@@ -152,3 +152,7 @@ a repo where i'm learning creative coding
 ![gen74](cc_pygame/gen/jpger_74.jpg)
 
 ![gen75](cc_pygame/gen/jpger_75.jpg)
+
+![gen76](cc_pygame/gen/jpger_76.jpg)
+
+![gen77](cc_pygame/gen/jpger_77.jpg)
