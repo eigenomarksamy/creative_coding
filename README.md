@@ -3,6 +3,8 @@ a repo where i'm learning creative coding
 
 ## images
 
+### pygame
+
 ![gen1](cc_pygame/gen/jpger_01.jpg)
 
 ![gen2](cc_pygame/gen/jpger_02.jpg)
@@ -162,3 +164,10 @@ a repo where i'm learning creative coding
 ![gen79](cc_pygame/gen/jpger_79.jpg)
 
 ![gen80](cc_pygame/gen/jpger_80.jpg)
+
+
+### pycairo
+
+![organic_lines](cc_pycairo/gen/organic_lines.png)
+
+![bezier_flow_art](cc_pycairo/gen/bezier_flow_art.png)
