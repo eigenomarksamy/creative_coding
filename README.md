@@ -171,3 +171,7 @@ a repo where i'm learning creative coding
 ![organic_lines](cc_pycairo/gen/organic_lines.png)
 
 ![bezier_flow_art](cc_pycairo/gen/bezier_flow_art.png)
+
+![bezier_brush_art](cc_pycairo/gen/bezier_brush_art.png)
+
+![bezier_brush_dynamic_palette](cc_pycairo/gen/bezier_brush_dynamic_palette.png)
