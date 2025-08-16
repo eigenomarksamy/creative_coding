@@ -176,4 +176,4 @@ a repo where i'm learning creative coding
 
 ![bezier_brush_dynamic_palette](cc_pycairo/gen/bezier_brush_dynamic_palette.png)
 
-![bezier_brush_dynamic_palette_portrait](cc_pycairo/gen/bezier_brush_dynamic_palette_portrait.png.png)
+![bezier_brush_dynamic_palette_portrait](cc_pycairo/gen/bezier_brush_dynamic_palette_portrait.png)
