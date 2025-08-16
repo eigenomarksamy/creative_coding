@@ -177,3 +177,19 @@ a repo where i'm learning creative coding
 ![bezier_brush_dynamic_palette](cc_pycairo/gen/bezier_brush_dynamic_palette.png)
 
 ![bezier_brush_dynamic_palette_portrait](cc_pycairo/gen/bezier_brush_dynamic_palette_portrait.png)
+
+![flow_field](cc_pycairo/gen/flow_field.png)
+
+![hsl_curves](cc_pycairo/gen/hsl_curves.png)
+
+![kaleidoscope_flow](cc_pycairo/gen/kaleidoscope_flow.png)
+
+![mandala_flow_2](cc_pycairo/gen/mandala_flow_2.png)
+
+![mandala_flow](cc_pycairo/gen/mandala_flow.png)
+
+![mandala](cc_pycairo/gen/mandala.png)
+
+![sophisticated_curves](cc_pycairo/gen/sophisticated_curves.png)
+
+![symmetric_art](cc_pycairo/gen/symmetric_art.png)
