@@ -193,3 +193,13 @@ a repo where i'm learning creative coding
 ![sophisticated_curves](cc_pycairo/gen/sophisticated_curves.png)
 
 ![symmetric_art](cc_pycairo/gen/symmetric_art.png)
+
+![generative0](cc_pycairo/gen/generative0.png)
+
+![generative1](cc_pycairo/gen/generative1.png)
+
+![generative2](cc_pycairo/gen/generative2.png)
+
+![recursive_glitch_symmetry](cc_pycairo/gen/recursive_glitch_symmetry.png)
+
+![mushroom_intelligence](cc_pycairo/gen/mushroom_intelligence.png)
