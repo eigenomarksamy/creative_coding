@@ -203,3 +203,7 @@ a repo where i'm learning creative coding
 ![recursive_glitch_symmetry](cc_pycairo/gen/recursive_glitch_symmetry.png)
 
 ![mushroom_intelligence](cc_pycairo/gen/mushroom_intelligence.png)
+
+![neural_mushroom_brain](cc_pycairo/gen/neural_mushroom_brain.png)
+
+![spore_fractal](cc_pycairo/gen/spore_fractal.png)
