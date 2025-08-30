@@ -207,3 +207,9 @@ a repo where i'm learning creative coding
 ![neural_mushroom_brain](cc_pycairo/gen/neural_mushroom_brain.png)
 
 ![spore_fractal](cc_pycairo/gen/spore_fractal.png)
+
+![sextures](cc_pycairo/gen/sextures.png)
+
+![sercurial](cc_pycairo/gen/sercurial.png)
+
+![textures_but_randomized](cc_pycairo/gen/textures_but_randomized.png)
