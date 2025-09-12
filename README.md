@@ -213,3 +213,5 @@ a repo where i'm learning creative coding
 ![sercurial](cc_pycairo/gen/sercurial.png)
 
 ![textures_but_randomized](cc_pycairo/gen/textures_but_randomized.png)
+
+![tattoos_and_balloons](cc_pycairo/gen/tattoos_and_balloons.png)
