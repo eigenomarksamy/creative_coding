@@ -215,3 +215,9 @@ a repo where i'm learning creative coding
 ![textures_but_randomized](cc_pycairo/gen/textures_but_randomized.png)
 
 ![tattoos_and_balloons](cc_pycairo/gen/tattoos_and_balloons.png)
+
+![texture_forest](cc_pycairo/gen/textural_forest.png)
+
+![texture_garden](cc_pycairo/gen/textural_garden.png)
+
+![texture_face](cc_pycairo/gen/textured_face.png)
