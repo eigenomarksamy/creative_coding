@@ -221,3 +221,5 @@ a repo where i'm learning creative coding
 ![texture_garden](cc_pycairo/gen/textural_garden.png)
 
 ![texture_face](cc_pycairo/gen/textured_face.png)
+
+![echo_of_an_embrace.png](cc_pycairo/gen/echo_of_an_embrace.png.png)
