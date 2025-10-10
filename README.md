@@ -222,4 +222,6 @@ a repo where i'm learning creative coding
 
 ![texture_face](cc_pycairo/gen/textured_face.png)
 
-![echo_of_an_embrace.png](cc_pycairo/gen/echo_of_an_embrace.png.png)
+![echo_of_an_embrace.png](cc_pycairo/gen/echo_of_an_embrace.png)
+
+![bezier_brush_dynamic_palette_landscape](cc_pycairo/gen/bezier_brush_dynamic_palette_landscape.png)
