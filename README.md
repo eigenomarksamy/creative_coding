@@ -225,3 +225,13 @@ a repo where i'm learning creative coding
 ![echo_of_an_embrace.png](cc_pycairo/gen/echo_of_an_embrace.png)
 
 ![bezier_brush_dynamic_palette_landscape](cc_pycairo/gen/bezier_brush_dynamic_palette_landscape.png)
+
+![neural_mycelium_hybrid](cc_pycairo/gen/neural_mycelium_hybrid.png)
+
+![neural_bloom_white](cc_pycairo/gen/neural_bloom_white.png)
+
+![neural_intelligence_blooming](cc_pycairo/gen/neural_intelligence_blooming.png)
+
+![mycelial_growth](cc_pycairo/gen/mycelial_growth.png)
+
+![lsd_linescape](cc_pycairo/gen/lsd_linescape.png)
