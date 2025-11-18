@@ -239,3 +239,5 @@ a repo where i'm learning creative coding
 ![feminine_sun](cc_pycairo/gen/feminine_sun.png)
 
 ![incomplete_heat_field](cc_pycairo/gen/incomplete_heat_field.png)
+
+![bezier_brush_dyn_new_pal](cc_pycairo/gen/bezier_brush_dyn_new_pal.png)
