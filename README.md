@@ -241,3 +241,5 @@ a repo where i'm learning creative coding
 ![incomplete_heat_field](cc_pycairo/gen/incomplete_heat_field.png)
 
 ![bezier_brush_dyn_new_pal](cc_pycairo/gen/bezier_brush_dyn_new_pal.png)
+
+![sun_pouring_harbor](cc_pycairo/gen/sun_pouring_harbor.png)
