@@ -243,3 +243,14 @@ a repo where i'm learning creative coding
 ![bezier_brush_dyn_new_pal](cc_pycairo/gen/bezier_brush_dyn_new_pal.png)
 
 ![sun_pouring_harbor](cc_pycairo/gen/sun_pouring_harbor.png)
+
+![desert_dune](cc_pycairo/gen/desert_dune.png)
+
+![fire_splinters_grey](cc_pycairo/gen/fire_splinters_grey.png)
+
+![floating_conservatory](cc_pycairo/gen/floating_conservatory.png)
+
+![stormy_pier_abstract](cc_pycairo/gen/stormy_pier_abstract.png)
+
+![fire_splinters_belt](cc_pycairo/gen/fire_splinters_belt.png)
+
