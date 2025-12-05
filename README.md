@@ -254,3 +254,5 @@ a repo where i'm learning creative coding
 
 ![fire_splinters_belt](cc_pycairo/gen/fire_splinters_belt.png)
 
+![fire_flow_art](cc_pycairo/gen/fire_flow_art.png)
+
