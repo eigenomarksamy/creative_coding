@@ -14,7 +14,7 @@ PALETTE = [rgb01(c) for c in PALETTE_255]
 # --------------------------
 # Canvas setup
 # --------------------------
-WIDTH, HEIGHT = 2560, 1600
+WIDTH, HEIGHT = 3638, 2551
 surface = cairo.ImageSurface(cairo.FORMAT_ARGB32, WIDTH, HEIGHT)
 ctx = cairo.Context(surface)
 
