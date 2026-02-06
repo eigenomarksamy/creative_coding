@@ -165,6 +165,8 @@ a repo where i'm learning creative coding
 
 ![gen80](cc_pygame/gen/jpger_80.jpg)
 
+![gen81](cc_pygame/gen/jpger_81.jpg)
+
 
 ### pycairo
 
@@ -256,3 +258,4 @@ a repo where i'm learning creative coding
 
 ![fire_flow_art](cc_pycairo/gen/fire_flow_art.png)
 
+![bezier_brush_12](cc_pycairo/gen/bezier_brush_12.png)
