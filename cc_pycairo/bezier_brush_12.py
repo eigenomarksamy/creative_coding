@@ -11,40 +11,26 @@ def rgb01(rgb255):
 
 PALETTE = [rgb01(c) for c in PALETTE_255]
 
-# --------------------------
-# Canvas setup
-# --------------------------
 WIDTH, HEIGHT = 3638, 2551
 surface = cairo.ImageSurface(cairo.FORMAT_ARGB32, WIDTH, HEIGHT)
 ctx = cairo.Context(surface)
 
 bg = cairo.LinearGradient(0, 0, WIDTH, 0)
-bg.add_color_stop_rgb(0.0, 1.0, 1.0, 1.0)  # white
-bg.add_color_stop_rgb(1.0, 0.0, 0.0, 0.0)  # black
+bg.add_color_stop_rgb(0.0, 1.0, 1.0, 1.0)
+bg.add_color_stop_rgb(1.0, 0.0, 0.0, 0.0)
 ctx.set_source(bg)
 ctx.paint()
 
-# --------------------------
-# Helpers: balanced color bags
-# --------------------------
 def make_balanced_color_bag(n_items, palette):
-    """
-    Returns a shuffled list of length n_items with palette colors distributed
-    as evenly as possible.
-    """
     k = len(palette)
     q, r = divmod(n_items, k)
     bag = []
     for c in palette:
         bag.extend([c] * q)
-    # distribute remainder
     bag.extend(palette[:r])
     random.shuffle(bag)
     return bag
 
-# --------------------------
-# Blob function
-# --------------------------
 def draw_gradient_blob(x, y, size, color):
     pat = cairo.RadialGradient(x, y, size * 0.1, x, y, size)
     r, g, b = color
@@ -54,9 +40,6 @@ def draw_gradient_blob(x, y, size, color):
     ctx.arc(x, y, size, 0, 2 * math.pi)
     ctx.fill()
 
-# --------------------------
-# Brushstroke curves
-# --------------------------
 def draw_brush_curve(x, y, color, segments=4):
     r, g, b = color
     base_thickness = random.uniform(8, 20)
@@ -88,17 +71,12 @@ def draw_brush_curve(x, y, color, segments=4):
 
 def draw_flow_field_lines(seed, n_lines=400):
     random.seed(seed)
-
-    # balanced bag for curves
     curve_colors = make_balanced_color_bag(n_lines, PALETTE)
 
     for i in range(n_lines):
         x, y = random.uniform(0, WIDTH), random.uniform(0, HEIGHT)
         draw_brush_curve(x, y, color=curve_colors[i], segments=4)
 
-# --------------------------
-# Layer 1: Soft blobs (balanced)
-# --------------------------
 N_BLOBS = 144
 blob_colors = make_balanced_color_bag(N_BLOBS, PALETTE)
 
@@ -111,13 +89,7 @@ for i in range(N_BLOBS):
         blob_colors[i]
     )
 
-# --------------------------
-# Layer 2: Brush curves (balanced)
-# --------------------------
 draw_flow_field_lines(seed=42, n_lines=400)
 
-# --------------------------
-# Save image
-# --------------------------
 surface.write_to_png("cc_pycairo/gen/bezier_brush_12.png")
 print("Saved bezier_brush_12.png")
