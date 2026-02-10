@@ -21,6 +21,72 @@ bg.add_color_stop_rgb(1.0, 0.0, 0.0, 0.0)
 ctx.set_source(bg)
 ctx.paint()
 
+def make_noise_tile(tile_w=512, tile_h=512, alpha=0.10, contrast=0.5, seed=123):
+    rnd = random.Random(seed)
+    surf = cairo.ImageSurface(cairo.FORMAT_ARGB32, tile_w, tile_h)
+    data = surf.get_data()  # BGRA
+    stride = surf.get_stride()
+
+    for y in range(tile_h):
+        row = y * stride
+        for x in range(tile_w):
+            n = rnd.random()
+            n = 0.5 + (n - 0.5) * contrast  # pull toward mid grey
+            g = int(max(0, min(255, n * 255)))
+            a = int(max(0, min(255, alpha * 255)))
+
+            i = row + x * 4
+            data[i + 0] = g
+            data[i + 1] = g
+            data[i + 2] = g
+            data[i + 3] = a
+
+    surf.mark_dirty()
+    return surf
+
+
+def add_textured_gradient_overlay(ctx, WIDTH, HEIGHT, seed=123,
+                                 paper_strength=0.10, grain_strength=0.04):
+    # same gradient as background
+    grad = cairo.LinearGradient(0, 0, WIDTH, 0)
+    grad.add_color_stop_rgb(0.0, 1.0, 1.0, 1.0)
+    grad.add_color_stop_rgb(1.0, 0.0, 0.0, 0.0)
+
+    # PAPER (large, subtle)
+    paper_tile = make_noise_tile(
+        tile_w=768, tile_h=768,
+        alpha=paper_strength, contrast=0.25,
+        seed=seed
+    )
+    paper_pat = cairo.SurfacePattern(paper_tile)
+    paper_pat.set_extend(cairo.EXTEND_REPEAT)
+
+    ctx.save()
+    ctx.set_operator(cairo.OPERATOR_SOFT_LIGHT)
+    ctx.set_source(grad)
+
+    m = cairo.Matrix()
+    m.scale(0.35, 0.35)  # bigger features; increase to 0.5 for smaller features
+    paper_pat.set_matrix(m)
+
+    ctx.mask(paper_pat)
+    ctx.restore()
+
+    # GRAIN (fine, very subtle)
+    grain_tile = make_noise_tile(
+        tile_w=512, tile_h=512,
+        alpha=grain_strength, contrast=0.60,
+        seed=seed + 999
+    )
+    grain_pat = cairo.SurfacePattern(grain_tile)
+    grain_pat.set_extend(cairo.EXTEND_REPEAT)
+
+    ctx.save()
+    ctx.set_operator(cairo.OPERATOR_SOFT_LIGHT)
+    ctx.set_source(grad)
+    ctx.mask(grain_pat)
+    ctx.restore()
+
 def make_balanced_color_bag(n_items, palette):
     k = len(palette)
     q, r = divmod(n_items, k)
@@ -90,6 +156,9 @@ for i in range(N_BLOBS):
     )
 
 draw_flow_field_lines(seed=42, n_lines=400)
+
+add_textured_gradient_overlay(ctx, WIDTH, HEIGHT, seed=999,
+                             paper_strength=0.10, grain_strength=0.04)
 
 surface.write_to_png("cc_pycairo/gen/bezier_brush_12.png")
 print("Saved bezier_brush_12.png")
