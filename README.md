@@ -259,3 +259,5 @@ a repo where i'm learning creative coding
 ![fire_flow_art](cc_pycairo/gen/fire_flow_art.png)
 
 ![bezier_brush_12](cc_pycairo/gen/bezier_brush_12.png)
+
+![bezier_brush_hoogstraat](cc_pycairo/gen/bezier_brush_hoogstraat.png)
