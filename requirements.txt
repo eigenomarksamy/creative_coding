@@ -1,0 +1,6 @@
+# What build_gallery.py needs.
+#
+# The sketches themselves have their own dependencies, which are not
+# needed to build the gallery: pycairo and noise for cc_pycairo,
+# pygame for cc_pygame.
+Pillow>=10,<12

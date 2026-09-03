@@ -1,0 +1,548 @@
+/* Gallery for the creative_coding repo. Dark by design: the artwork is dark,
+   so the chrome stays quiet and lets the images carry the colour. */
+
+:root {
+    --bg: #0a0a0c;
+    --surface: #131317;
+    --surface-hover: #1b1b21;
+    --border: #26262d;
+    --border-strong: #3a3a44;
+    --text: #e8e6e3;
+    --muted: #8f8d96;
+    --accent: #57c9dd;
+    --accent-dim: rgba(87, 201, 221, 0.14);
+
+    --radius: 10px;
+    --page-max: 1500px;
+
+    color-scheme: dark;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font: 15px/1.55 ui-sans-serif, system-ui, -apple-system, "Segoe UI",
+        Roboto, Helvetica, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+}
+
+a {
+    color: var(--accent);
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+/* ---------------------------------------------------------- header */
+
+.site-header {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px 24px;
+    align-items: baseline;
+    justify-content: space-between;
+    padding: 16px clamp(16px, 4vw, 40px);
+    background: rgba(10, 10, 12, 0.86);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--border);
+}
+
+.breadcrumb {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 8px;
+    font-size: 14px;
+}
+
+.breadcrumb .sep {
+    color: var(--border-strong);
+}
+
+.breadcrumb .current {
+    color: var(--text);
+    font-weight: 600;
+}
+
+.breadcrumb a {
+    color: var(--muted);
+}
+
+.breadcrumb a:hover {
+    color: var(--text);
+}
+
+.site-nav {
+    display: flex;
+    gap: 6px;
+}
+
+.site-nav a {
+    padding: 5px 12px;
+    border-radius: 999px;
+    border: 1px solid transparent;
+    color: var(--muted);
+    font-size: 13px;
+    letter-spacing: 0.01em;
+}
+
+.site-nav a:hover {
+    color: var(--text);
+    background: var(--surface-hover);
+    text-decoration: none;
+}
+
+.site-nav a.active {
+    color: var(--accent);
+    border-color: var(--border-strong);
+    background: var(--accent-dim);
+}
+
+/* ---------------------------------------------------------- layout */
+
+.view {
+    max-width: var(--page-max);
+    margin: 0 auto;
+    padding: clamp(24px, 4vw, 44px) clamp(16px, 4vw, 40px) 80px;
+}
+
+.page-head {
+    max-width: 720px;
+    margin-bottom: 32px;
+}
+
+.page-head h1 {
+    margin: 0 0 8px;
+    font-size: clamp(26px, 4vw, 38px);
+    font-weight: 650;
+    letter-spacing: -0.02em;
+}
+
+.page-head p {
+    margin: 0;
+    color: var(--muted);
+}
+
+.section-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 8px 14px;
+    margin: 40px 0 4px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border);
+}
+
+.section-head:first-of-type {
+    margin-top: 24px;
+}
+
+.section-head h2 {
+    margin: 0;
+    font-size: 19px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+}
+
+.section-head .count {
+    color: var(--muted);
+    font-size: 13px;
+    font-variant-numeric: tabular-nums;
+}
+
+.section-blurb {
+    margin: 0 0 20px;
+    max-width: 680px;
+    color: var(--muted);
+    font-size: 14px;
+}
+
+/* ---------------------------------------------------------- category cards */
+
+.category-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+}
+
+.category-card {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--surface);
+    color: inherit;
+    transition: border-color 0.15s ease, transform 0.15s ease;
+}
+
+.category-card:hover {
+    border-color: var(--border-strong);
+    transform: translateY(-2px);
+    text-decoration: none;
+}
+
+.category-card .cover {
+    aspect-ratio: 16 / 10;
+    background: #000;
+    object-fit: cover;
+    width: 100%;
+}
+
+.category-card .cover-placeholder {
+    display: grid;
+    place-items: center;
+    aspect-ratio: 16 / 10;
+    background: linear-gradient(135deg, #16161c, #0d0d11);
+    color: var(--border-strong);
+    font-size: 34px;
+}
+
+.category-card .body {
+    padding: 16px 18px 18px;
+}
+
+.category-card h2 {
+    margin: 0 0 6px;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.category-card p {
+    margin: 0 0 12px;
+    color: var(--muted);
+    font-size: 14px;
+}
+
+.category-card .count {
+    color: var(--accent);
+    font-size: 13px;
+    font-variant-numeric: tabular-nums;
+}
+
+/* ---------------------------------------------------------- filters */
+
+.facets {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin: 0 0 24px;
+}
+
+.facet-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+}
+
+.facet-label {
+    min-width: 68px;
+    color: var(--muted);
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+}
+
+.chip {
+    padding: 4px 11px;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    background: var(--surface);
+    color: var(--muted);
+    font: inherit;
+    font-size: 13px;
+    cursor: pointer;
+    transition: color 0.12s ease, border-color 0.12s ease;
+}
+
+.chip:hover {
+    color: var(--text);
+    border-color: var(--border-strong);
+}
+
+.chip.active {
+    color: var(--accent);
+    border-color: var(--accent);
+    background: var(--accent-dim);
+}
+
+/* ---------------------------------------------------------- image grid */
+
+.tile-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 18px;
+    /* Groups mix portrait and landscape work. Let each tile take its own
+       height rather than stretching to the tallest in the row. */
+    align-items: start;
+}
+
+.tile {
+    /* A button centres its contents vertically, which would float the
+       image away from the top of the card. */
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    padding: 0;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--surface);
+    color: inherit;
+    font: inherit;
+    text-align: left;
+    overflow: hidden;
+    cursor: zoom-in;
+    transition: border-color 0.15s ease;
+}
+
+.tile:hover,
+.tile:focus-visible {
+    border-color: var(--border-strong);
+    outline: none;
+}
+
+.tile:focus-visible {
+    border-color: var(--accent);
+}
+
+.tile img {
+    display: block;
+    width: 100%;
+    background: #000;
+}
+
+.tile .tile-body {
+    padding: 10px 12px 12px;
+}
+
+.tile .tile-title {
+    font-size: 13px;
+    font-weight: 550;
+    letter-spacing: -0.005em;
+    word-break: break-word;
+}
+
+.tile .tile-meta {
+    margin-top: 4px;
+    color: var(--muted);
+    font-size: 12px;
+}
+
+/* ---------------------------------------------------------- sketch cards */
+
+.sketch-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: 20px;
+}
+
+.sketch-card {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--surface);
+    overflow: hidden;
+}
+
+.sketch-frame {
+    position: relative;
+    aspect-ratio: 4 / 3;
+    background: #000;
+}
+
+.sketch-frame iframe {
+    width: 100%;
+    height: 100%;
+    border: 0;
+    display: block;
+}
+
+.sketch-poster {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    gap: 6px;
+    border: 0;
+    width: 100%;
+    background: linear-gradient(135deg, #16161c, #08080a);
+    color: var(--text);
+    font: inherit;
+    cursor: pointer;
+}
+
+.sketch-poster:hover {
+    background: linear-gradient(135deg, #1c1c24, #0b0b0e);
+}
+
+.sketch-poster .play {
+    display: grid;
+    place-items: center;
+    width: 46px;
+    height: 46px;
+    border: 1px solid var(--border-strong);
+    border-radius: 50%;
+    color: var(--accent);
+    font-size: 15px;
+}
+
+.sketch-poster .hint {
+    color: var(--muted);
+    font-size: 12px;
+}
+
+.sketch-body {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 12px 14px 14px;
+}
+
+.sketch-body h3 {
+    margin: 0;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.sketch-body .links {
+    display: flex;
+    gap: 12px;
+    font-size: 12px;
+}
+
+/* ---------------------------------------------------------- empty state */
+
+.empty {
+    padding: 48px 0;
+    color: var(--muted);
+    text-align: center;
+}
+
+/* ---------------------------------------------------------- footer */
+
+.site-footer {
+    padding: 20px clamp(16px, 4vw, 40px) 40px;
+    border-top: 1px solid var(--border);
+    color: var(--muted);
+    font-size: 12px;
+}
+
+/* ---------------------------------------------------------- lightbox */
+
+.lightbox {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    display: grid;
+    place-items: center;
+    padding: 3vmin;
+    background: rgba(5, 5, 7, 0.96);
+}
+
+.lightbox[hidden] {
+    display: none;
+}
+
+.lightbox-figure {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    margin: 0;
+    max-width: 100%;
+    max-height: 100%;
+}
+
+.lightbox-figure img {
+    max-width: 100%;
+    max-height: 82vh;
+    object-fit: contain;
+    background: #000;
+    border-radius: 4px;
+}
+
+.lightbox-caption {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 6px 16px;
+    color: var(--muted);
+    font-size: 13px;
+    text-align: center;
+}
+
+.lightbox-caption strong {
+    color: var(--text);
+    font-weight: 600;
+}
+
+.lightbox-close,
+.lightbox-nav {
+    position: absolute;
+    display: grid;
+    place-items: center;
+    border: 1px solid var(--border);
+    border-radius: 50%;
+    background: rgba(19, 19, 23, 0.85);
+    color: var(--text);
+    cursor: pointer;
+    transition: border-color 0.12s ease, color 0.12s ease;
+}
+
+.lightbox-close:hover,
+.lightbox-nav:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+}
+
+.lightbox-close {
+    top: 16px;
+    right: 16px;
+    width: 40px;
+    height: 40px;
+    font-size: 24px;
+    line-height: 1;
+}
+
+.lightbox-nav {
+    top: 50%;
+    transform: translateY(-50%);
+    width: 46px;
+    height: 46px;
+    font-size: 28px;
+    line-height: 1;
+}
+
+.lightbox-prev {
+    left: 16px;
+}
+
+.lightbox-next {
+    right: 16px;
+}
+
+@media (max-width: 640px) {
+    .lightbox-nav {
+        top: auto;
+        bottom: 16px;
+        transform: none;
+    }
+}

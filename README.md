@@ -1,517 +1,99 @@
 # creative_coding
 a repo where i'm learning creative coding
 
-## images
+## gallery
 
-### pygame
+`gallery/index.html` browses everything in this repo, grouped by toolkit:
+pygame, pycairo (the `12.` series, the sketches, the render engine output)
+and the interactive canvas sketches.
 
-![gen1](cc_pygame/gen/jpger_01.jpg)
+The thumbnails and the data the page reads are not kept in the repository.
+Build them once after cloning, and again after adding new renders.
 
-![gen2](cc_pygame/gen/jpger_02.jpg)
+### setup
 
-![gen3](cc_pygame/gen/jpger_03.jpg)
+Create a virtual environment in the repository root, activate it, then
+install the one dependency the build needs:
 
-![gen4](cc_pygame/gen/jpger_04.jpg)
+```bash
+python -m venv .venv
+```
 
-![gen5](cc_pygame/gen/jpger_05.jpg)
+Activate it. Linux and macOS:
 
-![gen6](cc_pygame/gen/jpger_06.jpg)
+```bash
+source .venv/bin/activate
+```
 
-![gen7](cc_pygame/gen/jpger_07.jpg)
+Windows PowerShell:
 
-![gen8](cc_pygame/gen/jpger_08.jpg)
+```powershell
+.venv\Scripts\Activate.ps1
+```
 
-![gen9](cc_pygame/gen/jpger_09.jpg)
+Windows cmd:
 
-![gen10](cc_pygame/gen/jpger_10.jpg)
+```bat
+.venv\Scripts\activate.bat
+```
 
-![gen11](cc_pygame/gen/jpger_11.jpg)
+Then, on every platform:
 
-![gen12](cc_pygame/gen/jpger_12.jpg)
+```bash
+python -m pip install -r requirements.txt
+```
 
-![gen13](cc_pygame/gen/jpger_13.jpg)
+Use `python3` instead of `python` if your system has no `python` on the
+path. Inside an activated environment `python` always works.
 
-![gen14](cc_pygame/gen/jpger_14.jpg)
+### building
 
-![gen15](cc_pygame/gen/jpger_15.jpg)
+```bash
+python build_gallery.py          # incremental, skips unchanged thumbnails
+python build_gallery.py --force  # rebuild every thumbnail
+```
 
-![gen16](cc_pygame/gen/jpger_16.jpg)
+This writes `gallery/thumbs/` and `gallery/gallery-data.js`, both ignored
+by git. A rebuild that finds nothing new leaves them untouched.
 
-![gen17](cc_pygame/gen/jpger_17.jpg)
+### opening it
 
-![gen18](cc_pygame/gen/jpger_18.jpg)
+No server is needed, the gallery data is a plain `.js` file. Open
+`gallery/index.html` in a browser, or from the repository root:
 
-![gen19](cc_pygame/gen/jpger_19.jpg)
+```bash
+xdg-open gallery/index.html   # Linux
+open gallery/index.html       # macOS
+start gallery\index.html      # Windows
+```
 
-![gen20](cc_pygame/gen/jpger_20.jpg)
+With the repo in WSL and the browser on Windows, open this address
+instead, substituting your distribution name and path:
 
-![gen21](cc_pygame/gen/jpger_21.jpg)
+```
+file://wsl.localhost/Ubuntu/home/eigenomar/dev_ws/creative_coding/gallery/index.html
+```
 
-![gen22](cc_pygame/gen/jpger_22.jpg)
+### serving it
 
-![gen23](cc_pygame/gen/jpger_23.jpg)
+Needed only to view the gallery from another machine. Run this from the
+repository root, not from `gallery/`, because the tiles reference the
+full size images as `../cc_pycairo/...`:
 
-![gen24](cc_pygame/gen/jpger_24.jpg)
+```bash
+python -m http.server 8765
+```
 
-![gen25](cc_pygame/gen/jpger_25.jpg)
+Then open <http://localhost:8765/gallery/>. Ctrl-C stops it. Note that
+`http.server` listens on every interface, so add `--bind 127.0.0.1` to
+keep it off the local network.
 
-![gen26](cc_pygame/gen/jpger_26.jpg)
+### linking to a view
 
-![gen27](cc_pygame/gen/jpger_27.jpg)
+Every view has its own address, so any of these can be opened directly:
 
-![gen28](cc_pygame/gen/jpger_28.jpg)
-
-![gen29](cc_pygame/gen/jpger_29.jpg)
-
-![gen30](cc_pygame/gen/jpger_30.jpg)
-
-![gen31](cc_pygame/gen/jpger_31.jpg)
-
-![gen32](cc_pygame/gen/jpger_32.jpg)
-
-![gen33](cc_pygame/gen/jpger_33.jpg)
-
-![gen34](cc_pygame/gen/jpger_34.jpg)
-
-![gen35](cc_pygame/gen/jpger_35.jpg)
-
-![gen36](cc_pygame/gen/jpger_36.jpg)
-
-![gen37](cc_pygame/gen/jpger_37.jpg)
-
-![gen38](cc_pygame/gen/jpger_38.jpg)
-
-![gen39](cc_pygame/gen/jpger_39.jpg)
-
-![gen40](cc_pygame/gen/jpger_40.jpg)
-
-![gen41](cc_pygame/gen/jpger_41.jpg)
-
-![gen42](cc_pygame/gen/jpger_42.jpg)
-
-![gen43](cc_pygame/gen/jpger_43.jpg)
-
-![gen44](cc_pygame/gen/jpger_44.jpg)
-
-![gen45](cc_pygame/gen/jpger_45.jpg)
-
-![gen46](cc_pygame/gen/jpger_46.jpg)
-
-![gen47](cc_pygame/gen/jpger_47.jpg)
-
-![gen48](cc_pygame/gen/jpger_48.jpg)
-
-![gen49](cc_pygame/gen/jpger_49.jpg)
-
-![gen50](cc_pygame/gen/jpger_50.jpg)
-
-![gen51](cc_pygame/gen/jpger_51.jpg)
-
-![gen52](cc_pygame/gen/jpger_52.jpg)
-
-![gen53](cc_pygame/gen/jpger_53.jpg)
-
-![gen54](cc_pygame/gen/jpger_54.jpg)
-
-![gen55](cc_pygame/gen/jpger_55.jpg)
-
-![gen56](cc_pygame/gen/jpger_56.jpg)
-
-![gen57](cc_pygame/gen/jpger_57.jpg)
-
-![gen58](cc_pygame/gen/jpger_58.jpg)
-
-![gen59](cc_pygame/gen/jpger_59.jpg)
-
-![gen60](cc_pygame/gen/jpger_60.jpg)
-
-![gen61](cc_pygame/gen/jpger_61.jpg)
-
-![gen62](cc_pygame/gen/jpger_62.jpg)
-
-![gen63](cc_pygame/gen/jpger_63.jpg)
-
-![gen64](cc_pygame/gen/jpger_64.jpg)
-
-![gen65](cc_pygame/gen/jpger_65.jpg)
-
-![gen66](cc_pygame/gen/jpger_66.jpg)
-
-![gen67](cc_pygame/gen/jpger_67.jpg)
-
-![gen68](cc_pygame/gen/jpger_68.jpg)
-
-![gen69](cc_pygame/gen/jpger_69.jpg)
-
-![gen70](cc_pygame/gen/jpger_70.jpg)
-
-![gen71](cc_pygame/gen/jpger_71.jpg)
-
-![gen72](cc_pygame/gen/jpger_72.jpg)
-
-![gen73](cc_pygame/gen/jpger_73.jpg)
-
-![gen74](cc_pygame/gen/jpger_74.jpg)
-
-![gen75](cc_pygame/gen/jpger_75.jpg)
-
-![gen76](cc_pygame/gen/jpger_76.jpg)
-
-![gen77](cc_pygame/gen/jpger_77.jpg)
-
-![gen78](cc_pygame/gen/jpger_78.jpg)
-
-![gen79](cc_pygame/gen/jpger_79.jpg)
-
-![gen80](cc_pygame/gen/jpger_80.jpg)
-
-![gen81](cc_pygame/gen/jpger_81.jpg)
-
-
-### pycairo
-
-![organic_lines](cc_pycairo/gen/organic_lines.png)
-
-![bezier_flow_art](cc_pycairo/gen/bezier_flow_art.png)
-
-![bezier_brush_art](cc_pycairo/gen/bezier_brush_art.png)
-
-![bezier_brush_dynamic_palette](cc_pycairo/gen/bezier_brush_dynamic_palette.png)
-
-![bezier_brush_dynamic_palette_portrait](cc_pycairo/gen/bezier_brush_dynamic_palette_portrait.png)
-
-![flow_field](cc_pycairo/gen/flow_field.png)
-
-![hsl_curves](cc_pycairo/gen/hsl_curves.png)
-
-![kaleidoscope_flow](cc_pycairo/gen/kaleidoscope_flow.png)
-
-![mandala_flow_2](cc_pycairo/gen/mandala_flow_2.png)
-
-![mandala_flow](cc_pycairo/gen/mandala_flow.png)
-
-![mandala](cc_pycairo/gen/mandala.png)
-
-![sophisticated_curves](cc_pycairo/gen/sophisticated_curves.png)
-
-![symmetric_art](cc_pycairo/gen/symmetric_art.png)
-
-![generative0](cc_pycairo/gen/generative0.png)
-
-![generative1](cc_pycairo/gen/generative1.png)
-
-![generative2](cc_pycairo/gen/generative2.png)
-
-![recursive_glitch_symmetry](cc_pycairo/gen/recursive_glitch_symmetry.png)
-
-![mushroom_intelligence](cc_pycairo/gen/mushroom_intelligence.png)
-
-![neural_mushroom_brain](cc_pycairo/gen/neural_mushroom_brain.png)
-
-![spore_fractal](cc_pycairo/gen/spore_fractal.png)
-
-![sextures](cc_pycairo/gen/sextures.png)
-
-![sercurial](cc_pycairo/gen/sercurial.png)
-
-![textures_but_randomized](cc_pycairo/gen/textures_but_randomized.png)
-
-![tattoos_and_balloons](cc_pycairo/gen/tattoos_and_balloons.png)
-
-![texture_forest](cc_pycairo/gen/textural_forest.png)
-
-![texture_garden](cc_pycairo/gen/textural_garden.png)
-
-![texture_face](cc_pycairo/gen/textured_face.png)
-
-![echo_of_an_embrace.png](cc_pycairo/gen/echo_of_an_embrace.png)
-
-![bezier_brush_dynamic_palette_landscape](cc_pycairo/gen/bezier_brush_dynamic_palette_landscape.png)
-
-![neural_mycelium_hybrid](cc_pycairo/gen/neural_mycelium_hybrid.png)
-
-![neural_bloom_white](cc_pycairo/gen/neural_bloom_white.png)
-
-![neural_intelligence_blooming](cc_pycairo/gen/neural_intelligence_blooming.png)
-
-![mycelial_growth](cc_pycairo/gen/mycelial_growth.png)
-
-![lsd_linescape](cc_pycairo/gen/lsd_linescape.png)
-
-![feminine_sun](cc_pycairo/gen/feminine_sun.png)
-
-![incomplete_heat_field](cc_pycairo/gen/incomplete_heat_field.png)
-
-![bezier_brush_dyn_new_pal](cc_pycairo/gen/bezier_brush_dyn_new_pal.png)
-
-![sun_pouring_harbor](cc_pycairo/gen/sun_pouring_harbor.png)
-
-![desert_dune](cc_pycairo/gen/desert_dune.png)
-
-![fire_splinters_grey](cc_pycairo/gen/fire_splinters_grey.png)
-
-![floating_conservatory](cc_pycairo/gen/floating_conservatory.png)
-
-![stormy_pier_abstract](cc_pycairo/gen/stormy_pier_abstract.png)
-
-![fire_splinters_belt](cc_pycairo/gen/fire_splinters_belt.png)
-
-![fire_flow_art](cc_pycairo/gen/fire_flow_art.png)
-
-![bezier_brush_12](cc_pycairo/gen/bezier_brush_12.png)
-
-![bezier_brush_hoogstraat](cc_pycairo/gen/bezier_brush_hoogstraat.png)
-
-![output](cc_pycairo/gen/output.png)
-
-![fault_line__blood_signal__v01](cc_pycairo/gen/render_engine_output/fault_line__blood_signal__v01.png)
-
-![fault_line__blood_signal__v02](cc_pycairo/gen/render_engine_output/fault_line__blood_signal__v02.png)
-
-![fault_line__blood_signal__v03](cc_pycairo/gen/render_engine_output/fault_line__blood_signal__v03.png)
-
-![fault_line__bone_transmission__v01](cc_pycairo/gen/render_engine_output/fault_line__bone_transmission__v01.png)
-
-![fault_line__bone_transmission__v02](cc_pycairo/gen/render_engine_output/fault_line__bone_transmission__v02.png)
-
-![fault_line__bone_transmission__v03](cc_pycairo/gen/render_engine_output/fault_line__bone_transmission__v03.png)
-
-![fault_line__bruise_and_breath__v01](cc_pycairo/gen/render_engine_output/fault_line__bruise_and_breath__v01.png)
-
-![fault_line__bruise_and_breath__v02](cc_pycairo/gen/render_engine_output/fault_line__bruise_and_breath__v02.png)
-
-![fault_line__bruise_and_breath__v03](cc_pycairo/gen/render_engine_output/fault_line__bruise_and_breath__v03.png)
-
-![fault_line__ember_cobalt__v01](cc_pycairo/gen/render_engine_output/fault_line__ember_cobalt__v01.png)
-
-![fault_line__ember_cobalt__v02](cc_pycairo/gen/render_engine_output/fault_line__ember_cobalt__v02.png)
-
-![fault_line__ember_cobalt__v03](cc_pycairo/gen/render_engine_output/fault_line__ember_cobalt__v03.png)
-
-![fault_line__submerged_wound__v01](cc_pycairo/gen/render_engine_output/fault_line__submerged_wound__v01.png)
-
-![fault_line__submerged_wound__v02](cc_pycairo/gen/render_engine_output/fault_line__submerged_wound__v02.png)
-
-![fault_line__submerged_wound__v03](cc_pycairo/gen/render_engine_output/fault_line__submerged_wound__v03.png)
-
-![fault_line__synthetic_fever__v01](cc_pycairo/gen/render_engine_output/fault_line__synthetic_fever__v01.png)
-
-![fault_line__synthetic_fever__v02](cc_pycairo/gen/render_engine_output/fault_line__synthetic_fever__v02.png)
-
-![fault_line__synthetic_fever__v03](cc_pycairo/gen/render_engine_output/fault_line__synthetic_fever__v03.png)
-
-![machine_mourning__blood_signal__v01](cc_pycairo/gen/render_engine_output/machine_mourning__blood_signal__v01.png)
-
-![machine_mourning__blood_signal__v02](cc_pycairo/gen/render_engine_output/machine_mourning__blood_signal__v02.png)
-
-![machine_mourning__blood_signal__v03](cc_pycairo/gen/render_engine_output/machine_mourning__blood_signal__v03.png)
-
-![machine_mourning__bone_transmission__v01](cc_pycairo/gen/render_engine_output/machine_mourning__bone_transmission__v01.png)
-
-![machine_mourning__bone_transmission__v02](cc_pycairo/gen/render_engine_output/machine_mourning__bone_transmission__v02.png)
-
-![machine_mourning__bone_transmission__v03](cc_pycairo/gen/render_engine_output/machine_mourning__bone_transmission__v03.png)
-
-![machine_mourning__bruise_and_breath__v01](cc_pycairo/gen/render_engine_output/machine_mourning__bruise_and_breath__v01.png)
-
-![machine_mourning__bruise_and_breath__v02](cc_pycairo/gen/render_engine_output/machine_mourning__bruise_and_breath__v02.png)
-
-![machine_mourning__bruise_and_breath__v03](cc_pycairo/gen/render_engine_output/machine_mourning__bruise_and_breath__v03.png)
-
-![machine_mourning__ember_cobalt__v01](cc_pycairo/gen/render_engine_output/machine_mourning__ember_cobalt__v01.png)
-
-![machine_mourning__ember_cobalt__v02](cc_pycairo/gen/render_engine_output/machine_mourning__ember_cobalt__v02.png)
-
-![machine_mourning__ember_cobalt__v03](cc_pycairo/gen/render_engine_output/machine_mourning__ember_cobalt__v03.png)
-
-![machine_mourning__submerged_wound__v01](cc_pycairo/gen/render_engine_output/machine_mourning__submerged_wound__v01.png)
-
-![machine_mourning__submerged_wound__v02](cc_pycairo/gen/render_engine_output/machine_mourning__submerged_wound__v02.png)
-
-![machine_mourning__submerged_wound__v03](cc_pycairo/gen/render_engine_output/machine_mourning__submerged_wound__v03.png)
-
-![machine_mourning__synthetic_fever__v01](cc_pycairo/gen/render_engine_output/machine_mourning__synthetic_fever__v01.png)
-
-![machine_mourning__synthetic_fever__v02](cc_pycairo/gen/render_engine_output/machine_mourning__synthetic_fever__v02.png)
-
-![machine_mourning__synthetic_fever__v03](cc_pycairo/gen/render_engine_output/machine_mourning__synthetic_fever__v03.png)
-
-![ocean_beneath_circuit__blood_signal__v01](cc_pycairo/gen/render_engine_output/ocean_beneath_circuit__blood_signal__v01.png)
-
-![ocean_beneath_circuit__blood_signal__v02](cc_pycairo/gen/render_engine_output/ocean_beneath_circuit__blood_signal__v02.png)
-
-![ocean_beneath_circuit__blood_signal__v03](cc_pycairo/gen/render_engine_output/ocean_beneath_circuit__blood_signal__v03.png)
-
-![ocean_beneath_circuit__bone_transmission__v01](cc_pycairo/gen/render_engine_output/ocean_beneath_circuit__bone_transmission__v01.png)
-
-![ocean_beneath_circuit__bone_transmission__v02](cc_pycairo/gen/render_engine_output/ocean_beneath_circuit__bone_transmission__v02.png)
-
-![ocean_beneath_circuit__bone_transmission__v03](cc_pycairo/gen/render_engine_output/ocean_beneath_circuit__bone_transmission__v03.png)
-
-![ocean_beneath_circuit__bruise_and_breath__v01](cc_pycairo/gen/render_engine_output/ocean_beneath_circuit__bruise_and_breath__v01.png)
-
-![ocean_beneath_circuit__bruise_and_breath__v02](cc_pycairo/gen/render_engine_output/ocean_beneath_circuit__bruise_and_breath__v02.png)
-
-![ocean_beneath_circuit__bruise_and_breath__v03](cc_pycairo/gen/render_engine_output/ocean_beneath_circuit__bruise_and_breath__v03.png)
-
-![ocean_beneath_circuit__ember_cobalt__v01](cc_pycairo/gen/render_engine_output/ocean_beneath_circuit__ember_cobalt__v01.png)
-
-![ocean_beneath_circuit__ember_cobalt__v02](cc_pycairo/gen/render_engine_output/ocean_beneath_circuit__ember_cobalt__v02.png)
-
-![ocean_beneath_circuit__ember_cobalt__v03](cc_pycairo/gen/render_engine_output/ocean_beneath_circuit__ember_cobalt__v03.png)
-
-![ocean_beneath_circuit__submerged_wound__v01](cc_pycairo/gen/render_engine_output/ocean_beneath_circuit__submerged_wound__v01.png)
-
-![ocean_beneath_circuit__submerged_wound__v02](cc_pycairo/gen/render_engine_output/ocean_beneath_circuit__submerged_wound__v02.png)
-
-![ocean_beneath_circuit__submerged_wound__v03](cc_pycairo/gen/render_engine_output/ocean_beneath_circuit__submerged_wound__v03.png)
-
-![ocean_beneath_circuit__synthetic_fever__v01](cc_pycairo/gen/render_engine_output/ocean_beneath_circuit__synthetic_fever__v01.png)
-
-![ocean_beneath_circuit__synthetic_fever__v02](cc_pycairo/gen/render_engine_output/ocean_beneath_circuit__synthetic_fever__v02.png)
-
-![ocean_beneath_circuit__synthetic_fever__v03](cc_pycairo/gen/render_engine_output/ocean_beneath_circuit__synthetic_fever__v03.png)
-
-![radio_garden_at_midnight__blood_signal__v01](cc_pycairo/gen/render_engine_output/radio_garden_at_midnight__blood_signal__v01.png)
-
-![radio_garden_at_midnight__blood_signal__v02](cc_pycairo/gen/render_engine_output/radio_garden_at_midnight__blood_signal__v02.png)
-
-![radio_garden_at_midnight__blood_signal__v03](cc_pycairo/gen/render_engine_output/radio_garden_at_midnight__blood_signal__v03.png)
-
-![radio_garden_at_midnight__bone_transmission__v01](cc_pycairo/gen/render_engine_output/radio_garden_at_midnight__bone_transmission__v01.png)
-
-![radio_garden_at_midnight__bone_transmission__v02](cc_pycairo/gen/render_engine_output/radio_garden_at_midnight__bone_transmission__v02.png)
-
-![radio_garden_at_midnight__bone_transmission__v03](cc_pycairo/gen/render_engine_output/radio_garden_at_midnight__bone_transmission__v03.png)
-
-![radio_garden_at_midnight__bruise_and_breath__v01](cc_pycairo/gen/render_engine_output/radio_garden_at_midnight__bruise_and_breath__v01.png)
-
-![radio_garden_at_midnight__bruise_and_breath__v02](cc_pycairo/gen/render_engine_output/radio_garden_at_midnight__bruise_and_breath__v02.png)
-
-![radio_garden_at_midnight__bruise_and_breath__v03](cc_pycairo/gen/render_engine_output/radio_garden_at_midnight__bruise_and_breath__v03.png)
-
-![radio_garden_at_midnight__ember_cobalt__v01](cc_pycairo/gen/render_engine_output/radio_garden_at_midnight__ember_cobalt__v01.png)
-
-![radio_garden_at_midnight__ember_cobalt__v02](cc_pycairo/gen/render_engine_output/radio_garden_at_midnight__ember_cobalt__v02.png)
-
-![radio_garden_at_midnight__ember_cobalt__v03](cc_pycairo/gen/render_engine_output/radio_garden_at_midnight__ember_cobalt__v03.png)
-
-![radio_garden_at_midnight__submerged_wound__v01](cc_pycairo/gen/render_engine_output/radio_garden_at_midnight__submerged_wound__v01.png)
-
-![radio_garden_at_midnight__submerged_wound__v02](cc_pycairo/gen/render_engine_output/radio_garden_at_midnight__submerged_wound__v02.png)
-
-![radio_garden_at_midnight__submerged_wound__v03](cc_pycairo/gen/render_engine_output/radio_garden_at_midnight__submerged_wound__v03.png)
-
-![radio_garden_at_midnight__synthetic_fever__v01](cc_pycairo/gen/render_engine_output/radio_garden_at_midnight__synthetic_fever__v01.png)
-
-![radio_garden_at_midnight__synthetic_fever__v02](cc_pycairo/gen/render_engine_output/radio_garden_at_midnight__synthetic_fever__v02.png)
-
-![radio_garden_at_midnight__synthetic_fever__v03](cc_pycairo/gen/render_engine_output/radio_garden_at_midnight__synthetic_fever__v03.png)
-
-![red_weather_inside__blood_signal__v01](cc_pycairo/gen/render_engine_output/red_weather_inside__blood_signal__v01.png)
-
-![red_weather_inside__blood_signal__v02](cc_pycairo/gen/render_engine_output/red_weather_inside__blood_signal__v02.png)
-
-![red_weather_inside__blood_signal__v03](cc_pycairo/gen/render_engine_output/red_weather_inside__blood_signal__v03.png)
-
-![red_weather_inside__bone_transmission__v01](cc_pycairo/gen/render_engine_output/red_weather_inside__bone_transmission__v01.png)
-
-![red_weather_inside__bone_transmission__v02](cc_pycairo/gen/render_engine_output/red_weather_inside__bone_transmission__v02.png)
-
-![red_weather_inside__bone_transmission__v03](cc_pycairo/gen/render_engine_output/red_weather_inside__bone_transmission__v03.png)
-
-![red_weather_inside__bruise_and_breath__v01](cc_pycairo/gen/render_engine_output/red_weather_inside__bruise_and_breath__v01.png)
-
-![red_weather_inside__bruise_and_breath__v02](cc_pycairo/gen/render_engine_output/red_weather_inside__bruise_and_breath__v02.png)
-
-![red_weather_inside__bruise_and_breath__v03](cc_pycairo/gen/render_engine_output/red_weather_inside__bruise_and_breath__v03.png)
-
-![red_weather_inside__ember_cobalt__v01](cc_pycairo/gen/render_engine_output/red_weather_inside__ember_cobalt__v01.png)
-
-![red_weather_inside__ember_cobalt__v02](cc_pycairo/gen/render_engine_output/red_weather_inside__ember_cobalt__v02.png)
-
-![red_weather_inside__ember_cobalt__v03](cc_pycairo/gen/render_engine_output/red_weather_inside__ember_cobalt__v03.png)
-
-![red_weather_inside__submerged_wound__v01](cc_pycairo/gen/render_engine_output/red_weather_inside__submerged_wound__v01.png)
-
-![red_weather_inside__submerged_wound__v02](cc_pycairo/gen/render_engine_output/red_weather_inside__submerged_wound__v02.png)
-
-![red_weather_inside__submerged_wound__v03](cc_pycairo/gen/render_engine_output/red_weather_inside__submerged_wound__v03.png)
-
-![red_weather_inside__synthetic_fever__v01](cc_pycairo/gen/render_engine_output/red_weather_inside__synthetic_fever__v01.png)
-
-![red_weather_inside__synthetic_fever__v02](cc_pycairo/gen/render_engine_output/red_weather_inside__synthetic_fever__v02.png)
-
-![red_weather_inside__synthetic_fever__v03](cc_pycairo/gen/render_engine_output/red_weather_inside__synthetic_fever__v03.png)
-
-![the_last_warm_place__blood_signal__v01](cc_pycairo/gen/render_engine_output/the_last_warm_place__blood_signal__v01.png)
-
-![the_last_warm_place__blood_signal__v02](cc_pycairo/gen/render_engine_output/the_last_warm_place__blood_signal__v02.png)
-
-![the_last_warm_place__blood_signal__v03](cc_pycairo/gen/render_engine_output/the_last_warm_place__blood_signal__v03.png)
-
-![the_last_warm_place__bone_transmission__v01](cc_pycairo/gen/render_engine_output/the_last_warm_place__bone_transmission__v01.png)
-
-![the_last_warm_place__bone_transmission__v02](cc_pycairo/gen/render_engine_output/the_last_warm_place__bone_transmission__v02.png)
-
-![the_last_warm_place__bone_transmission__v03](cc_pycairo/gen/render_engine_output/the_last_warm_place__bone_transmission__v03.png)
-
-![the_last_warm_place__bruise_and_breath__v01](cc_pycairo/gen/render_engine_output/the_last_warm_place__bruise_and_breath__v01.png)
-
-![the_last_warm_place__bruise_and_breath__v02](cc_pycairo/gen/render_engine_output/the_last_warm_place__bruise_and_breath__v02.png)
-
-![the_last_warm_place__bruise_and_breath__v03](cc_pycairo/gen/render_engine_output/the_last_warm_place__bruise_and_breath__v03.png)
-
-![the_last_warm_place__ember_cobalt__v01](cc_pycairo/gen/render_engine_output/the_last_warm_place__ember_cobalt__v01.png)
-
-![the_last_warm_place__ember_cobalt__v02](cc_pycairo/gen/render_engine_output/the_last_warm_place__ember_cobalt__v02.png)
-
-![the_last_warm_place__ember_cobalt__v03](cc_pycairo/gen/render_engine_output/the_last_warm_place__ember_cobalt__v03.png)
-
-![the_last_warm_place__submerged_wound__v01](cc_pycairo/gen/render_engine_output/the_last_warm_place__submerged_wound__v01.png)
-
-![the_last_warm_place__submerged_wound__v02](cc_pycairo/gen/render_engine_output/the_last_warm_place__submerged_wound__v02.png)
-
-![the_last_warm_place__submerged_wound__v03](cc_pycairo/gen/render_engine_output/the_last_warm_place__submerged_wound__v03.png)
-
-![the_last_warm_place__synthetic_fever__v01](cc_pycairo/gen/render_engine_output/the_last_warm_place__synthetic_fever__v01.png)
-
-![the_last_warm_place__synthetic_fever__v02](cc_pycairo/gen/render_engine_output/the_last_warm_place__synthetic_fever__v02.png)
-
-![the_last_warm_place__synthetic_fever__v03](cc_pycairo/gen/render_engine_output/the_last_warm_place__synthetic_fever__v03.png)
-
-![wound_learning_to_speak__blood_signal__v01](cc_pycairo/gen/render_engine_output/wound_learning_to_speak__blood_signal__v01.png)
-
-![wound_learning_to_speak__blood_signal__v02](cc_pycairo/gen/render_engine_output/wound_learning_to_speak__blood_signal__v02.png)
-
-![wound_learning_to_speak__blood_signal__v03](cc_pycairo/gen/render_engine_output/wound_learning_to_speak__blood_signal__v03.png)
-
-![wound_learning_to_speak__bone_transmission__v01](cc_pycairo/gen/render_engine_output/wound_learning_to_speak__bone_transmission__v01.png)
-
-![wound_learning_to_speak__bone_transmission__v02](cc_pycairo/gen/render_engine_output/wound_learning_to_speak__bone_transmission__v02.png)
-
-![wound_learning_to_speak__bone_transmission__v03](cc_pycairo/gen/render_engine_output/wound_learning_to_speak__bone_transmission__v03.png)
-
-![wound_learning_to_speak__bruise_and_breath__v01](cc_pycairo/gen/render_engine_output/wound_learning_to_speak__bruise_and_breath__v01.png)
-
-![wound_learning_to_speak__bruise_and_breath__v02](cc_pycairo/gen/render_engine_output/wound_learning_to_speak__bruise_and_breath__v02.png)
-
-![wound_learning_to_speak__bruise_and_breath__v03](cc_pycairo/gen/render_engine_output/wound_learning_to_speak__bruise_and_breath__v03.png)
-
-![wound_learning_to_speak__ember_cobalt__v01](cc_pycairo/gen/render_engine_output/wound_learning_to_speak__ember_cobalt__v01.png)
-
-![wound_learning_to_speak__ember_cobalt__v02](cc_pycairo/gen/render_engine_output/wound_learning_to_speak__ember_cobalt__v02.png)
-
-![wound_learning_to_speak__ember_cobalt__v03](cc_pycairo/gen/render_engine_output/wound_learning_to_speak__ember_cobalt__v03.png)
-
-![wound_learning_to_speak__submerged_wound__v01](cc_pycairo/gen/render_engine_output/wound_learning_to_speak__submerged_wound__v01.png)
-
-![wound_learning_to_speak__submerged_wound__v02](cc_pycairo/gen/render_engine_output/wound_learning_to_speak__submerged_wound__v02.png)
-
-![wound_learning_to_speak__submerged_wound__v03](cc_pycairo/gen/render_engine_output/wound_learning_to_speak__submerged_wound__v03.png)
-
-![wound_learning_to_speak__synthetic_fever__v01](cc_pycairo/gen/render_engine_output/wound_learning_to_speak__synthetic_fever__v01.png)
-
-![wound_learning_to_speak__synthetic_fever__v02](cc_pycairo/gen/render_engine_output/wound_learning_to_speak__synthetic_fever__v02.png)
-
-![wound_learning_to_speak__synthetic_fever__v03](cc_pycairo/gen/render_engine_output/wound_learning_to_speak__synthetic_fever__v03.png)
+```
+gallery/index.html#/pygame
+gallery/index.html#/pycairo/12
+gallery/index.html#/pycairo/render-engine?scene=fault line&palette=ember cobalt
+```
