@@ -88,6 +88,22 @@ Then open <http://localhost:8765/gallery/>. Ctrl-C stops it. Note that
 `http.server` listens on every interface, so add `--bind 127.0.0.1` to
 keep it off the local network.
 
+### deploying it
+
+The gallery is published at <https://gallery.eigenomar.com> by Cloudflare
+Workers, configured in `wrangler.jsonc`. The whole repository is the site,
+because the tiles link to the full size renders and sources outside
+`gallery/`. `.assetsignore` keeps `.git`, environments and config out of it,
+and `_redirects` sends `/` to `/gallery/`.
+
+In the Cloudflare dashboard, import this repository under *Workers & Pages →
+Create → Import a repository* with:
+
+- build command: `python3 -m pip install -r requirements.txt && python3 build_gallery.py`
+- deploy command: `npx wrangler deploy`
+
+Every push to `main` then rebuilds the thumbnails and redeploys.
+
 ### linking to a view
 
 Every view has its own address, so any of these can be opened directly:
