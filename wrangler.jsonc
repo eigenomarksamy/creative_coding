@@ -1,0 +1,13 @@
+// Cloudflare Workers config: serves the gallery at gallery.eigenomar.com.
+// The whole repository is the site, because the gallery links to the full
+// size renders and sketch sources as ../cc_pycairo/..., ../cc_pygame/... and
+// ../canvas/.... .assetsignore keeps everything else out; _redirects sends /
+// to /gallery/. Build first with `python build_gallery.py`; see README.md.
+{
+  "name": "creative-coding",
+  "compatibility_date": "2026-09-30",
+  "assets": {
+    "directory": "."
+  },
+  "routes": [{ "pattern": "gallery.eigenomar.com", "custom_domain": true }]
+}
