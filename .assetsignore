@@ -1,0 +1,13 @@
+# Files Cloudflare should not publish (same syntax as .gitignore).
+# Everything else in the repository is served as-is.
+.git/
+.gitignore
+.assetsignore
+.vscode/
+.venv/
+venv/
+.wrangler/
+__pycache__/
+*.pyc
+wrangler.jsonc
+requirements.txt
