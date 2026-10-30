@@ -88,7 +88,8 @@ CATEGORIES = [
         "title": "pycairo",
         "blurb": (
             "flow fields, layered Bézier brushwork and gradient masses, "
-            "first as one-off sketches and then as a parameterised engine."
+            "first as one-off sketches and then as a parameterised engine, "
+            "then a series drawn from mathematical models."
         ),
         "groups": [
             {
@@ -132,6 +133,21 @@ CATEGORIES = [
                     {"key": "palette", "label": "Palette"},
                     {"key": "variant", "label": "Variant"},
                 ],
+            },
+            {
+                "id": "cosmos",
+                "title": "cosmos",
+                "blurb": (
+                    "seven pieces built on mathematical models instead of "
+                    "Bézier strokes: spiral galaxies, coupled oscillators, "
+                    "Platonic solids, curved spacetime, field lines, drum "
+                    "modes and spherical harmonics. in the order set out "
+                    "in cosmos.txt."
+                ),
+                "manifest": "cosmos.txt",
+                "search": ["cc_pycairo/gen/cosmos"],
+                "kind": "image",
+                "source": "pycairo_sketch",
             },
         ],
     },

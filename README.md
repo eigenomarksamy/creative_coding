@@ -4,8 +4,8 @@ a repo where i'm learning creative coding
 ## gallery
 
 `gallery/index.html` browses everything in this repo, grouped by toolkit:
-pygame, pycairo (the `12.` series, the sketches, the render engine output)
-and the interactive canvas sketches.
+pygame, pycairo (the `12.` series, the sketches, the render engine output,
+the `cosmos` series) and the interactive canvas sketches.
 
 The thumbnails and the data the page reads are not kept in the repository.
 Build them once after cloning, and again after adding new renders.
