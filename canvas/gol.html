@@ -34,6 +34,13 @@
         let cellSize = 10; // Size of each cell
         let rows, cols;
         let grid;
+        let colors; // One color per cell position
+
+        // Generations per second, the same on every display, and fewer
+        // when the visitor asks for reduced motion
+        const GENERATIONS_PER_SECOND = 30;
+        const REDUCED_GENERATIONS_PER_SECOND = 4;
+        const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 
         // Resize canvas to full screen
         function resizeCanvas() {
@@ -42,6 +49,19 @@
             rows = Math.floor(canvas.height / cellSize);
             cols = Math.floor(canvas.width / cellSize);
             grid = createGrid();
+            colors = createColors();
+            drawGrid();
+        }
+
+        // A random dark color for every position. A cell takes the color of
+        // its position, so a cell that stays alive keeps its color instead
+        // of getting a new one every frame
+        function createColors() {
+            return Array.from({ length: rows }, () =>
+                Array.from({ length: cols }, () =>
+                    `hsl(${Math.random() * 360}, 40%, ${30 + Math.random() * 20}%)`
+                )
+            );
         }
 
         // Initialize the grid with random values
@@ -65,7 +85,7 @@
             for (let row = 0; row < rows; row++) {
                 for (let col = 0; col < cols; col++) {
                     if (grid[row][col] === 1) {
-                        ctx.fillStyle = `hsl(${Math.random() * 360}, 40%, ${30 + Math.random() * 20}%)`; // Dark colors
+                        ctx.fillStyle = colors[row][col]; // Dark colors
                         ctx.fillRect(col * cellSize, row * cellSize, cellSize, cellSize);
                     }
                 }
@@ -114,17 +134,64 @@
             return count;
         }
 
-        // Animation loop
-        function animate() {
+        // Animation loop: one generation per step, at a fixed rate
+        let frame = null;
+        let lastStep = null;
+
+        function animate(now) {
+            frame = requestAnimationFrame(animate);
+
+            const perSecond = reducedMotion.matches
+                ? REDUCED_GENERATIONS_PER_SECOND
+                : GENERATIONS_PER_SECOND;
+            const interval = 1000 / perSecond;
+
+            if (lastStep !== null && now - lastStep < interval) {
+                return;
+            }
+
+            // Keep a steady beat, but don't catch up in a burst after a stall
+            lastStep = lastStep !== null && now - lastStep < interval * 2
+                ? lastStep + interval
+                : now;
+
             drawGrid();
             updateGrid();
-            requestAnimationFrame(animate);
+        }
+
+        // Run only while the page is visible and the canvas is on screen,
+        // so a background tab or a sketch scrolled out of view idles
+        let pageVisible = !document.hidden;
+        let onScreen = true;
+
+        function updateRunning() {
+            const shouldRun = pageVisible && onScreen;
+
+            if (shouldRun && frame === null) {
+                lastStep = null;
+                frame = requestAnimationFrame(animate);
+            } else if (!shouldRun && frame !== null) {
+                cancelAnimationFrame(frame);
+                frame = null;
+            }
+        }
+
+        document.addEventListener('visibilitychange', () => {
+            pageVisible = !document.hidden;
+            updateRunning();
+        });
+
+        if ('IntersectionObserver' in window) {
+            new IntersectionObserver((entries) => {
+                onScreen = entries[entries.length - 1].isIntersecting;
+                updateRunning();
+            }).observe(canvas);
         }
 
         // Initialize and start animation
         window.addEventListener('resize', resizeCanvas);
         resizeCanvas();
-        animate();
+        updateRunning();
     </script>
 </body>
 </html>

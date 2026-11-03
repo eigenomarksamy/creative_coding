@@ -36,6 +36,12 @@
         let rows, cols;
         let snake, direction, food, snakeColor, foodColor;
 
+        // Time between steps, and a longer one when the visitor asks for
+        // reduced motion
+        const STEP_MS = 100;
+        const REDUCED_STEP_MS = 400;
+        const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+
         // Resize the canvas
         function resizeCanvas() {
             canvas.width = window.innerWidth;
@@ -43,11 +49,12 @@
             rows = Math.floor(canvas.height / cellSize);
             cols = Math.floor(canvas.width / cellSize);
             resetGame();
+            drawGrid();
         }
 
-        // Initialize/reset the game
+        // Initialize/reset the game. Each segment carries its own hue
         function resetGame() {
-            snake = [{ x: Math.floor(cols / 2), y: Math.floor(rows / 2) }];
+            snake = [{ x: Math.floor(cols / 2), y: Math.floor(rows / 2), hue: Math.random() * 360 }];
             direction = { x: 0, y: 0 }; // Initial direction: stationary
             spawnFood();
             randomizeColors(); // Set initial colors
@@ -79,14 +86,14 @@
             // Draw the snake
             snake.forEach((segment, index) => {
                 const lightness = 30 + (index * 5) % 50; // Create a gradient effect
-                ctx.fillStyle = `hsl(${Math.random() * 360}, 50%, ${lightness}%)`; // Snake gradient
+                ctx.fillStyle = `hsl(${segment.hue}, 50%, ${lightness}%)`; // Snake gradient, each segment keeping its hue
                 ctx.fillRect(segment.x * cellSize, segment.y * cellSize, cellSize, cellSize);
             });
         }
 
         // Move the snake
         function moveSnake() {
-            const head = { ...snake[0] };
+            const head = { ...snake[0], hue: Math.random() * 360 }; // A new segment, a new hue
 
             // AI Logic: Decide direction
             if (food.x > head.x) direction = { x: 1, y: 0 }; // Move right
@@ -120,16 +127,46 @@
         }
 
         // Animation loop
+        let timer = null;
+
         function animate() {
             drawGrid();
             moveSnake();
-            setTimeout(animate, 100); // Adjust speed by changing this value
+            timer = setTimeout(animate, reducedMotion.matches ? REDUCED_STEP_MS : STEP_MS);
+        }
+
+        // Run only while the page is visible and the canvas is on screen,
+        // so a background tab or a sketch scrolled out of view idles
+        let pageVisible = !document.hidden;
+        let onScreen = true;
+
+        function updateRunning() {
+            const shouldRun = pageVisible && onScreen;
+
+            if (shouldRun && timer === null) {
+                animate();
+            } else if (!shouldRun && timer !== null) {
+                clearTimeout(timer);
+                timer = null;
+            }
+        }
+
+        document.addEventListener('visibilitychange', () => {
+            pageVisible = !document.hidden;
+            updateRunning();
+        });
+
+        if ('IntersectionObserver' in window) {
+            new IntersectionObserver((entries) => {
+                onScreen = entries[entries.length - 1].isIntersecting;
+                updateRunning();
+            }).observe(canvas);
         }
 
         // Initialize
         window.addEventListener('resize', resizeCanvas);
         resizeCanvas();
-        animate();
+        updateRunning();
     </script>
 </body>
 </html>

@@ -10,17 +10,17 @@ dev plan for growing `creative_coding` (this repo) from a gallery grouped by too
 
 ## 0. state
 
-- **next ticket:** CC4, the last open ticket from steps 1–2, then CC5 (step 3), which needs it. if the owner approves CC12, it can go in any time, because it is quick and fixes the live site.
-- **done:** CC1, CC2, CC3 (2026-11-03).
+- **next ticket:** CC4, the last open ticket from steps 1–2, then CC5 (step 3), which needs it.
+- **done:** CC1, CC2, CC3, CC12 (2026-11-03).
 - **milestone 1:** CC5, CC7 and CC10 are published, giving three engines in three worlds (dynamical, organic, mystic), built on the CC2–CC3 taxonomy.
-- **scope of this repo:** CC1–CC11, plus CC12 if approved. EC1–EC2 and the changes to the main plan (appendix A) belong to `eigenomar.com` and are never implemented here.
+- **scope of this repo:** CC1–CC12 (the owner approved CC12 on 2026-11-03). EC1–EC2 and the changes to the main plan (appendix A) belong to `eigenomar.com` and are never implemented here.
 - **repos:** `creative_coding` is the home of every engine, algorithm, renderer, control and gallery page, and no new repo is needed. `eigenomar.com` presents the project under art and links to it. `gallery.eigenomar.com` is served from this repo (see §1).
 - **long-term direction:** independent engines connected by their concepts, whose systems and interactions might later be combined without losing what makes each one distinct. there is no general composer until the gates in §7 are met.
 
 **open questions for the owner** (raised by CC1):
 
 1. ~~should this plan stay public?~~ no: `.assetsignore` excludes `*dev_plan.md` since 2026-11-03, so the plan leaves the site on the next deploy. it is still readable in the public GitHub repo. `CLAUDE.md` is still served, and CC4 can exclude it and `.claude/` if the owner wants.
-2. approve CC12? it stops the flicker in `gol.html` and `snake2.html`, which changes how two existing pieces look.
+2. ~~approve CC12?~~ approved on 2026-11-03 and done.
 3. add `node --test &&` to the start of the Cloudflare build command once CC4 has tests? that setting lives in the Cloudflare dashboard, not in this repo.
 
 ### queue
@@ -63,7 +63,7 @@ first observed on 2026-11-03 while restructuring this plan, then confirmed, corr
 | curation | a manifest (`position: title: stem` per line, `#` comments) sets the order and titles of a series. `exclude_manifests` keeps a curated piece out of its directory group, so it appears once | the worlds view must also show each piece once |
 | source links | the build links an image to the script whose `write_to_png("…")` or `image.save(…, "…")` names it, and otherwise guesses `<stem>.py`, or `pnger_NN.py` for `jpger_NN.jpg`. only `cc_pycairo/gen/output.png` has no source | none |
 | routing | `gallery/gallery.js` uses hash routes (`#/`, `#/<category>`, `#/<category>/<group>`, filters as query params) so the gallery works when opened from `file://`. since CC3 there are also `#/worlds` (every piece, filterable) and `#/worlds/<id>` (one piece with its classification and related pieces), and the lightbox links to the piece page. the build refuses a category with the id `worlds` | the gallery must keep working from disk. every piece has a stable gallery URL, and a sketch also keeps its file URL |
-| live sketches | there are 3: `canvas/gol.html`, `canvas/snake1.html` and `canvas/snake2.html`. each is a single file of inline JS on Canvas 2D using unseeded `Math.random`. **none reads any input**: no pointer, touch or keyboard handling, so they are autonomous, not interactive. `gol.html` runs one generation per `requestAnimationFrame`, so its speed follows the display's refresh rate, and the snakes step on a 100 ms `setTimeout`. all three restart when the window is resized. `gol.html` gives every live cell a new random color on every frame, and `snake2.html` does the same to every segment on every step, so both flicker. the title comes from `<title>` and `meta` is `{}`. since CC2, each page also carries a meta block with its classification | no existing experiment is interactive. strange attractor will be the first. the flicker goes against §2, which is why CC12 is proposed |
+| live sketches | there are 3: `canvas/gol.html`, `canvas/snake1.html` and `canvas/snake2.html`. each is a single file of inline JS on Canvas 2D using unseeded `Math.random`. **none reads any input**: no pointer, touch or keyboard handling, so they are autonomous, not interactive. `gol.html` runs one generation per `requestAnimationFrame`, so its speed follows the display's refresh rate, and the snakes step on a 100 ms `setTimeout`. all three restart when the window is resized. until CC12, `gol.html` gave every live cell a new random color on every frame, and `snake2.html` did the same to every segment on every step, so both flickered. since CC12, `gol.html` steps 30 generations a second on any display and colors each cell by its position, and `snake2.html` keeps each segment's hue. all three slow down under reduced motion (4 generations a second, 400 ms steps) and stop while the tab is hidden or the canvas is out of view. the title comes from `<title>` and `meta` is `{}`. since CC2, each page also carries a meta block with its classification | no existing experiment is interactive. strange attractor will be the first |
 | how sketches are found | `collect_sketch_items` scans only the top level of `canvas/*.html` | engines live in folders (Q5), so CC5 extends the scan to `canvas/<id>/index.html` |
 | how sketches are shown | the gallery shows a ▶ poster, clicking it loads the sketch in an `<iframe>` with a `title`, and "open ↗" links straight to the file. nothing pauses an iframe that has scrolled out of view, several can run at once, and an iframe is torn down only when a route change clears the view | each sketch already has a stable direct URL (`/canvas/<name>.html`). engines must pause themselves when hidden or out of view (§2) |
 | static renders | 261 images from `cc_pycairo/` and `cc_pygame/`, none of them interactive | they get worlds, set once per series (Q1) |
@@ -79,9 +79,9 @@ the slugs are from §3. CC1 suggested the worlds and CC2 set them on 2026-11-03:
 
 | piece | kind | count | look | system | interaction | world (secondary) |
 |---|---|---|---|---|---|---|
-| `canvas/gol.html` "Game of Life - Dark Mode" | live | 1 | full-window grid of 10 px cells on black, each live cell in a random dark hue that changes every frame | cellular-automata: Conway's B3/S23 from a 30% random fill, with hard edges | autonomous, observe only | organic |
+| `canvas/gol.html` "Game of Life - Dark Mode" | live | 1 | full-window grid of 10 px cells on black, each position in its own random dark hue (which changed every frame until CC12) | cellular-automata: Conway's B3/S23 from a 30% random fill, with hard edges | autonomous, observe only | organic |
 | `canvas/snake1.html` "Auto-Moving Snake" | live | 1 | 20 px grid, a blue-to-violet body, red food | one agent on a random walk, with a 10% chance to turn on each step, that restarts when it collides: agents | autonomous, observe only | abstract |
-| `canvas/snake2.html` "AI Snake with Random Colors" | live | 1 | the same grid, every segment re-colored at random on every step, new colors on each meal | one greedy agent that moves along x and then y toward the food: agents | autonomous, observe only | abstract (glitch) |
+| `canvas/snake2.html` "AI Snake with Random Colors" | live | 1 | the same grid, each segment in its own random hue (re-colored every step until CC12), new food color on each meal | one greedy agent that moves along x and then y toward the food: agents | autonomous, observe only | abstract (glitch) |
 | pycairo render engine (`render_engine.py`, group render-engine) | series | 126 | 7 scenes × 6 palettes × 3 variants at 2800×1600: gradient "pressure" blobs, Bézier brush lines that follow a flow angle around the blobs, dust, rings and particles | noise-fields, procedural-geometry. the only parameterized generator in the repo | static | abstract (fluid) |
 | pycairo 12. | series | 13 | a curated set of Bézier brushwork, textures, flow fields and mycelium under poetic titles | noise-fields, recursive-growth | static | abstract (organic, fluid) |
 | pycairo sketches | series | 34 | the rest of the pycairo one-offs: mandalas, flow fields, neural and mycelium blooms, glitch symmetry, textures, landscapes | noise-fields, procedural-geometry, recursive-growth | static | abstract (organic, geometric). the series varies most, so it is the first candidate for per-image overrides |
@@ -95,7 +95,7 @@ the slugs are from §3. CC1 suggested the worlds and CC2 set them on 2026-11-03:
 | parameters | Python only. `render_engine.py` is configured with module constants (which scenes and palettes, variants per palette, hue shift ranges), and the other scripts hardcode their values. the sketches have only constants such as `cellSize` | no runtime parameters or controls anywhere | CC4, CC6 |
 | presets | Python only. `render_engine.py` has 6 named palettes and 7 named scenes (blob and line counts, sizes, segment lengths and so on). manifests choose and order pieces, so they are not presets | no presets in JS | CC4, CC7, CC10 |
 | seeds | Python only. `render_engine.py` derives a geometry seed and a separate color seed for each render from `BASE_SEED = 42`, and 22 other pycairo scripts seed `random` with a fixed value. the other 31 pycairo scripts, all 91 pygame scripts and all 3 sketches are unseeded | there is no PRNG in JS. Python's Mersenne Twister can't be reproduced in the browser, so no existing render can be rebuilt there | CC4. the split between geometry and color seeds is worth reusing as an idea |
-| animation lifecycle | `requestAnimationFrame` in `gol.html` and `setTimeout` in the snakes, all restarting on resize. in the gallery, an iframe starts on click and goes away on a route change | no pause, reset, visibility or out-of-view handling, teardown or reduced motion | CC4, CC5, then CC8 |
+| animation lifecycle | `requestAnimationFrame` in `gol.html` and `setTimeout` in the snakes, all restarting on resize. since CC12 they idle when hidden or out of view (`visibilitychange` and `IntersectionObserver`) and slow down under reduced motion. in the gallery, an iframe starts on click and goes away on a route change | no pause or reset control and no explicit teardown. the old sketches' lifecycle code is copied into each page, not shared | CC4, CC5, then CC8 |
 | image export | the Python scripts' whole output is a PNG or JPG on disk | nothing in the browser (no `toBlob` or `toDataURL`) | CC11a, CC11b |
 | share links | gallery views, with route and filters in the hash, and since CC3 a page per piece (`#/worlds/<id>`) | no state in any sketch URL | CC11a, CC11b |
 | saved settings | none (no `localStorage`) | none needed until visitor presets (§7, parked) | none |
@@ -242,7 +242,7 @@ sizes: **S** takes under an hour and **M** fills one session. anything larger is
 | CC10 | sigil laboratory: publish | M | CC9 | todo |
 | CC11a | share links and image export: strange attractor | S | CC5 | todo |
 | CC11b | share links and image export: artificial garden | S | CC7, CC11a | todo |
-| CC12 | flicker and lifecycle fixes for the three old sketches | S | CC1 | proposed, waiting for the owner (§0) |
+| CC12 | flicker and lifecycle fixes for the three old sketches | S | CC1 | done |
 
 **order:** the queue in §0 sets the order, and EC1 → EC2 in `eigenomar.com` follow it. CC4 needs only CC1, so it runs alongside CC2–CC3. CC11a and CC11b both come before CC8, so that share links and export exist in two engines before anything is extracted (Q6).
 
@@ -425,9 +425,9 @@ world **mystic** · concept: symbolism, pattern-making and the search for meanin
 - **done when:** a shared link reproduces the same supported initial configuration, image export works, and malformed URL parameters fail safely.
 - **not here:** video export, replay recording, cloud storage, public galleries of visitor submissions.
 
-### CC12 · flicker and lifecycle fixes for the three old sketches · S · proposed
+### CC12 · flicker and lifecycle fixes for the three old sketches · S
 
-- **status:** proposed by CC1 and waiting for the owner (§0), because it changes how two existing pieces look, and "preserve existing work" calls for a decision first.
+- **status:** proposed by CC1 because it changes how two existing pieces look, and "preserve existing work" calls for a decision first. the owner approved it on 2026-11-03.
 - **why:** `gol.html` gives every live cell a new random hue and lightness on every display frame, and `snake2.html` re-colors every segment on every 100 ms step. both flicker over the whole canvas, against §2 ("never flash rapidly") and §5 ("no needlessly aggressive motion"). none of the three sketches stops when it is hidden.
 - **do:**
   - in `gol.html`, choose each cell's color once, when it is born or from its position, and step the simulation at a fixed rate instead of once per display frame.
@@ -436,6 +436,7 @@ world **mystic** · concept: symbolism, pattern-making and the search for meanin
   - keep each sketch a single file with inline script, at its current URL.
 - **done when:** none of the three flickers, they idle while hidden, and they otherwise behave as before.
 - **not here:** seeding, controls, moving them into engine folders, new features.
+- **result (2026-11-03):** `gol.html` gives each position one random dark color when the grid is made, and steps at 30 generations a second instead of once per display frame (60 a second on a 60 Hz screen, more on faster ones). `snake2.html` gives each new segment its own hue, with the lightness gradient unchanged. the snakes still step every 100 ms. under reduced motion, `gol.html` runs 4 generations a second and the snakes step every 400 ms. all three stop while the tab is hidden or the canvas is out of view (inside the gallery's iframe too) and pick up again without a burst of catch-up steps. all three redraw straight after a resize. checked in headless Chrome against the old pages: 0 of 3285 surviving cells and 0 of 20 persisting segments changed color, against 4464 of 4464 and 11 of 11 before. no steps ran while hidden or out of view, and the rates matched, in both normal and reduced-motion runs.
 
 ---
 
@@ -592,3 +593,4 @@ the main plan currently puts several creative coding experiments in the website 
 | 2026-11-03 | none | `.assetsignore` now excludes `*dev_plan.md`, so this plan is no longer published once the change is deployed. it stays in the public GitHub repo |
 | 2026-11-03 | CC2 | taxonomy and metadata done. vocabulary and validation are in `build_gallery.py`, with `agents` added and `parameter-manipulation` chosen. the 5 image series and 3 sketches are classified, with taxonomy resolved into `item.taxonomy` on every item (Q7) and the vocabulary exported to `gallery-data.js`. the build fails on invalid metadata and duplicate ids (33 cases checked). the canvas blurb now reads "click a preview to run it." the README documents the meta block. the build is clean, with 264 items, all classified, and `node --test` exits 0 |
 | 2026-11-03 | CC3 | world-based discovery done: `#/worlds` with world/system/interaction chips and counts, a page for every piece at `#/worlds/<id>` with related pieces, a worlds card on the home page and a worlds link in the nav, and `worlds` reserved in the build. also reduced-motion guards, a lightbox Tab trap, focus kept while filtering, and grids and the nav fitted to 320 px. the toolkit views' DOM is unchanged apart from the nav and chip attributes. 46 behavior checks pass in headless Chrome from `file://`, the build is clean, and `node --test` exits 0 |
+| 2026-11-03 | CC12 | approved by the owner and done. `gol.html` colors each position once and steps at 30 generations a second, and `snake2.html` keeps each segment's hue, so neither flickers. all three slow down under reduced motion and idle while hidden or out of view. checked against the old pages in headless Chrome, where color changes on surviving cells and segments went from all of them to none. the build is clean |
