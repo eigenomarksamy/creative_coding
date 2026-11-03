@@ -22,8 +22,16 @@
     box-sizing: border-box;
 }
 
-html {
-    scroll-behavior: smooth;
+/* Smooth scrolling and the card lift are the only movement in the chrome,
+   so both wait for a visitor who hasn't asked for reduced motion. */
+@media (prefers-reduced-motion: no-preference) {
+    html {
+        scroll-behavior: smooth;
+    }
+
+    .category-card:hover {
+        transform: translateY(-2px);
+    }
 }
 
 body {
@@ -88,6 +96,7 @@ a:hover {
 
 .site-nav {
     display: flex;
+    flex-wrap: wrap;
     gap: 6px;
 }
 
@@ -110,6 +119,13 @@ a:hover {
     color: var(--accent);
     border-color: var(--border-strong);
     background: var(--accent-dim);
+}
+
+.site-nav .nav-sep {
+    align-self: stretch;
+    width: 1px;
+    margin: 4px 4px;
+    background: var(--border);
 }
 
 /* ---------------------------------------------------------- layout */
@@ -175,7 +191,7 @@ a:hover {
 
 .category-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr));
     gap: 20px;
 }
 
@@ -192,7 +208,6 @@ a:hover {
 
 .category-card:hover {
     border-color: var(--border-strong);
-    transform: translateY(-2px);
     text-decoration: none;
 }
 
@@ -281,11 +296,246 @@ a:hover {
     background: var(--accent-dim);
 }
 
+.chip-count {
+    margin-left: 6px;
+    color: var(--muted);
+    font-size: 11px;
+    font-variant-numeric: tabular-nums;
+}
+
+.chip.active .chip-count {
+    color: inherit;
+}
+
+/* A value that would show nothing: still on the map, not a target. */
+.chip.disabled,
+.chip.disabled:hover {
+    border-color: var(--border);
+    color: var(--border-strong);
+    cursor: default;
+}
+
+.chip.disabled .chip-count {
+    color: inherit;
+}
+
+.chip.primary {
+    color: var(--accent);
+    border-color: var(--border-strong);
+}
+
+/* ---------------------------------------------------------- worlds */
+
+.world-note {
+    max-width: 680px;
+    margin: -8px 0 24px;
+    color: var(--muted);
+    font-size: 14px;
+}
+
+.world-note strong {
+    margin-right: 8px;
+    color: var(--accent);
+    font-weight: 600;
+}
+
+.section-head h2 a {
+    color: inherit;
+}
+
+.taxonomy-line {
+    margin: 0 0 6px;
+    color: var(--muted);
+    font-size: 13px;
+}
+
+.taxonomy-line a {
+    color: var(--muted);
+}
+
+.taxonomy-line a:hover {
+    color: var(--text);
+}
+
+.taxonomy-line strong a {
+    color: var(--accent);
+    font-weight: 600;
+}
+
+.category-card .cover-worlds {
+    display: flex;
+    flex-wrap: wrap;
+    align-content: center;
+    justify-content: center;
+    gap: 6px 16px;
+    aspect-ratio: 16 / 10;
+    padding: 20px 24px;
+    background: linear-gradient(135deg, #16161c, #0d0d11);
+    color: var(--text);
+    font-size: 15px;
+    letter-spacing: 0.02em;
+}
+
+.category-card .cover-worlds .unpopulated {
+    color: var(--border-strong);
+}
+
+/* ---------------------------------------------------------- piece page */
+
+.piece {
+    display: grid;
+    grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+    gap: clamp(20px, 3vw, 40px);
+    align-items: start;
+    margin-bottom: 48px;
+}
+
+.piece-image {
+    display: block;
+    width: 100%;
+    padding: 0;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: #000;
+    overflow: hidden;
+    cursor: zoom-in;
+}
+
+.piece-image:focus-visible {
+    border-color: var(--accent);
+    outline: none;
+}
+
+.piece-image img {
+    display: block;
+    width: 100%;
+    height: auto;
+}
+
+.piece-preview .sketch-frame {
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+}
+
+.piece-info h1 {
+    margin: 0 0 10px;
+    font-size: clamp(22px, 3vw, 32px);
+    font-weight: 650;
+    letter-spacing: -0.02em;
+    word-break: break-word;
+}
+
+.piece-concept {
+    margin: 0 0 24px;
+    font-size: 16px;
+}
+
+.piece-facts {
+    display: grid;
+    grid-template-columns: max-content minmax(0, 1fr);
+    gap: 12px 18px;
+    margin: 0;
+    font-size: 14px;
+}
+
+.piece-facts dt {
+    padding-top: 4px;
+    color: var(--muted);
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+}
+
+.piece-facts dd {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 6px;
+    margin: 0;
+    color: var(--muted);
+    word-break: break-word;
+}
+
+.related {
+    padding-top: 20px;
+    border-top: 1px solid var(--border);
+}
+
+.related h2 {
+    margin: 0 0 4px;
+    font-size: 19px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+}
+
+.related-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 16px;
+}
+
+.related-card {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--surface);
+    color: inherit;
+    transition: border-color 0.15s ease;
+}
+
+.related-card:hover,
+.related-card:focus-visible {
+    border-color: var(--border-strong);
+    outline: none;
+    text-decoration: none;
+}
+
+.related-card:focus-visible {
+    border-color: var(--accent);
+}
+
+.related-card img,
+.related-card .cover-placeholder {
+    display: grid;
+    place-items: center;
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+    background: linear-gradient(135deg, #16161c, #0d0d11);
+    color: var(--border-strong);
+    font-size: 28px;
+}
+
+.related-card .body {
+    padding: 10px 12px 12px;
+}
+
+.related-title {
+    font-size: 13px;
+    font-weight: 600;
+    word-break: break-word;
+}
+
+.related-meta {
+    margin-top: 2px;
+    color: var(--muted);
+    font-size: 12px;
+}
+
+@media (max-width: 860px) {
+    .piece {
+        grid-template-columns: 1fr;
+    }
+}
+
 /* ---------------------------------------------------------- image grid */
 
 .tile-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(min(280px, 100%), 1fr));
     gap: 18px;
     /* Groups mix portrait and landscape work. Let each tile take its own
        height rather than stretching to the tallest in the row. */
@@ -347,7 +597,8 @@ a:hover {
 
 .sketch-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    /* Never wider than the page, so a 320px phone doesn't scroll sideways. */
+    grid-template-columns: repeat(auto-fill, minmax(min(340px, 100%), 1fr));
     gap: 20px;
 }
 
@@ -428,6 +679,16 @@ a:hover {
     font-size: 12px;
 }
 
+.sketch-details {
+    padding: 0 14px 14px;
+}
+
+.sketch-details .concept {
+    margin: 0;
+    color: var(--muted);
+    font-size: 13px;
+}
+
 /* ---------------------------------------------------------- empty state */
 
 .empty {
@@ -458,6 +719,10 @@ a:hover {
 }
 
 .lightbox[hidden] {
+    display: none;
+}
+
+.lightbox.single .lightbox-nav {
     display: none;
 }
 

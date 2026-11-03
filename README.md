@@ -112,7 +112,16 @@ Every view has its own address, so any of these can be opened directly:
 gallery/index.html#/pygame
 gallery/index.html#/pycairo/12
 gallery/index.html#/pycairo/render-engine?scene=fault line&palette=ember cobalt
+gallery/index.html#/worlds
+gallery/index.html#/worlds?world=cosmic&system=oscillators
+gallery/index.html#/worlds/cosmos_origin
 ```
+
+`#/worlds` gathers every piece from every toolkit and filters it by world,
+system and interaction. A world filter matches a piece's primary world or
+any of its secondary ones. `#/worlds/<id>` is one piece, with its
+classification and related pieces. Because of these routes, no category in
+`CATEGORIES` can use the id `worlds`.
 
 ### adding work
 

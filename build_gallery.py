@@ -174,6 +174,10 @@ LIVE_FIELDS = ("interactions", "modes")
 # Everything a live sketch's meta block may contain.
 PAGE_FIELDS = ("id", "title") + SERIES_FIELDS + LIVE_FIELDS
 
+# Gallery routes that a category id would collide with: #/worlds is every
+# piece by world, and #/worlds/<id> is one piece.
+RESERVED_ROUTES = ("worlds",)
+
 # Each group reads one directory. Groups exist so a category can be split
 # further later on without touching the page itself.
 CATEGORIES = [
@@ -1106,6 +1110,13 @@ def build_gallery_data(
     }
 
     # Checked before any thumbnail is built, so a typo fails fast.
+    for category in CATEGORIES:
+        if category["id"] in RESERVED_ROUTES:
+            raise MetadataError(
+                f"CATEGORIES: {category['id']!r} is a gallery route, "
+                f"so no category can use it as its id"
+            )
+
     series = {
         (category["id"], group["id"]): series_taxonomy(category["id"], group)
         for category in CATEGORIES
