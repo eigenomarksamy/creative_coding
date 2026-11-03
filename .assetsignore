@@ -11,3 +11,6 @@ __pycache__/
 *.pyc
 wrangler.jsonc
 requirements.txt
+
+# Planning notes stay in the repository but off the site.
+*dev_plan.md

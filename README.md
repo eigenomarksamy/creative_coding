@@ -113,3 +113,23 @@ gallery/index.html#/pygame
 gallery/index.html#/pycairo/12
 gallery/index.html#/pycairo/render-engine?scene=fault line&palette=ember cobalt
 ```
+
+### adding work
+
+- **an image series** is a group in `CATEGORIES` in `build_gallery.py`. A
+  group reads either a `directory` (every `.png` and `.jpg` in it, in
+  natural order) or a `manifest` plus the `search` directories to look in.
+  `exclude_manifests` keeps curated pieces out of a directory group, so each
+  piece appears once. `facets` turns filename fields into filter chips.
+- **a manifest** (`12.txt`, `cosmos.txt`) sets the order and titles of a
+  series, one piece per line as `position: title: image_stem`. Position and
+  title are optional, and `#` starts a comment.
+- **source links** are found from the literal output path a script passes to
+  `write_to_png(...)` or `image.save(...)`. Scripts that build the path at
+  runtime fall back to a script with the image's name, or `pnger_NN.py` for
+  `jpger_NN.jpg`.
+- **a live sketch** is a self-contained `.html` file at the top level of
+  `canvas/`. Its `<title>` is its title in the gallery.
+- **everything committed is public.** Every file not listed in
+  `.assetsignore` is served at gallery.eigenomar.com, including the notes
+  and plans in the repository root.
