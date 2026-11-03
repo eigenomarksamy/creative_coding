@@ -121,6 +121,8 @@ gallery/index.html#/pycairo/render-engine?scene=fault line&palette=ember cobalt
   natural order) or a `manifest` plus the `search` directories to look in.
   `exclude_manifests` keeps curated pieces out of a directory group, so each
   piece appears once. `facets` turns filename fields into filter chips.
+  `world`, `worlds`, `systems` and `concept` classify every piece in the
+  series at once.
 - **a manifest** (`12.txt`, `cosmos.txt`) sets the order and titles of a
   series, one piece per line as `position: title: image_stem`. Position and
   title are optional, and `#` starts a comment.
@@ -129,7 +131,28 @@ gallery/index.html#/pycairo/render-engine?scene=fault line&palette=ember cobalt
   runtime fall back to a script with the image's name, or `pnger_NN.py` for
   `jpger_NN.jpg`.
 - **a live sketch** is a self-contained `.html` file at the top level of
-  `canvas/`. Its `<title>` is its title in the gallery.
+  `canvas/`. Its `<title>` is its title in the gallery. It classifies
+  itself in a block in its `<head>`, which the browser ignores:
+
+  ```html
+  <script type="application/json" id="meta">
+  {
+      "world": "organic",
+      "worlds": ["geometric"],
+      "systems": ["cellular-automata"],
+      "interactions": ["autonomous"],
+      "modes": ["observe"],
+      "concept": "lifelike behavior emerging from simple local rules"
+  }
+  </script>
+  ```
+
+  `world`, `interactions` and `modes` are required. `title` overrides
+  `<title>`, and `id`, if given, must match the file name.
+- **the vocabulary** (12 worlds, systems, interactions and modes) is defined
+  at the top of `build_gallery.py`. The build fails on any value it doesn't
+  list. A piece with no classification at all still builds, as unclassified,
+  with a warning.
 - **everything committed is public.** Every file not listed in
   `.assetsignore` is served at gallery.eigenomar.com, including the notes
   and plans in the repository root.

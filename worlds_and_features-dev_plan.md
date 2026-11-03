@@ -10,8 +10,8 @@ dev plan for growing `creative_coding` (this repo) from a gallery grouped by too
 
 ## 0. state
 
-- **next ticket:** CC2, with CC4 alongside it in a second lane (queue step 1). if the owner approves CC12, do it first, because it is quick and fixes the live site.
-- **done:** CC1 (2026-11-03).
+- **next ticket:** CC3 (queue step 2). CC4 can run alongside it, since it was step 1's second lane and hasn't started. if the owner approves CC12, it can go in any time, because it is quick and fixes the live site.
+- **done:** CC1, CC2 (2026-11-03).
 - **milestone 1:** CC5, CC7 and CC10 are published, giving three engines in three worlds (dynamical, organic, mystic), built on the CC2–CC3 taxonomy.
 - **scope of this repo:** CC1–CC11, plus CC12 if approved. EC1–EC2 and the changes to the main plan (appendix A) belong to `eigenomar.com` and are never implemented here.
 - **repos:** `creative_coding` is the home of every engine, algorithm, renderer, control and gallery page, and no new repo is needed. `eigenomar.com` presents the project under art and links to it. `gallery.eigenomar.com` is served from this repo (see §1).
@@ -51,19 +51,19 @@ first observed on 2026-11-03 while restructuring this plan, then confirmed, corr
 |---|---|---|
 | stack | static site with no package.json, bundler, test runner or type checker. the only build step is `python build_gallery.py`, which needs Pillow. locally that is Python 3.10 with Pillow 10.3, and node v20.5 | in §5, "tests, type checks and build pass" means the build runs clean and any tests a ticket adds pass |
 | repo contents | 431 tracked files: 54 pycairo scripts, 91 top-level pygame scripts with `shapes/` and `utils/` helpers, their committed renders (519 MB in `cc_pycairo/gen/` and 70 MB in `cc_pygame/gen/`), the 3 canvas sketches, the gallery (`gallery/index.html`, `gallery.js`, `gallery.css`), `build_gallery.py`, two manifests (`12.txt`, `cosmos.txt`) and the deploy config | renders are committed and served as they are. thumbnails are the only processed assets |
-| build pipeline | `CATEGORIES` → `build_gallery.py` → `gallery/gallery-data.js` (which sets `window.GALLERY_DATA`) and `gallery/thumbs/<category>/<stem>.jpg` (640 px, JPEG quality 80). thumbnails rebuild only when the source is newer, unless `--force` is given. stale ones are pruned, and the data file is rewritten only when something besides the build time changed. today: 264 items in 3 categories and 6 groups | every gallery change goes through this one script. keep the rule that a build which finds nothing new changes nothing |
+| build pipeline | `CATEGORIES` → `build_gallery.py` → `gallery/gallery-data.js` (which sets `window.GALLERY_DATA`) and `gallery/thumbs/<category>/<stem>.jpg` (640 px, JPEG quality 80). thumbnails rebuild only when the source is newer, unless `--force` is given. stale ones are pruned, and the data file is rewritten only when something besides the build time changed. metadata errors exit with code 1 before anything is pruned or written. today: 264 items in 3 categories and 6 groups, and a data file of 289 KB (14 KB gzipped) | every gallery change goes through this one script. keep the rule that a build which finds nothing new changes nothing |
 | build output | `gallery/gallery-data.js` and `gallery/thumbs/` are both gitignored | run the build before viewing or deploying |
 | deploy | Cloudflare Workers static assets (`wrangler.jsonc`). the whole repo is served at `gallery.eigenomar.com`, and `_redirects` sends `/` to `/gallery/`. the Cloudflare build command runs `pip install` and `build_gallery.py` and nothing else, and every push to `main` redeploys | this repo is the gallery. tests don't run on deploy until the owner adds them to the build command (§0) |
 | what is published | every file not listed in `.assetsignore`. that includes `README.md`, `build_gallery.py`, the scripts and manifests (the lightbox links to the scripts), and also `CLAUDE.md`. this plan is excluded by `*dev_plan.md`. the largest file is 18.8 MiB, under Workers' 25 MiB limit per file | anything merged to `main` is public at once. an engine core can be reached at its URL before its publish ticket adds it to the gallery |
-| item shape | category → group → item. every item has `id`, `kind` (`image` or `sketch`), `title`, `full`, `source`, `sourceLabel`, `bytes` and `meta`, and images also have `thumb`, `width` and `height`. `meta` holds `scene`, `palette` and `variant` for render engine files, `no` and `file` for manifest entries, and is `{}` everywhere else | the taxonomy needs a home on this shape (Q7) |
-| item ids | an id is the file stem. all 264 are unique today, but nothing enforces it, and every engine page (`canvas/<id>/index.html`) would get the stem `index` | CC2 makes the build fail on duplicates. CC5 takes an engine's id from its folder name |
+| item shape | category → group → item. every item has `id`, `kind` (`image` or `sketch`), `title`, `full`, `source`, `sourceLabel`, `bytes`, `meta` and `taxonomy`, and images also have `thumb`, `width` and `height`. `meta` holds `scene`, `palette` and `variant` for render engine files, `no` and `file` for manifest entries, and is `{}` everywhere else. `taxonomy` (since CC2) is `{world, worlds, systems, interactions, modes, concept}`, or `null` for an unclassified piece, and the vocabulary is at `GALLERY_DATA.vocabulary` | the taxonomy stays out of `meta` (Q7) |
+| item ids | an id is the file stem, and since CC2 the build fails when two items anywhere in the gallery share one. every engine page (`canvas/<id>/index.html`) would get the stem `index` | CC5 takes an engine's id from its folder name |
 | how `meta` is shown | `metaLine` in `gallery.js` puts every `meta` value that isn't already in the title onto the tile, and the lightbox lists every `meta` key with its value | taxonomy stored in `meta` would change tiles and captions, with lists printed as `a,b`, so it gets its own field (Q7) |
 | current taxonomy | `CATEGORIES` in `build_gallery.py` groups pieces by toolkit: pygame, pycairo (12., sketches, render engine, cosmos) and canvas | worlds are a new axis that cuts across toolkits |
 | current filtering | a group can declare `facets` (keys into `item.meta`), and `collect_facets` turns them into chips. only the render engine group has any. filters live in hash params, e.g. `#/pycairo/render-engine?scene=fault line`. `collect_facets` keeps a facet only if it has more than one value, and collects values in a Python set, so a list value makes the build fail. `applyFilters` needs an exact match | CC3 extends this mechanism rather than adding a second one, and must handle list values on both sides |
 | curation | a manifest (`position: title: stem` per line, `#` comments) sets the order and titles of a series. `exclude_manifests` keeps a curated piece out of its directory group, so it appears once | the worlds view must also show each piece once |
 | source links | the build links an image to the script whose `write_to_png("…")` or `image.save(…, "…")` names it, and otherwise guesses `<stem>.py`, or `pnger_NN.py` for `jpger_NN.jpg`. only `cc_pycairo/gen/output.png` has no source | none |
 | routing | `gallery/gallery.js` uses hash routes (`#/`, `#/<category>`, `#/<category>/<group>`, filters as query params) so the gallery works when opened from `file://`. the lightbox doesn't change the hash, so a single image has no gallery URL, only the URL of its file | the gallery must keep working from disk. CC3's stable URL per experiment needs a route for each item |
-| live sketches | there are 3: `canvas/gol.html`, `canvas/snake1.html` and `canvas/snake2.html`. each is a single file of inline JS on Canvas 2D using unseeded `Math.random`. **none reads any input**: no pointer, touch or keyboard handling, so they are autonomous, not interactive. `gol.html` runs one generation per `requestAnimationFrame`, so its speed follows the display's refresh rate, and the snakes step on a 100 ms `setTimeout`. all three restart when the window is resized. `gol.html` gives every live cell a new random color on every frame, and `snake2.html` does the same to every segment on every step, so both flicker. the title comes from `<title>` and `meta` is `{}` | no existing experiment is interactive. strange attractor will be the first. the flicker goes against §2, which is why CC12 is proposed |
+| live sketches | there are 3: `canvas/gol.html`, `canvas/snake1.html` and `canvas/snake2.html`. each is a single file of inline JS on Canvas 2D using unseeded `Math.random`. **none reads any input**: no pointer, touch or keyboard handling, so they are autonomous, not interactive. `gol.html` runs one generation per `requestAnimationFrame`, so its speed follows the display's refresh rate, and the snakes step on a 100 ms `setTimeout`. all three restart when the window is resized. `gol.html` gives every live cell a new random color on every frame, and `snake2.html` does the same to every segment on every step, so both flicker. the title comes from `<title>` and `meta` is `{}`. since CC2, each page also carries a meta block with its classification | no existing experiment is interactive. strange attractor will be the first. the flicker goes against §2, which is why CC12 is proposed |
 | how sketches are found | `collect_sketch_items` scans only the top level of `canvas/*.html` | engines live in folders (Q5), so CC5 extends the scan to `canvas/<id>/index.html` |
 | how sketches are shown | the gallery shows a ▶ poster, clicking it loads the sketch in an `<iframe>` with a `title`, and "open ↗" links straight to the file. nothing pauses an iframe that has scrolled out of view, several can run at once, and an iframe is torn down only when a route change clears the view | each sketch already has a stable direct URL (`/canvas/<name>.html`). engines must pause themselves when hidden or out of view (§2) |
 | static renders | 261 images from `cc_pycairo/` and `cc_pygame/`, none of them interactive | they get worlds, set once per series (Q1) |
@@ -75,18 +75,18 @@ first observed on 2026-11-03 while restructuring this plan, then confirmed, corr
 
 ### 1.2 existing work
 
-the system and interaction slugs are from §3. the suggested worlds are a starting point for CC2, which decides them.
+the slugs are from §3. CC1 suggested the worlds and CC2 set them on 2026-11-03: these are the values `build_gallery.py` and the sketch pages now declare. CC2 differs from CC1's suggestions in four places: `gol.html` has no secondary world, `snake2.html` is abstract with glitch as a secondary, the pygame series adds abstract and perceptual for its moiré rings and op-art grids, and the snakes use the new system `agents`.
 
-| piece | kind | count | look | system | interaction | suggested world |
+| piece | kind | count | look | system | interaction | world (secondary) |
 |---|---|---|---|---|---|---|
-| `canvas/gol.html` "Game of Life - Dark Mode" | live | 1 | full-window grid of 10 px cells on black, each live cell in a random dark hue that changes every frame | cellular-automata: Conway's B3/S23 from a 30% random fill, with hard edges | autonomous, observe only | organic, secondary glitch |
-| `canvas/snake1.html` "Auto-Moving Snake" | live | 1 | 20 px grid, a blue-to-violet body, red food | one agent on a random walk, with a 10% chance to turn on each step, that restarts when it collides. no §3 slug fits | autonomous, observe only | abstract |
-| `canvas/snake2.html` "AI Snake with Random Colors" | live | 1 | the same grid, every segment re-colored at random on every step, new colors on each meal | one greedy agent that moves along x and then y toward the food. no §3 slug fits | autonomous, observe only | glitch |
-| pycairo render engine (`render_engine.py`, group render-engine) | series | 126 | 7 scenes × 6 palettes × 3 variants at 2800×1600: gradient "pressure" blobs, Bézier brush lines that follow a flow angle around the blobs, dust, rings and particles | noise-fields, procedural-geometry. the only parameterized generator in the repo | static | abstract, secondary fluid |
-| pycairo 12. | series | 13 | a curated set of Bézier brushwork, textures, flow fields and mycelium under poetic titles | noise-fields, procedural-geometry, recursive-growth | static | abstract, secondaries organic and fluid |
-| pycairo sketches | series | 34 | the rest of the pycairo one-offs: mandalas, flow fields, neural and mycelium blooms, glitch symmetry, textures, landscapes | mixed | static | abstract, secondaries organic and geometric. the series varies most, so it is the first candidate for per-image overrides |
-| pycairo cosmos | series | 7 | mathematical models (spiral galaxy, coupled oscillators, Platonic solids, curved spacetime, field lines, drum modes, spherical harmonics), each in one hue family with glows | oscillators, procedural-geometry | static | cosmic, secondaries geometric and mystic |
-| pygame sketches | series | 81 | numbered studies of shapes and polar math, each drawn once and saved as a JPG | procedural-geometry | static | geometric |
+| `canvas/gol.html` "Game of Life - Dark Mode" | live | 1 | full-window grid of 10 px cells on black, each live cell in a random dark hue that changes every frame | cellular-automata: Conway's B3/S23 from a 30% random fill, with hard edges | autonomous, observe only | organic |
+| `canvas/snake1.html` "Auto-Moving Snake" | live | 1 | 20 px grid, a blue-to-violet body, red food | one agent on a random walk, with a 10% chance to turn on each step, that restarts when it collides: agents | autonomous, observe only | abstract |
+| `canvas/snake2.html` "AI Snake with Random Colors" | live | 1 | the same grid, every segment re-colored at random on every step, new colors on each meal | one greedy agent that moves along x and then y toward the food: agents | autonomous, observe only | abstract (glitch) |
+| pycairo render engine (`render_engine.py`, group render-engine) | series | 126 | 7 scenes × 6 palettes × 3 variants at 2800×1600: gradient "pressure" blobs, Bézier brush lines that follow a flow angle around the blobs, dust, rings and particles | noise-fields, procedural-geometry. the only parameterized generator in the repo | static | abstract (fluid) |
+| pycairo 12. | series | 13 | a curated set of Bézier brushwork, textures, flow fields and mycelium under poetic titles | noise-fields, recursive-growth | static | abstract (organic, fluid) |
+| pycairo sketches | series | 34 | the rest of the pycairo one-offs: mandalas, flow fields, neural and mycelium blooms, glitch symmetry, textures, landscapes | noise-fields, procedural-geometry, recursive-growth | static | abstract (organic, geometric). the series varies most, so it is the first candidate for per-image overrides |
+| pycairo cosmos | series | 7 | mathematical models (spiral galaxy, coupled oscillators, Platonic solids, curved spacetime, field lines, drum modes, spherical harmonics), each in one hue family with glows | oscillators, procedural-geometry | static | cosmic (geometric, mystic) |
+| pygame sketches | series | 81 | numbered studies of shapes and polar math, each drawn once and saved as a JPG | procedural-geometry | static | geometric (abstract, perceptual) |
 
 ### 1.3 capabilities this plan asks for
 
@@ -144,7 +144,7 @@ a world is an experiment's artistic identity. worlds are categories for discover
 
 an experiment is described along three independent dimensions: its **world** (how it looks and feels), its **system** (the rules that drive it) and its **interaction** (how the visitor influences it). for now this is only a convention for metadata and design. a general-purpose composer is parked (§7).
 
-the slugs below are proposals, and CC2 finalizes them.
+CC2 finalized these slugs on 2026-11-03 and added `agents`. the canonical lists are the constants at the top of `build_gallery.py`.
 
 | system slug | meaning |
 |---|---|
@@ -158,13 +158,14 @@ the slugs below are proposals, and CC2 finalizes them.
 | noise-fields | noise fields and turbulence |
 | constraints | physical constraints and linkages |
 | image-feedback | image transformations and feedback |
+| agents | autonomous agents following simple rules (added by CC2 for the snakes) |
 
 | interaction slug | meaning |
 |---|---|
 | pointer | pointer attraction and repulsion |
 | gesture-drawing | gesture drawing |
 | touch-drag | touch and drag |
-| parameter-manipulation | parameter manipulation (the original metadata example said `parameter-mutation`; CC2 picks one) |
+| parameter-manipulation | parameter manipulation (CC2 chose this over `parameter-mutation`) |
 | rule-mutation | rule mutation |
 | placement | placing obstacles or resources |
 | sound-input | sound and rhythm input |
@@ -183,7 +184,7 @@ the slugs below are proposals, and CC2 finalizes them.
 - organic + cellular-automata + placement: an artificial ecosystem the visitor influences indirectly.
 - cosmic + attractors + parameter-manipulation: a miniature universe whose trajectories change with its physical constants.
 
-### metadata (Q1, Q2)
+### metadata (Q1, Q2, Q7)
 
 the vocabulary (the worlds and the tags above) lives as Python constants in `build_gallery.py`. the build rejects unknown values and passes the vocabulary into `gallery-data.js`.
 
@@ -204,7 +205,9 @@ the vocabulary (the worlds and the tags above) lives as Python constants in `bui
 </script>
 ```
 
-`world` is the one primary world, `worlds` lists optional secondary worlds, and `concept` is a short line on what the piece explores. live sketches must have `interactions` and `modes`.
+`world` is the one primary world, `worlds` lists optional secondary worlds, and `concept` is a short line on what the piece explores. live sketches must have `interactions` and `modes`. `id` and `title` are optional: `id` must match the file name, and `title` overrides `<title>`.
+
+the build resolves every piece's fields into `item.taxonomy`, filling in empty lists and a `null` concept. a piece that declares nothing is unclassified: it builds with `taxonomy: null` and a warning. anything malformed or outside the vocabulary fails the build with exit code 1.
 
 **image series** set the same fields once on their group in `CATEGORIES`, and every image in the group inherits them. `interactions` and `modes` don't apply. per-image overrides can come later if a series needs them.
 
@@ -212,8 +215,8 @@ the vocabulary (the worlds and the tags above) lives as Python constants in `bui
 {
     "id": "cosmos",
     # ...existing fields...
-    "world": "cosmic",                 # example values, CC2 sets the real ones
-    "worlds": ["geometric"],
+    "world": "cosmic",                 # the real values since CC2
+    "worlds": ["geometric", "mystic"],
     "systems": ["oscillators", "procedural-geometry"],
     "concept": "the universe as mathematical structure",
 }
@@ -228,7 +231,7 @@ sizes: **S** takes under an hour and **M** fills one session. anything larger is
 | ID | ticket | size | needs | status |
 |---|---|---|---|---|
 | CC1 | repository and gallery audit | S | none | done |
-| CC2 | worlds taxonomy and metadata | S | CC1 | todo |
+| CC2 | worlds taxonomy and metadata | S | CC1 | done |
 | CC3 | world-based gallery discovery | M | CC2 | todo |
 | CC4 | strange attractor: core | M | CC1 | todo |
 | CC5 | strange attractor: publish | M | CC3, CC4 | todo |
@@ -268,13 +271,14 @@ sizes: **S** takes under an hour and **M** fills one session. anything larger is
   - give pieces with incomplete metadata a fallback.
   - classify the existing image series and the three existing sketches.
 - **from CC1:**
-  - an image series can emit its fields once, on the group, with `gallery.js` falling back from the item to its group, rather than copying them onto 261 items.
+  - an image series can emit its fields once, on the group, with `gallery.js` falling back from the item to its group, rather than copying them onto 261 items. (CC2 copied them onto each item instead: one place to read, room for per-image overrides, and only 3 KB more gzipped.)
   - make the build fail when two items share an id. ids are file stems and all 264 are unique today, but nothing checks that.
   - no §3 system slug fits the two snakes, which are single agents following simple rules. add one, such as `agents`, or file them under the nearest existing slug.
   - all three sketches are `autonomous` and `observe` only, because none of them reads any input. the canvas group's blurb ("click a preview to interact with it") claims more than that, so reword it.
   - §1.2 suggests a world for each series and sketch.
 - **done when:** existing pieces are classified without any change to how they run, and unknown or invalid values fail the build.
 - **not here:** generating experiments from metadata, or changing the gallery interface.
+- **result (2026-11-03):** vocabulary constants (`WORLDS`, `SYSTEMS`, `INTERACTIONS`, `MODES`) and validation are in `build_gallery.py`. all 5 image series and the 3 sketches are classified (§1.2), and the sketches got meta blocks without any change to how they run. the build fails on unknown slugs, wrong types, unknown fields, a primary world repeated as a secondary one, missing `interactions`/`modes` on a live sketch, `interactions`/`modes` on a series, a mismatched `id`, malformed or duplicate meta blocks, and duplicate item ids. checked with 33 cases against throwaway repos, none of which wrote a data file on failure. apart from `taxonomy` and `vocabulary`, the data file differs only in the canvas blurb, now "click a preview to run it.", and the three sketches' `bytes`. the README documents the meta block.
 
 ### CC3 · world-based gallery discovery · M
 
@@ -293,6 +297,10 @@ sizes: **S** takes under an hour and **M** fills one session. anything larger is
   - `collect_facets` collects values in a Python set, which fails on lists, and drops any facet with only one value. `applyFilters` needs an exact match. both need to handle list values and read `item.taxonomy` (Q7).
   - the lightbox doesn't change the hash, so an image has no gallery URL. a route for each item, such as `#/worlds/<id>`, gives every piece a stable URL and gives related links a target. ids are unique once CC2's check is in.
   - when editing `gallery.css`, put smooth scrolling and the card hover lift behind `prefers-reduced-motion: no-preference`. the lightbox doesn't trap Tab yet.
+- **from CC2:**
+  - read `item.taxonomy`, which is resolved on every item, and the labels in `GALLERY_DATA.vocabulary` (`worlds` with `identity` and `concepts`, then `systems`, `interactions` and `modes` with `label`). nothing in `gallery.js` reads either yet.
+  - `taxonomy` is `null` for an unclassified piece. none exists today, but the worlds view still has to handle one.
+  - all 264 pieces are classified, and 8 of the 12 worlds have pieces. abstract, geometric, organic and cosmic are primary worlds, while perceptual, fluid, mystic and glitch appear only as secondary ones. mechanical, typographic, dynamical and topographic stay empty until engines arrive, so hide or dim chips that would match nothing.
 - **done when:** visitors can find experiments by world, open them directly and move between related pieces, and all existing gallery routes still work, including from `file://`.
 - **not here:** a recommendation engine, complex multi-dimensional search, automatic visual generation, making worlds the home page (revisit after milestone 1).
 
@@ -580,3 +588,4 @@ the main plan currently puts several creative coding experiments in the website 
 |---|---|---|
 | 2026-11-03 | CC1 | audit done, with no code changes. §1 rewritten and corrected: none of the three sketches reads any input, the snakes run on `setTimeout`, and `gol.html` and `snake2.html` flicker. findings added to CC2–CC6 and CC11, Q6 amended (CC11 split into CC11a and CC11b), Q7 added (taxonomy kept out of `meta`), CC12 proposed, queue added to §0, "adding work" section added to the README. `python build_gallery.py` is clean and up to date (264 items), and `node --test` exits 0 |
 | 2026-11-03 | none | `.assetsignore` now excludes `*dev_plan.md`, so this plan is no longer published once the change is deployed. it stays in the public GitHub repo |
+| 2026-11-03 | CC2 | taxonomy and metadata done. vocabulary and validation are in `build_gallery.py`, with `agents` added and `parameter-manipulation` chosen. the 5 image series and 3 sketches are classified, with taxonomy resolved into `item.taxonomy` on every item (Q7) and the vocabulary exported to `gallery-data.js`. the build fails on invalid metadata and duplicate ids (33 cases checked). the canvas blurb now reads "click a preview to run it." the README documents the meta block. the build is clean, with 264 items, all classified, and `node --test` exits 0 |

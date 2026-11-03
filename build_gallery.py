@@ -9,6 +9,13 @@ emits gallery/gallery-data.js, which gallery/index.html reads directly.
 The generated data file is plain JavaScript rather than JSON so the gallery
 also works when index.html is opened straight from disk, without a server.
 
+Every piece is also classified by world, system and interaction, using the
+vocabulary below. An image series sets these fields once on its group in
+CATEGORIES. A live sketch sets them in its own page, in a
+<script type="application/json" id="meta"> block. The build fails on any
+value outside the vocabulary, and each item carries the result as
+item["taxonomy"], or None when its piece is not classified yet.
+
 Usage:
     python build_gallery.py
 
@@ -19,6 +26,7 @@ Rebuild every thumbnail, ignoring timestamps:
 from __future__ import annotations
 
 import argparse
+import copy
 import hashlib
 import json
 import re
@@ -59,6 +67,113 @@ OUTPUT_PATH_PATTERN = re.compile(
 # Directories holding sketch scripts, searched for output declarations.
 SCRIPT_DIRECTORIES = ("cc_pygame", "cc_pycairo")
 
+# A live sketch classifies itself in its own page, in a block such as:
+#   <script type="application/json" id="meta">{"world": ...}</script>
+SCRIPT_TAG_PATTERN = re.compile(
+    r"<script\b(?P<attributes>[^>]*)>(?P<body>.*?)</script\s*>",
+    re.IGNORECASE | re.DOTALL,
+)
+META_ID_PATTERN = re.compile(r"""(?:^|\s)id\s*=\s*["']meta["']""")
+JSON_TYPE_PATTERN = re.compile(
+    r"""(?:^|\s)type\s*=\s*["']application/json["']""",
+    re.IGNORECASE,
+)
+
+# A world is a piece's artistic identity: slug -> (identity, concepts).
+WORLDS = {
+    "abstract": (
+        "expressive, nonrepresentational compositions",
+        "chaos, emotion, entropy",
+    ),
+    "geometric": (
+        "patterns, symmetry, transformations, fractals",
+        "order, repetition, precision",
+    ),
+    "mystic": (
+        "sigils, celestial diagrams, symbolic structures",
+        "ritual, symbolism, transcendence",
+    ),
+    "mechanical": (
+        "gears, linkages, kinetic sculptures",
+        "causality, interdependence, rhythm",
+    ),
+    "organic": (
+        "growth, branching, evolving organisms",
+        "life, adaptation, emergence",
+    ),
+    "fluid": (
+        "liquid motion, turbulence, diffusion",
+        "flow, transformation, continuity",
+    ),
+    "cosmic": (
+        "orbits, gravitational systems, celestial structures",
+        "scale, infinity, spacetime",
+    ),
+    "glitch": (
+        "distortion, feedback, digital corruption",
+        "instability, noise, fragmentation",
+    ),
+    "typographic": (
+        "generative lettering, glyphs, procedural poetry",
+        "language, meaning, communication",
+    ),
+    "perceptual": (
+        "optical illusions, moiré patterns, impossible forms",
+        "ambiguity, perception, paradox",
+    ),
+    "dynamical": (
+        "attractors, phase spaces, nonlinear simulations",
+        "determinism, complexity, chaos",
+    ),
+    "topographic": (
+        "generative terrain, contours, imaginary landscapes",
+        "space, geography, formation",
+    ),
+}
+
+# The rules that drive a piece.
+SYSTEMS = {
+    "particle-fields": "particle fields and flocking",
+    "attractors": "attractors and dynamical systems",
+    "cellular-automata": "cellular automata",
+    "reaction-diffusion": "reaction-diffusion",
+    "recursive-growth": "recursive growth and L-systems",
+    "oscillators": "oscillators and coupled systems",
+    "procedural-geometry": "procedural geometry",
+    "noise-fields": "noise fields and turbulence",
+    "constraints": "physical constraints and linkages",
+    "image-feedback": "image transformations and feedback",
+    "agents": "autonomous agents following simple rules",
+}
+
+# How a visitor influences a live sketch.
+INTERACTIONS = {
+    "pointer": "pointer attraction and repulsion",
+    "gesture-drawing": "gesture drawing",
+    "touch-drag": "touch and drag",
+    "parameter-manipulation": "parameter manipulation",
+    "rule-mutation": "rule mutation",
+    "placement": "placing obstacles or resources",
+    "sound-input": "sound and rhythm input",
+    "autonomous": "autonomous evolution",
+}
+
+# What a live sketch lets a visitor do. Declare only the meaningful ones.
+MODES = {
+    "observe": "the system evolves on its own",
+    "intervene": "the visitor disturbs or redirects the system",
+    "compose": "the visitor builds patterns, structures or rules with it",
+}
+
+# Classification fields an image series may set on its group.
+SERIES_FIELDS = ("world", "worlds", "systems", "concept")
+
+# Fields that only make sense for something a visitor can run.
+LIVE_FIELDS = ("interactions", "modes")
+
+# Everything a live sketch's meta block may contain.
+PAGE_FIELDS = ("id", "title") + SERIES_FIELDS + LIVE_FIELDS
+
 # Each group reads one directory. Groups exist so a category can be split
 # further later on without touching the page itself.
 CATEGORIES = [
@@ -80,6 +195,13 @@ CATEGORIES = [
                 "directory": "cc_pygame/gen",
                 "kind": "image",
                 "source": "pygame_sketch",
+                "world": "geometric",
+                "worlds": ["abstract", "perceptual"],
+                "systems": ["procedural-geometry"],
+                "concept": (
+                    "order from repetition: simple shapes multiplied by a "
+                    "rule"
+                ),
             },
         ],
     },
@@ -103,6 +225,13 @@ CATEGORIES = [
                 "search": ["cc_pycairo/gen"],
                 "kind": "image",
                 "source": "pycairo_sketch",
+                "world": "abstract",
+                "worlds": ["organic", "fluid"],
+                "systems": ["noise-fields", "recursive-growth"],
+                "concept": (
+                    "the elements as motion: wind, heat, soil and water "
+                    "traced in strokes"
+                ),
             },
             {
                 "id": "sketches",
@@ -116,6 +245,17 @@ CATEGORIES = [
                 "exclude_manifests": ["12.txt"],
                 "kind": "image",
                 "source": "pycairo_sketch",
+                "world": "abstract",
+                "worlds": ["organic", "geometric"],
+                "systems": [
+                    "noise-fields",
+                    "procedural-geometry",
+                    "recursive-growth",
+                ],
+                "concept": (
+                    "texture, flow and branching, explored one script at "
+                    "a time"
+                ),
             },
             {
                 "id": "render-engine",
@@ -133,6 +273,13 @@ CATEGORIES = [
                     {"key": "palette", "label": "Palette"},
                     {"key": "variant", "label": "Variant"},
                 ],
+                "world": "abstract",
+                "worlds": ["fluid"],
+                "systems": ["noise-fields", "procedural-geometry"],
+                "concept": (
+                    "one composition in many keys: how palette alone "
+                    "changes feeling"
+                ),
             },
             {
                 "id": "cosmos",
@@ -148,6 +295,10 @@ CATEGORIES = [
                 "search": ["cc_pycairo/gen/cosmos"],
                 "kind": "image",
                 "source": "pycairo_sketch",
+                "world": "cosmic",
+                "worlds": ["geometric", "mystic"],
+                "systems": ["oscillators", "procedural-geometry"],
+                "concept": "the universe as mathematical structure",
             },
         ],
     },
@@ -162,7 +313,7 @@ CATEGORIES = [
             {
                 "id": "sketches",
                 "title": "sketches",
-                "blurb": "click a preview to interact with it.",
+                "blurb": "click a preview to run it.",
                 "directory": "canvas",
                 "kind": "sketch",
             },
@@ -612,6 +763,220 @@ def collect_manifest_items(
     return items
 
 
+class MetadataError(ValueError):
+    """A piece's classification is malformed or uses an unknown value."""
+
+
+def check_slugs(
+    value: object,
+    vocabulary: dict,
+    field: str,
+    where: str,
+) -> list[str]:
+    """Return a list of known slugs, or raise if any entry is unknown."""
+    if not isinstance(value, list) or not all(
+        isinstance(entry, str) for entry in value
+    ):
+        raise MetadataError(f"{where}: {field} must be a list of slugs")
+
+    unknown = [entry for entry in value if entry not in vocabulary]
+
+    if unknown:
+        raise MetadataError(
+            f"{where}: unknown {field} {', '.join(map(repr, unknown))}. "
+            f"known: {', '.join(vocabulary)}"
+        )
+
+    if len(set(value)) != len(value):
+        raise MetadataError(f"{where}: {field} lists the same slug twice")
+
+    return list(value)
+
+
+def build_taxonomy(fields: dict, where: str, live: bool) -> dict:
+    """
+    Validate one piece's classification and fill in what it leaves out.
+
+    world is required. A live sketch also needs interactions and modes,
+    which an image series may not declare. worlds and systems default to
+    empty lists, and concept to None.
+    """
+    world = fields.get("world")
+
+    if not isinstance(world, str) or world not in WORLDS:
+        raise MetadataError(
+            f"{where}: world must be one of {', '.join(WORLDS)}, "
+            f"not {world!r}"
+        )
+
+    worlds = check_slugs(fields.get("worlds", []), WORLDS, "worlds", where)
+
+    if world in worlds:
+        raise MetadataError(
+            f"{where}: {world!r} is the primary world, so it cannot also "
+            f"be a secondary one"
+        )
+
+    systems = check_slugs(
+        fields.get("systems", []), SYSTEMS, "systems", where
+    )
+
+    if live:
+        missing = [field for field in LIVE_FIELDS if not fields.get(field)]
+
+        if missing:
+            raise MetadataError(
+                f"{where}: a live sketch needs {' and '.join(missing)}"
+            )
+
+        interactions = check_slugs(
+            fields["interactions"], INTERACTIONS, "interactions", where
+        )
+        modes = check_slugs(fields["modes"], MODES, "modes", where)
+    else:
+        declared = [field for field in LIVE_FIELDS if field in fields]
+
+        if declared:
+            raise MetadataError(
+                f"{where}: {' and '.join(declared)} apply only to live "
+                f"sketches"
+            )
+
+        interactions, modes = [], []
+
+    concept = fields.get("concept")
+
+    if concept is not None and (
+        not isinstance(concept, str) or not concept.strip()
+    ):
+        raise MetadataError(f"{where}: concept must be a line of text")
+
+    return {
+        "world": world,
+        "worlds": worlds,
+        "systems": systems,
+        "interactions": interactions,
+        "modes": modes,
+        "concept": concept.strip() if concept else None,
+    }
+
+
+def series_taxonomy(category_id: str, group: dict) -> dict | None:
+    """
+    Validate the classification an image series sets on its group.
+
+    A series that sets none of the fields yet returns None, which leaves
+    its pieces unclassified rather than failing the build.
+    """
+    where = f"CATEGORIES {category_id}/{group['id']}"
+
+    declared = {
+        field: group[field]
+        for field in SERIES_FIELDS + LIVE_FIELDS
+        if field in group
+    }
+
+    if group["kind"] != "image":
+        if declared:
+            raise MetadataError(
+                f"{where}: live sketches classify themselves in their own "
+                f"page, so remove {', '.join(declared)} from the group"
+            )
+
+        return None
+
+    if not declared:
+        return None
+
+    return build_taxonomy(declared, where, live=False)
+
+
+def read_page_metadata(text: str, where: str) -> dict | None:
+    """Read the meta block of a live sketch page, or None if it has none."""
+    blocks = [
+        match
+        for match in SCRIPT_TAG_PATTERN.finditer(text)
+        if META_ID_PATTERN.search(match.group("attributes"))
+    ]
+
+    if not blocks:
+        return None
+
+    if len(blocks) > 1:
+        raise MetadataError(f"{where}: the page has more than one meta block")
+
+    block = blocks[0]
+
+    if not JSON_TYPE_PATTERN.search(block.group("attributes")):
+        raise MetadataError(
+            f'{where}: the meta block needs type="application/json", '
+            f"or the browser runs it as a script"
+        )
+
+    try:
+        fields = json.loads(block.group("body"))
+    except json.JSONDecodeError as error:
+        raise MetadataError(
+            f"{where}: the meta block is not valid JSON ({error})"
+        ) from None
+
+    if not isinstance(fields, dict):
+        raise MetadataError(f"{where}: the meta block must be a JSON object")
+
+    unknown = sorted(set(fields) - set(PAGE_FIELDS))
+
+    if unknown:
+        raise MetadataError(
+            f"{where}: unknown field(s) {', '.join(unknown)} in the meta "
+            f"block. known: {', '.join(PAGE_FIELDS)}"
+        )
+
+    return fields
+
+
+def check_unique_ids(categories: list[dict]) -> None:
+    """
+    Fail when two pieces share an id.
+
+    Ids come from file names, and the worlds view gathers pieces from every
+    toolkit, so an id has to be unique across the whole gallery.
+    """
+    seen: dict[str, str] = {}
+
+    for category in categories:
+        for group in category["groups"]:
+            where = f"{category['id']}/{group['id']}"
+
+            for item in group["items"]:
+                if item["id"] in seen:
+                    raise MetadataError(
+                        f"two pieces share the id {item['id']!r}, in "
+                        f"{seen[item['id']]} and {where}. rename one file"
+                    )
+
+                seen[item["id"]] = where
+
+
+def vocabulary_payload() -> dict:
+    """The classification vocabulary, in the shape the gallery reads."""
+    return {
+        "worlds": [
+            {"id": slug, "identity": identity, "concepts": concepts}
+            for slug, (identity, concepts) in WORLDS.items()
+        ],
+        "systems": [
+            {"id": slug, "label": label} for slug, label in SYSTEMS.items()
+        ],
+        "interactions": [
+            {"id": slug, "label": label}
+            for slug, label in INTERACTIONS.items()
+        ],
+        "modes": [
+            {"id": slug, "label": label} for slug, label in MODES.items()
+        ],
+    }
+
+
 def collect_sketch_items(
     repo_root: Path,
     group: dict,
@@ -636,16 +1001,50 @@ def collect_sketch_items(
 
     for path in paths:
         repo_relative = path.relative_to(repo_root).as_posix()
-        title = extract_html_title(path) or humanize(path.stem)
+
+        fields = read_page_metadata(
+            path.read_text(encoding="utf-8", errors="ignore"),
+            repo_relative,
+        )
+
+        if fields is None:
+            print(
+                f"  warning: {repo_relative} has no meta block, "
+                f"so it is unclassified"
+            )
+            fields = {}
+            taxonomy = None
+        else:
+            taxonomy = build_taxonomy(fields, repo_relative, live=True)
+
+        if fields.get("id", path.stem) != path.stem:
+            raise MetadataError(
+                f"{repo_relative}: the meta block's id {fields['id']!r} "
+                f"must match the page's id {path.stem!r}"
+            )
+
+        title = fields.get("title")
+
+        if title is not None and (
+            not isinstance(title, str) or not title.strip()
+        ):
+            raise MetadataError(
+                f"{repo_relative}: title must be a line of text"
+            )
 
         items.append(
             {
                 "id": path.stem,
                 "kind": "sketch",
-                "title": title,
+                "title": (
+                    (title or "").strip()
+                    or extract_html_title(path)
+                    or humanize(path.stem)
+                ),
                 "full": relative_to_gallery(repo_relative),
                 "bytes": path.stat().st_size,
                 "meta": {},
+                "taxonomy": taxonomy,
                 "source": relative_to_gallery(repo_relative),
                 "sourceLabel": repo_relative,
             }
@@ -706,6 +1105,13 @@ def build_gallery_data(
         "force": force,
     }
 
+    # Checked before any thumbnail is built, so a typo fails fast.
+    series = {
+        (category["id"], group["id"]): series_taxonomy(category["id"], group)
+        for category in CATEGORIES
+        for group in category["groups"]
+    }
+
     for category in CATEGORIES:
         print(f"{category['id']}:")
 
@@ -738,6 +1144,20 @@ def build_gallery_data(
                 continue
 
             print(f"  {group['id']}: {len(items)} item(s)")
+
+            if group["kind"] == "image":
+                taxonomy = series[(category["id"], group["id"])]
+
+                if taxonomy is None:
+                    print(
+                        f"  warning: {group['id']} sets no world, "
+                        f"so its pieces are unclassified"
+                    )
+
+                # Resolved per piece, so the gallery reads one place and a
+                # series can later override single pieces.
+                for item in items:
+                    item["taxonomy"] = copy.deepcopy(taxonomy)
 
             groups.append(
                 {
@@ -775,8 +1195,11 @@ def build_gallery_data(
             }
         )
 
+    check_unique_ids(categories)
+
     return {
         "generated": datetime.now(timezone.utc).isoformat(timespec="seconds"),
+        "vocabulary": vocabulary_payload(),
         "categories": categories,
     }
 
@@ -935,12 +1358,17 @@ def main() -> int:
         )
         return 2
 
-    data = build_gallery_data(
-        repo_root=repo_root,
-        gallery_root=gallery_root,
-        max_size=args.thumb_size,
-        force=args.force,
-    )
+    # Nothing is pruned or written when the metadata is invalid.
+    try:
+        data = build_gallery_data(
+            repo_root=repo_root,
+            gallery_root=gallery_root,
+            max_size=args.thumb_size,
+            force=args.force,
+        )
+    except MetadataError as error:
+        print(f"\nmetadata error: {error}", file=sys.stderr)
+        return 1
 
     removed = prune_thumbnails(gallery_root, data)
 
