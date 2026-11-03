@@ -1,0 +1,1 @@
+- Dev plan for the worlds & engines work (tickets CC1–CC11, design decisions, log): `worlds_and_features-dev_plan.md`. Read its §0 (state) first and update its ticket table and log as work ships.
