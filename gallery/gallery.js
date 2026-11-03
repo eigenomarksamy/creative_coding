@@ -46,6 +46,13 @@
 
     var RELATED_LIMIT = 6;
 
+    // A tile shows at most a 2:1 window of its image, either way round.
+    // Anything longer (jpger_76 and jpger_77 are 8:1 strips) is cropped
+    // to that window instead of becoming a sliver or a tile thousands of
+    // pixels tall. build_gallery.py sizes those thumbnails with the same
+    // limit (TILE_MAX_ASPECT there), so the crop stays sharp.
+    var TILE_MAX_ASPECT = 2;
+
     // Every piece with the category and group it belongs to, in data order.
     var PIECES = [];
     var PIECE_BY_ID = Object.create(null);
@@ -309,7 +316,21 @@
         return bits.join("  ·  ");
     }
 
+    // Width over height for the tile, inside the 2:1 limit.
+    function tileAspect(item) {
+        if (!item.width || !item.height) {
+            return 1;
+        }
+
+        return Math.min(
+            TILE_MAX_ASPECT,
+            Math.max(1 / TILE_MAX_ASPECT, item.width / item.height)
+        );
+    }
+
     function createTile(item, index) {
+        var aspect = tileAspect(item);
+
         var image = el("img", {
             src: item.thumb,
             alt: item.title,
@@ -317,13 +338,11 @@
             decoding: "async"
         });
 
-        if (item.width && item.height) {
-            image.style.aspectRatio = item.width + " / " + item.height;
-        }
+        image.style.aspectRatio = String(aspect);
 
         var meta = metaLine(item);
 
-        return el(
+        var tile = el(
             "button",
             {
                 class: "tile",
@@ -340,6 +359,12 @@
                 ])
             ]
         );
+
+        // gallery.css sizes the tile from this, so every image in a row
+        // gets the same height.
+        tile.style.setProperty("--aspect", aspect.toFixed(4));
+
+        return tile;
     }
 
     function createSketchFrame(item) {

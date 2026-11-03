@@ -47,6 +47,12 @@ DATA_FILENAME = "gallery-data.js"
 DEFAULT_THUMBNAIL_SIZE = 640
 THUMBNAIL_QUALITY = 80
 
+# A gallery tile shows at most a 2:1 window of its image, and crops anything
+# longer (TILE_MAX_ASPECT in gallery/gallery.js, keep the two equal).
+# Thumbnails of those longer pieces are sized so the window, not the whole
+# strip, gets the thumbnail size, or the crop would be blurry.
+TILE_MAX_ASPECT = 2
+
 # Matches render engine output such as:
 # fault_line__blood_signal__v01.png
 RENDER_ENGINE_PATTERN = re.compile(
@@ -563,6 +569,22 @@ def thumbnail_relative_path(
     return candidate
 
 
+def thumbnail_bounds(size: tuple[int, int], max_size: int) -> tuple[int, int]:
+    """
+    Return the box a thumbnail of an image this size is fitted into.
+
+    Usually max_size square. A piece longer than TILE_MAX_ASPECT is shown
+    cropped to that aspect, so its long side is allowed to grow until the
+    cropped window gets max_size: a 375x3000 strip becomes 320x2560, not
+    80x640.
+    """
+    long_side, short_side = max(size), min(size)
+    window = min(long_side, short_side * TILE_MAX_ASPECT)
+    long_limit = max(max_size, round(long_side * max_size / window))
+
+    return long_limit, long_limit
+
+
 def build_thumbnail(
     source_path: Path,
     thumbnail_path: Path,
@@ -585,8 +607,10 @@ def build_thumbnail(
         if is_current and not force:
             return original_size
 
+        bounds = thumbnail_bounds(original_size, max_size)
+
         # Lets Pillow decode large JPEGs at a reduced size.
-        image.draft("RGB", (max_size * 2, max_size * 2))
+        image.draft("RGB", (bounds[0] * 2, bounds[1] * 2))
 
         if image.mode in {"RGBA", "LA", "P"}:
             image = image.convert("RGBA")
@@ -596,7 +620,7 @@ def build_thumbnail(
         else:
             image = image.convert("RGB")
 
-        image.thumbnail((max_size, max_size), Image.LANCZOS)
+        image.thumbnail(bounds, Image.LANCZOS)
 
         thumbnail_path.parent.mkdir(parents=True, exist_ok=True)
         image.save(

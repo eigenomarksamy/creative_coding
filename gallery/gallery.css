@@ -410,6 +410,10 @@ a:hover {
     display: block;
     width: 100%;
     height: auto;
+    /* A tall piece fits the screen instead of running for pages: an 8:1
+       strip at full column width would be thousands of pixels tall. */
+    max-height: 75vh;
+    object-fit: contain;
 }
 
 .piece-preview .sketch-frame {
@@ -533,21 +537,38 @@ a:hover {
 
 /* ---------------------------------------------------------- image grid */
 
+/* Justified rows. Groups mix squares, 2:1 landscapes, portraits and 8:1
+   strips, and fixed-width columns gave each tile the height of its own
+   image, so a single tall piece stretched its whole row. Here every tile
+   starts at its aspect × the row height, and a row shares out its spare
+   width in proportion to aspect, so all the images in a row end up the
+   same height, the row fills the page, and the order (and the lightbox
+   walk) stays left to right. gallery.js sets --aspect on each tile. */
 .tile-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(min(280px, 100%), 1fr));
-    gap: 18px;
-    /* Groups mix portrait and landscape work. Let each tile take its own
-       height rather than stretching to the tallest in the row. */
-    align-items: start;
+    --row-height: clamp(130px, 18vw, 230px);
+
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    gap: 14px;
+}
+
+/* Soaks up the last row's spare width, so a short last row keeps the
+   row height instead of blowing its few tiles up to fill the page. */
+.tile-grid::after {
+    content: "";
+    flex-grow: 1000000;
 }
 
 .tile {
+    /* The 2px is the tile's border, which isn't part of the image. */
+    flex: var(--aspect, 1) 1 calc(var(--aspect, 1) * var(--row-height) + 2px);
+    /* Lets a tile wider than a phone screen shrink to fit. */
+    min-width: 0;
     /* A button centres its contents vertically, which would float the
        image away from the top of the card. */
     display: flex;
     flex-direction: column;
-    width: 100%;
     padding: 0;
     border: 1px solid var(--border);
     border-radius: var(--radius);
@@ -574,6 +595,9 @@ a:hover {
     display: block;
     width: 100%;
     background: #000;
+    /* Only bites on pieces longer than 2:1, which gallery.js crops to a
+       2:1 window. The lightbox always shows the whole piece. */
+    object-fit: cover;
 }
 
 .tile .tile-body {
