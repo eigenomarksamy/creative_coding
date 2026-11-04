@@ -13,7 +13,7 @@ dev plan for growing `creative_coding` (this repo) from a gallery grouped by too
 - **next ticket:** CC4, the last open ticket from steps 1–2, then CC5 (step 3), which needs it.
 - **done:** CC1, CC2, CC3, CC12 (2026-11-03).
 - **milestone 1:** CC5, CC7 and CC10 are published, giving three engines in three worlds (dynamical, organic, mystic), built on the CC2–CC3 taxonomy.
-- **scope of this repo:** CC1–CC12 (the owner approved CC12 on 2026-11-03). EC1–EC2 and the changes to the main plan (appendix A) belong to `eigenomar.com` and are never implemented here.
+- **scope of this repo:** CC1–CC13 (the owner approved CC12 on 2026-11-03 and asked for CC13 on 2026-11-04). EC1–EC2 and the changes to the main plan (appendix A) belong to `eigenomar.com` and are never implemented here.
 - **repos:** `creative_coding` is the home of every engine, algorithm, renderer, control and gallery page, and no new repo is needed. `eigenomar.com` presents the project under art and links to it. `gallery.eigenomar.com` is served from this repo (see §1).
 - **tracking link:** [this file on GitHub](https://github.com/eigenomarksamy/creative_coding/blob/main/worlds_and_features-dev_plan.md) is the one link for following this work from other repos, and `eigenomar.com`'s `dev-plan.md` uses it. it shows what is pushed to `main`. keep no copy of this plan anywhere else, because a copy can drift.
 - **long-term direction:** independent engines connected by their concepts, whose systems and interactions might later be combined without losing what makes each one distinct. there is no general composer until the gates in §7 are met.
@@ -68,6 +68,8 @@ green is done, blue is next, and the dashed box is work in another repo.
 **one lane only:** (CC12 →) CC2 → CC3 → CC4 → CC5 → CC11a → CC6 → CC7 → CC11b → CC8 → CC9 → CC10.
 
 the queue changes the original order in two ways. CC11 is split, so share links reach each engine right after it ships instead of being added to both later (Q6, amended). CC12 is new and optional. every hard dependency in §4 still holds.
+
+**any time:** CC13 touches only the gallery footer and needs nothing, so it fits between any two steps. it stays out of the steps and the diagram above.
 
 ## 1. repo facts
 
@@ -271,6 +273,7 @@ sizes: **S** takes under an hour and **M** fills one session. anything larger is
 | CC11a | share links and image export: strange attractor | S | CC5 | todo |
 | CC11b | share links and image export: artificial garden | S | CC7, CC11a | todo |
 | CC12 | flicker and lifecycle fixes for the three old sketches | S | CC1 | done |
+| CC13 | footer button to eigenomar.com | S | none | todo |
 
 **order:** the queue in §0 sets the order, and EC1 → EC2 in `eigenomar.com` follow it. CC4 needs only CC1, so it runs alongside CC2–CC3. CC11a and CC11b both come before CC8, so that share links and export exist in two engines before anything is extracted (Q6).
 
@@ -466,6 +469,17 @@ world **mystic** · concept: symbolism, pattern-making and the search for meanin
 - **not here:** seeding, controls, moving them into engine folders, new features.
 - **result (2026-11-03):** `gol.html` gives each position one random dark color when the grid is made, and steps at 30 generations a second instead of once per display frame (60 a second on a 60 Hz screen, more on faster ones). `snake2.html` gives each new segment its own hue, with the lightness gradient unchanged. the snakes still step every 100 ms. under reduced motion, `gol.html` runs 4 generations a second and the snakes step every 400 ms. all three stop while the tab is hidden or the canvas is out of view (inside the gallery's iframe too) and pick up again without a burst of catch-up steps. all three redraw straight after a resize. checked in headless Chrome against the old pages: 0 of 3285 surviving cells and 0 of 20 persisting segments changed color, against 4464 of 4464 and 11 of 11 before. no steps ran while hidden or out of view, and the rates matched, in both normal and reduced-motion runs.
 
+### CC13 · footer button to eigenomar.com · S
+
+- **status:** asked for by the owner on 2026-11-04. not started.
+- **why:** nothing in the gallery links to `eigenomar.com`, so a visitor who lands here has no way to the main site.
+- **do:**
+  - in `gallery/index.html`, add a link to `https://eigenomar.com`, labelled `eigenomar.com`, to `.site-footer`, beside `#footer-note`. it is static markup: `renderFooter()` in `gallery/gallery.js` writes only to `#footer-note`, so it doesn't change.
+  - in `gallery/gallery.css`, style the link as a small button in the look of `.chip`, with the existing tokens.
+  - it opens in the same tab, since leaving loses nothing.
+- **done when:** the button shows on every gallery view, works by keyboard with visible focus, and fits at phone width. the gallery still opens from `file://`.
+- **not here:** links on the sketch and engine pages, or changes to the header nav.
+
 ---
 
 ## 5. definition of done
@@ -624,3 +638,4 @@ the main plan currently puts several creative coding experiments in the website 
 | 2026-11-03 | CC12 | approved by the owner and done. `gol.html` colors each position once and steps at 30 generations a second, and `snake2.html` keeps each segment's hue, so neither flickers. all three slow down under reduced motion and idle while hidden or out of view. checked against the old pages in headless Chrome, where color changes on surviving cells and segments went from all of them to none. the build is clean |
 | 2026-11-03 | none | thumbnail layout fix, outside the tickets. the image grids were fixed-width columns where each tile was as tall as its image, so the 375×3000 strip `jpger_77` made a tile about 2600 px tall on desktop (2850 px on a phone) and `jpger_76` was a 41 px sliver. image tiles are now justified rows: equal image height within each row, the row filling the page, order kept left to right for manifests and the lightbox, and a short last row left at row height. pieces longer than 2:1 are cropped to 2:1 in their tile only, with sharper thumbnails for them. the piece page preview is capped at 75vh. in headless Chrome at 320, 768 and 1440 px across every tile view, nothing scrolls sideways, no row has uneven image heights, and the tallest tile image is 351 px. the pygame page went from 11093 to 7388 px tall on desktop and from 35521 to 14233 px on a phone. the build is clean and the data file is unchanged. local thumbnails of the two strips need `--force` or deleting to pick up the new size, and a fresh deploy builds them anyway |
 | 2026-11-04 | none | this file on GitHub is now the one link for following the plan from other repos (§0), so no copy can drift, and `eigenomar.com`'s `dev-plan.md` links to it. the queue in §0 gained a Mermaid diagram, which GitHub renders, and §1.3 now shows metadata as done. a Claude Doc copy made the same day was reduced to a pointer here |
+| 2026-11-04 | CC13 | added, not built. the owner asked for a button in the gallery footer that goes to `eigenomar.com`. it needs nothing, so it fits between any two steps (§0) |
