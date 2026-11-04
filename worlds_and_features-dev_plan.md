@@ -15,6 +15,7 @@ dev plan for growing `creative_coding` (this repo) from a gallery grouped by too
 - **milestone 1:** CC5, CC7 and CC10 are published, giving three engines in three worlds (dynamical, organic, mystic), built on the CC2–CC3 taxonomy.
 - **scope of this repo:** CC1–CC12 (the owner approved CC12 on 2026-11-03). EC1–EC2 and the changes to the main plan (appendix A) belong to `eigenomar.com` and are never implemented here.
 - **repos:** `creative_coding` is the home of every engine, algorithm, renderer, control and gallery page, and no new repo is needed. `eigenomar.com` presents the project under art and links to it. `gallery.eigenomar.com` is served from this repo (see §1).
+- **tracking link:** [this file on GitHub](https://github.com/eigenomarksamy/creative_coding/blob/main/worlds_and_features-dev_plan.md) is the one link for following this work from other repos, and `eigenomar.com`'s `dev-plan.md` uses it. it shows what is pushed to `main`. keep no copy of this plan anywhere else, because a copy can drift.
 - **long-term direction:** independent engines connected by their concepts, whose systems and interactions might later be combined without losing what makes each one distinct. there is no general composer until the gates in §7 are met.
 
 **open questions for the owner** (raised by CC1):
@@ -26,6 +27,33 @@ dev plan for growing `creative_coding` (this repo) from a gallery grouped by too
 ### queue
 
 take the earliest step whose needs are met. tickets joined by ∥ can run at the same time in separate branches or worktrees, because they touch different files. tickets joined by → run in that order, ideally in the same session. when lanes run in parallel, each one edits only its own rows in §4 and appends its own log line, and a conflict in this file is resolved by keeping both sides.
+
+```mermaid
+flowchart TD
+  %% when a ticket ships, move it to the done line at the bottom and set the next ticket
+  CC12["CC12 flicker fixes"] --> CC2["CC2 worlds taxonomy"]
+  CC2 --> CC3["CC3 world discovery"]
+  CC3 --> CC5["CC5 attractor: publish"]
+  CC4["CC4 attractor: core"] --> CC5
+  CC5 --> CC11a["CC11a share links: attractor"]
+  CC5 --> CC6["CC6 garden: core"]
+  CC6 --> CC7["CC7 garden: publish"]
+  CC11a --> CC11b["CC11b share links: garden"]
+  CC7 --> CC11b
+  CC11b --> CC8["CC8 engine conventions"]
+  CC8 --> CC9["CC9 sigil lab: core"]
+  CC9 --> CC10["CC10 sigil lab: publish"]
+  CC10 --> EC1["EC1, then EC2 in eigenomar.com"]
+
+  classDef done fill:#e5f4e4,stroke:#2e7d32,color:#1b3a1d
+  classDef next fill:#e7f1fb,stroke:#1565c0,stroke-width:2px,color:#0d2b4e
+  classDef other stroke-dasharray:4 3
+  class CC12,CC2,CC3 done
+  class CC4 next
+  class EC1 other
+```
+
+green is done, blue is next, and the dashed box is work in another repo.
 
 | step | tickets | touches | why here |
 |---|---|---|---|
@@ -99,7 +127,7 @@ the slugs are from §3. CC1 suggested the worlds and CC2 set them on 2026-11-03:
 | image export | the Python scripts' whole output is a PNG or JPG on disk | nothing in the browser (no `toBlob` or `toDataURL`) | CC11a, CC11b |
 | share links | gallery views, with route and filters in the hash, and since CC3 a page per piece (`#/worlds/<id>`) | no state in any sketch URL | CC11a, CC11b |
 | saved settings | none (no `localStorage`) | none needed until visitor presets (§7, parked) | none |
-| metadata | filename fields for render engine images, `no` and `file` for manifest entries, `<title>` for sketches | no worlds, systems, interactions or concepts | CC2 |
+| metadata | since CC2, every piece carries its world, systems and concept in `item.taxonomy`, alongside the filename fields for render engine images, `no` and `file` for manifest entries, and `<title>` for sketches | none | CC2, done |
 | mobile interaction | gallery grids reflow | no touch input or `devicePixelRatio` scaling in any sketch | CC5, CC7, CC10 |
 | tests | none | none yet | CC4 |
 
@@ -451,7 +479,7 @@ world **mystic** · concept: symbolism, pattern-making and the search for meanin
 - light and dark themes are checked where supported (the gallery has none yet).
 - controls work with keyboard, pointer and touch as applicable.
 - docs are updated if a convention changes.
-- the ticket's status in §4 and the log at the bottom are updated.
+- the ticket's status in §4, the queue diagram in §0 and the log at the bottom are updated.
 
 **every published engine, in addition:**
 
@@ -595,3 +623,4 @@ the main plan currently puts several creative coding experiments in the website 
 | 2026-11-03 | CC3 | world-based discovery done: `#/worlds` with world/system/interaction chips and counts, a page for every piece at `#/worlds/<id>` with related pieces, a worlds card on the home page and a worlds link in the nav, and `worlds` reserved in the build. also reduced-motion guards, a lightbox Tab trap, focus kept while filtering, and grids and the nav fitted to 320 px. the toolkit views' DOM is unchanged apart from the nav and chip attributes. 46 behavior checks pass in headless Chrome from `file://`, the build is clean, and `node --test` exits 0 |
 | 2026-11-03 | CC12 | approved by the owner and done. `gol.html` colors each position once and steps at 30 generations a second, and `snake2.html` keeps each segment's hue, so neither flickers. all three slow down under reduced motion and idle while hidden or out of view. checked against the old pages in headless Chrome, where color changes on surviving cells and segments went from all of them to none. the build is clean |
 | 2026-11-03 | none | thumbnail layout fix, outside the tickets. the image grids were fixed-width columns where each tile was as tall as its image, so the 375×3000 strip `jpger_77` made a tile about 2600 px tall on desktop (2850 px on a phone) and `jpger_76` was a 41 px sliver. image tiles are now justified rows: equal image height within each row, the row filling the page, order kept left to right for manifests and the lightbox, and a short last row left at row height. pieces longer than 2:1 are cropped to 2:1 in their tile only, with sharper thumbnails for them. the piece page preview is capped at 75vh. in headless Chrome at 320, 768 and 1440 px across every tile view, nothing scrolls sideways, no row has uneven image heights, and the tallest tile image is 351 px. the pygame page went from 11093 to 7388 px tall on desktop and from 35521 to 14233 px on a phone. the build is clean and the data file is unchanged. local thumbnails of the two strips need `--force` or deleting to pick up the new size, and a fresh deploy builds them anyway |
+| 2026-11-04 | none | this file on GitHub is now the one link for following the plan from other repos (§0), so no copy can drift, and `eigenomar.com`'s `dev-plan.md` links to it. the queue in §0 gained a Mermaid diagram, which GitHub renders, and §1.3 now shows metadata as done. a Claude Doc copy made the same day was reduced to a pointer here |
