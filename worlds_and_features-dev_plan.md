@@ -13,9 +13,10 @@ dev plan for growing `creative_coding` (this repo) from a gallery grouped by too
 - **next ticket:** CC4, the last open ticket from steps 1–2, then CC5 (step 3), which needs it.
 - **done:** CC1, CC2, CC3, CC12 (2026-11-03).
 - **milestone 1:** CC5, CC7 and CC10 are published, giving three engines in three worlds (dynamical, organic, mystic), built on the CC2–CC3 taxonomy.
-- **scope of this repo:** CC1–CC13 (the owner approved CC12 on 2026-11-03 and asked for CC13 on 2026-11-04). EC1–EC2 and the changes to the main plan (appendix A) belong to `eigenomar.com` and are never implemented here.
+- **scope of this repo:** CC1–CC14 (the owner approved CC12 on 2026-11-03 and asked for CC13 and CC14 on 2026-11-04). EC1–EC2 and the changes to the main plan (appendix A) belong to `eigenomar.com` and are never implemented here.
 - **repos:** `creative_coding` is the home of every engine, algorithm, renderer, control and gallery page, and no new repo is needed. `eigenomar.com` presents the project under art and links to it. `gallery.eigenomar.com` is served from this repo (see §1).
 - **tracking link:** [this file on GitHub](https://github.com/eigenomarksamy/creative_coding/blob/main/worlds_and_features-dev_plan.md) is the one link for following this work from other repos, and `eigenomar.com`'s `dev-plan.md` uses it. it shows what is pushed to `main`. keep no copy of this plan anywhere else, because a copy can drift.
+- **seven levels:** the static pycairo art for the seven reading tracks is a separate lane with its own plan, `seven_levels-dev_plan.md` (SL0–SL11). no CC ticket needs it, but its pipeline ticket, SL1, needs CC14.
 - **long-term direction:** independent engines connected by their concepts, whose systems and interactions might later be combined without losing what makes each one distinct. there is no general composer until the gates in §7 are met.
 
 **open questions for the owner** (raised by CC1):
@@ -70,6 +71,8 @@ green is done, blue is next, and the dashed box is work in another repo.
 the queue changes the original order in two ways. CC11 is split, so share links reach each engine right after it ships instead of being added to both later (Q6, amended). CC12 is new and optional. every hard dependency in §4 still holds.
 
 **any time:** CC13 touches only the gallery footer and needs nothing, so it fits between any two steps. it stays out of the steps and the diagram above.
+
+**before SL1:** CC14 needs nothing either, and it also stays out of the steps and the diagram, but the seven levels pipeline builds on it. it rewrites `CATEGORIES` and the routes in `gallery.js`, so don't run it at the same time as CC5 or SL1.
 
 ## 1. repo facts
 
@@ -274,6 +277,7 @@ sizes: **S** takes under an hour and **M** fills one session. anything larger is
 | CC11b | share links and image export: artificial garden | S | CC7, CC11a | todo |
 | CC12 | flicker and lifecycle fixes for the three old sketches | S | CC1 | done |
 | CC13 | footer button to eigenomar.com | S | none | todo |
+| CC14 | gallery directories | M | none | todo |
 
 **order:** the queue in §0 sets the order, and EC1 → EC2 in `eigenomar.com` follow it. CC4 needs only CC1, so it runs alongside CC2–CC3. CC11a and CC11b both come before CC8, so that share links and export exist in two engines before anything is extracted (Q6).
 
@@ -372,6 +376,7 @@ world **dynamical** · concept: determinism, chaos and sensitivity to initial co
   - provide a stable direct link.
 - **from CC1:** `collect_sketch_items` takes the id from the file stem, which is `index` for every engine page, so take it from the folder name instead.
 - **from CC3:** once the scan finds the engine, it appears first in `#/worlds` and gets `#/worlds/strange-attractor`, with no gallery change needed. the gallery runs it in a 4:3 iframe (a card about 340 px wide, or the left 60% of a piece page) and moves focus into the iframe when it starts, so check the engine at those sizes.
+- **from CC14:** engines go in the `engines` directory, so the scan splits by shape: `canvas/*.html` stays in `animated/canvas`, and `canvas/<id>/index.html` goes to `engines`.
 - **done when:** strange attractor is a complete, published, accessible experiment whose behavior can be reproduced.
 - **not here:** more attractors, or composition across engines.
 
@@ -480,6 +485,46 @@ world **mystic** · concept: symbolism, pattern-making and the search for meanin
 - **done when:** the button shows on every gallery view, works by keyboard with visible focus, and fits at phone width. the gallery still opens from `file://`.
 - **not here:** links on the sketch and engine pages, or changes to the header nav.
 
+### CC14 · gallery directories · M
+
+- **status:** asked for by the owner on 2026-11-04. not started.
+- **why:** the gallery is grouped by toolkit, but the owner wants it grouped by kind of work. this replaces the pygame, pycairo and canvas categories with the tree below.
+
+```text
+worlds            as it is today
+engines
+  render engine
+raw
+  pygame
+  pycairo
+illustrations
+  12
+  7 levels
+    folders: cosmos, time, sound, information, chaos, communication, play
+    images: meta, atomic
+animated
+  canvas
+```
+
+every piece that exists today moves like this, and all 264 are accounted for:
+
+| today | pieces | new home | new route |
+|---|---|---|---|
+| `#/pycairo/render-engine` | 126 | engines, render engine | `#/engines/render-engine` |
+| `#/pygame` | 81 | raw, pygame | `#/raw/pygame` |
+| `#/pycairo/sketches` | 34 | raw, pycairo | `#/raw/pycairo` |
+| `#/pycairo/12` | 13 | illustrations, 12 | `#/illustrations/12` |
+| `#/pycairo/cosmos` | 7 | illustrations, 7 levels, cosmos | `#/illustrations/7-levels/cosmos` |
+| `#/canvas` | 3 | animated, canvas | `#/animated/canvas` |
+
+- **do:**
+  - regroup `CATEGORIES` as above, with new blurbs, and reword the home page's "the toolkit that made them".
+  - add the one third level this tree needs. a group may declare `sections`, and its items stay in the group's list with a `section` field, so nothing that walks groups changes. `#/illustrations/7-levels` shows a card per section, and `#/illustrations/7-levels/<section>` shows one, with a full breadcrumb. an item with no `section` sits directly on the group's page, below the cards, which is where the meta and atomic images go. a section with no pieces isn't shown, so 7 levels starts with cosmos alone. this is one extra level, not general nesting.
+  - redirect every old route to its new one, keeping query strings, so `#/pycairo/render-engine?scene=fault line` still lands filtered. include `#/pycairo`, which goes to `#/raw/pycairo`, and `#/pygame/sketches` and `#/canvas/sketches`. this is needed because an unknown category falls back to the home page without any error.
+  - update the README's routes and "adding work", and §1 of this plan.
+- **done when:** every route in the table works in its old and new form, also from `file://`, with filters kept. item ids are unchanged, so every `#/worlds/<id>` still opens, the build is clean with 264 items, and nothing scrolls sideways at 320 px.
+- **not here:** changes to the worlds view. its filters, chips and piece pages stay as they are, though its piece order follows `CATEGORIES`, so the new order shows there. also not here: the seven levels images and registry (SL1, SL2).
+
 ---
 
 ## 5. definition of done
@@ -519,7 +564,7 @@ made 2026-11-03 and provisional. revisit one if a ticket shows it doesn't hold, 
 |---|---|---|---|---|
 | Q1 | do the static renders get worlds? | yes, set once per series rather than per image. `interactions` and `modes` apply only to live sketches | the worlds fit the existing art, world pages aren't empty at launch, and setting them per series keeps CC2 small | CC2, CC3 |
 | Q2 | where does metadata live? | live sketches: a `<script type="application/json" id="meta">` block in the page. image series: fields on their group in `CATEGORIES`. vocabulary: Python constants in `build_gallery.py`. no YAML | each engine stays self-contained, the page can read its own metadata even from disk (a separate file can't be fetched from `file://`), and no dependency is added | CC2 |
-| Q3 | how do world and toolkit navigation relate? | both stay. a new `#/worlds` view filters across all toolkits, and the toolkit views are unchanged | no link breaks. the toolkit view tells the learning story and worlds serve visitors. making worlds the home page is revisited after milestone 1 | CC3 |
+| Q3 | how do world and toolkit navigation relate? | both stay. a new `#/worlds` view filters across all toolkits, and the toolkit views are unchanged. amended by the owner on 2026-11-04: worlds stay as they are, and the toolkit views become directories by kind of work (CC14) | no link breaks. the toolkit view tells the learning story and worlds serve visitors. making worlds the home page is revisited after milestone 1 | CC3, CC14 |
 | Q4 | how is simulation code tested? | `node --test`, with each simulation in a classic-script `sim.js` that also exports for node | node 20 is installed, nothing is added, and it enforces the split between simulation and rendering | CC4, CC6, CC9 |
 | Q5 | how is an engine laid out? | one folder per engine: `canvas/<id>/index.html`, `sim.js`, `sim.test.js`. shared code goes in `canvas/lib/` | keeps `canvas/` tidy as engines multiply. the URL becomes permanent at CC5, so it's decided now | CC4, CC5, CC8 |
 | Q6 | where does CC11 go? | split in two: CC11a straight after CC5 and CC11b straight after CC7, both before CC8. amended by CC1 on 2026-11-03, before which all of CC11 came after CC7 | share links and export exist in two engines before CC8 extracts them, and the sigil lab inherits export. the split adds each one while its engine is fresh, lets CC6 design for it rather than have it retrofitted, and gives CC11a something to run alongside CC6 | CC6, CC8, CC10, CC11 |
@@ -639,3 +684,5 @@ the main plan currently puts several creative coding experiments in the website 
 | 2026-11-03 | none | thumbnail layout fix, outside the tickets. the image grids were fixed-width columns where each tile was as tall as its image, so the 375×3000 strip `jpger_77` made a tile about 2600 px tall on desktop (2850 px on a phone) and `jpger_76` was a 41 px sliver. image tiles are now justified rows: equal image height within each row, the row filling the page, order kept left to right for manifests and the lightbox, and a short last row left at row height. pieces longer than 2:1 are cropped to 2:1 in their tile only, with sharper thumbnails for them. the piece page preview is capped at 75vh. in headless Chrome at 320, 768 and 1440 px across every tile view, nothing scrolls sideways, no row has uneven image heights, and the tallest tile image is 351 px. the pygame page went from 11093 to 7388 px tall on desktop and from 35521 to 14233 px on a phone. the build is clean and the data file is unchanged. local thumbnails of the two strips need `--force` or deleting to pick up the new size, and a fresh deploy builds them anyway |
 | 2026-11-04 | none | this file on GitHub is now the one link for following the plan from other repos (§0), so no copy can drift, and `eigenomar.com`'s `dev-plan.md` links to it. the queue in §0 gained a Mermaid diagram, which GitHub renders, and §1.3 now shows metadata as done. a Claude Doc copy made the same day was reduced to a pointer here |
 | 2026-11-04 | CC13 | added, not built. the owner asked for a button in the gallery footer that goes to `eigenomar.com`. it needs nothing, so it fits between any two steps (§0) |
+| 2026-11-04 | none | the seven levels art got its own plan, `seven_levels-dev_plan.md` (SL0–SL11), as a separate lane. §0 points to it. nothing was built |
+| 2026-11-04 | CC14 | added, not built. the owner asked for gallery directories by kind of work: engines, raw, illustrations and animated, beside worlds. it amends Q3 and needs a third level for 7 levels. SL1 in the seven levels plan needs it |
