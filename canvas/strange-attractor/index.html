@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>strange attractor</title>
+    <style>
+        :root {
+            --bg: #0a0a0c;
+            --surface: rgba(19, 19, 23, 0.88);
+            --border: #3a3a44;
+            --text: #e8e6e3;
+            --muted: #8f8d96;
+            --accent: #57c9dd;
+
+            color-scheme: dark;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            height: 100%;
+            margin: 0;
+            overflow: hidden;
+            background: var(--bg);
+            color: var(--text);
+            font: 13px/1.4 ui-sans-serif, system-ui, -apple-system, "Segoe UI",
+                Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        /* A tap releases the paths, and a swipe still scrolls the page around
+           the gallery's iframe, so the canvas takes taps only */
+        canvas {
+            position: fixed;
+            inset: 0;
+            display: block;
+            width: 100%;
+            height: 100%;
+            cursor: crosshair;
+            touch-action: manipulation;
+        }
+
+        .header {
+            position: fixed;
+            top: 8px;
+            left: 10px;
+            right: 10px;
+            margin: 0;
+            color: var(--muted);
+            pointer-events: none;
+        }
+
+        .header p {
+            margin: 0;
+        }
+
+        /* Both lines keep their height when empty, so the view doesn't jump */
+        #note,
+        #readout {
+            min-height: 1.4em;
+        }
+
+        #readout {
+            font-variant-numeric: tabular-nums;
+        }
+
+        .bar {
+            position: fixed;
+            left: 8px;
+            right: 8px;
+            bottom: 8px;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 6px;
+        }
+
+        button,
+        select,
+        summary,
+        input[type="number"] {
+            min-height: 32px;
+            padding: 4px 10px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            background: var(--surface);
+            color: var(--text);
+            font: inherit;
+        }
+
+        button,
+        summary {
+            cursor: pointer;
+        }
+
+        button:hover,
+        select:hover,
+        summary:hover {
+            border-color: var(--muted);
+        }
+
+        :focus-visible {
+            outline: 2px solid var(--accent);
+            outline-offset: 1px;
+        }
+
+        /* A small basis, because a flex row wraps before anything shrinks */
+        select {
+            flex: 1 1 72px;
+            min-width: 0;
+            max-width: 130px;
+        }
+
+        details {
+            margin-left: auto;
+        }
+
+        summary {
+            display: flex;
+            align-items: center;
+            list-style: none;
+            user-select: none;
+        }
+
+        summary::-webkit-details-marker {
+            display: none;
+        }
+
+        .panel {
+            position: absolute;
+            right: 0;
+            bottom: calc(100% + 6px);
+            width: min(290px, 100%);
+            max-height: calc(100vh - var(--bar-height, 32px) - 22px);
+            overflow-y: auto;
+            padding: 10px 12px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            background: var(--surface);
+        }
+
+        .row {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 0 8px;
+            margin-bottom: 8px;
+        }
+
+        .row output {
+            color: var(--muted);
+            font-variant-numeric: tabular-nums;
+        }
+
+        .row input[type="range"] {
+            grid-column: 1 / -1;
+            width: 100%;
+            margin: 2px 0 0;
+            accent-color: var(--accent);
+        }
+
+        .seed {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .seed input {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .keys {
+            margin: 8px 0 0;
+            color: var(--muted);
+        }
+
+        /* In a small frame the picture comes before the words */
+        @media (max-height: 300px) {
+            #note {
+                display: none;
+            }
+        }
+
+        @media (max-height: 200px) {
+            .header {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <canvas id="stage" role="img"
+        aria-label="Colored lines trace the Lorenz attractor, starting as one thread and spreading apart"></canvas>
+
+    <div class="header">
+        <p id="note"></p>
+        <p id="readout"></p>
+        <p id="hint">tap anywhere to release the paths from there</p>
+    </div>
+
+    <div class="bar">
+        <button id="pause" type="button">pause</button>
+        <button id="reset" type="button">reset</button>
+        <select id="preset" aria-label="preset"></select>
+        <details>
+            <summary>controls</summary>
+            <div class="panel">
+                <div id="sliders"></div>
+                <div class="seed">
+                    <label for="seed">seed</label>
+                    <input id="seed" type="number" inputmode="numeric">
+                    <button id="next-seed" type="button">next</button>
+                </div>
+                <p class="keys">space pause · r reset · n next seed · 1–4 presets</p>
+            </div>
+        </details>
+    </div>
+
+    <script src="sim.js"></script>
+    <script>
+        (() => {
+            'use strict';
+
+            const { PARAMS, PRESETS, advance, clampParams, createState,
+                palette, probeOrbit, release, separation, DT } = window.StrangeAttractor;
+
+            // Every path keeps this many points, one for every TRAIL_STRIDE
+            // steps, so trails look the same at any frame rate
+            const TRAIL_POINTS = 640;
+            const TRAIL_STRIDE = 2;
+            const MIN_DRAWN_POINTS = 160;
+
+            // A trail is stroked in bands, faint at the tail and bright at the head
+            const BANDS = 8;
+
+            // Never more than this much simulation in one frame, so a stall
+            // can't turn into a burst
+            const MAX_STEPS_PER_FRAME = 64;
+            const MAX_FRAME_MS = 100;
+
+            const REDUCED_MOTION_SPEED = 0.25;
+            const MAX_PIXEL_RATIO = 2;
+            const BACKGROUND = '#0a0a0c';
+            const VIEW_EASING = 0.12;
+            const READOUT_MS = 200;
+
+            // Sliders in panel order. The first group changes how the paths
+            // move on from where they are. The second group decides the initial
+            // state, so a change to it starts them again.
+            const LIVE_KEYS = ['rho', 'sigma', 'beta', 'speed'];
+            const RESTART_KEYS = ['spread', 'tracers'];
+
+            const canvas = document.getElementById('stage');
+            const ctx = canvas.getContext('2d', { alpha: false });
+            const noteEl = document.getElementById('note');
+            const readoutEl = document.getElementById('readout');
+            const hintEl = document.getElementById('hint');
+            const pauseButton = document.getElementById('pause');
+            const presetSelect = document.getElementById('preset');
+            const seedInput = document.getElementById('seed');
+            const headerEl = document.querySelector('.header');
+            const barEl = document.querySelector('.bar');
+            const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+            // The orbit behind the paths changes only with the parameters or
+            // the view, so it's drawn here once rather than on every frame
+            const backdrop = document.createElement('canvas');
+            const backdropCtx = backdrop.getContext('2d', { alpha: false });
+            let backdropOrbit = null;
+            let backdropView = '';
+
+            let params = clampParams(PRESETS[0].params);
+            let state = null;
+            let orbit = null;
+
+            // Trails: x, z pairs in a ring per path, sharing one write position.
+            // A NaN x lifts the pen, so a release doesn't draw a line across
+            // the view.
+            let trail = null;
+            let head = 0;
+            let filled = 0;
+            let drawnPoints = TRAIL_POINTS;
+            let styles = [];
+
+            let width = 0;
+            let height = 0;
+            const view = { x: 0, z: 0, scale: 1, screenX: 0, screenY: 0 };
+            let goal = { ...view };
+
+            let frame = null;
+            let lastFrame = null;
+            let lastReadout = 0;
+            let budget = 0;
+            let frameMs = 16;
+            let paused = false;
+            let pageVisible = !document.hidden;
+            let onScreen = true;
+
+            // Starting again from the seed: the same parameters and seed
+            // always give this same state
+            function restart() {
+                state = createState(params);
+                trail = new Float32Array(state.count * TRAIL_POINTS * 2);
+                head = 0;
+                filled = 0;
+                budget = 0;
+                buildStyles();
+                refreshOrbit();
+                record(false);
+            }
+
+            function buildStyles() {
+                styles = palette(params.seed, state.count).map(({ h, s, l }) => {
+                    const bands = [];
+                    for (let band = 0; band < BANDS; band++) {
+                        const along = (band + 1) / BANDS;
+                        const alpha = 0.04 + 0.5 * along * along;
+                        bands.push(`hsla(${h}, ${s}%, ${l}%, ${alpha})`);
+                    }
+                    return bands;
+                });
+            }
+
+            // The orbit behind the live paths shows the shape of the system,
+            // and sets the view, so a change of parameters shows at once
+            function refreshOrbit() {
+                orbit = probeOrbit(params, state.origin);
+                fitView();
+            }
+
+            function fitView() {
+                const { minX, maxX, minZ, maxZ } = orbit.bounds;
+                const top = headerEl.offsetHeight + 16;
+                const bottom = barEl.offsetHeight + 20;
+                const side = 16;
+                const fitWidth = Math.max(width - side * 2, 1);
+                const fitHeight = Math.max(height - top - bottom, 1);
+
+                goal = {
+                    x: (minX + maxX) / 2,
+                    z: (minZ + maxZ) / 2,
+                    scale: Math.min(fitWidth / (maxX - minX), fitHeight / (maxZ - minZ)),
+                    screenX: width / 2,
+                    screenY: top + fitHeight / 2,
+                };
+
+                if (frame === null || reducedMotion.matches) {
+                    Object.assign(view, goal);
+                }
+            }
+
+            function easeView() {
+                for (const key of Object.keys(goal)) {
+                    const gap = goal[key] - view[key];
+                    view[key] = Math.abs(gap) < 0.001 ? goal[key] : view[key] + gap * VIEW_EASING;
+                }
+            }
+
+            function record(lifted) {
+                const { count, positions } = state;
+                for (let i = 0; i < count; i++) {
+                    const at = (i * TRAIL_POINTS + head) * 2;
+                    trail[at] = lifted ? NaN : positions[i * 3];
+                    trail[at + 1] = positions[i * 3 + 2];
+                }
+                head = (head + 1) % TRAIL_POINTS;
+                filled = Math.min(filled + 1, TRAIL_POINTS);
+            }
+
+            function stepSimulation(elapsed) {
+                const speed = params.speed * (reducedMotion.matches ? REDUCED_MOTION_SPEED : 1);
+                budget += (elapsed / 1000) * speed;
+                const steps = Math.min(Math.floor(budget), MAX_STEPS_PER_FRAME);
+                budget = budget - steps >= 1 ? 0 : budget - steps;
+
+                for (let i = 0; i < steps; i++) {
+                    advance(state, params, 1);
+                    if (state.steps % TRAIL_STRIDE === 0) {
+                        record(false);
+                    }
+                }
+            }
+
+            // Add a stretch of a ring of x, z pairs to the current path. Points
+            // are far apart where the flow is fast, so the line curves from
+            // midpoint to midpoint instead of joining them with corners. The
+            // next stretch starts one point before this one ends, so they meet.
+            function addCurve(target, points, base, size, first, count) {
+                const { x: viewX, z: viewZ, scale, screenX, screenY } = view;
+                let previousX = NaN;
+                let previousY = NaN;
+                let midX = NaN;
+
+                for (let i = 0; i < count; i++) {
+                    const at = (base + ((first + i) % size)) * 2;
+                    const x = screenX + (points[at] - viewX) * scale;
+                    const y = screenY - (points[at + 1] - viewZ) * scale;
+                    const nextMidX = (previousX + x) / 2;
+                    const nextMidY = (previousY + y) / 2;
+
+                    if (!Number.isNaN(nextMidX)) {
+                        if (Number.isNaN(midX)) {
+                            target.moveTo(nextMidX, nextMidY);
+                        } else {
+                            target.quadraticCurveTo(previousX, previousY, nextMidX, nextMidY);
+                        }
+                    }
+                    previousX = x;
+                    previousY = y;
+                    midX = nextMidX;
+                }
+            }
+
+            function paintBackdrop() {
+                const shown = Object.values(view).join();
+                if (orbit === backdropOrbit && shown === backdropView) {
+                    return;
+                }
+                backdropOrbit = orbit;
+                backdropView = shown;
+
+                const pathPoints = orbit.path.length / 2;
+                backdropCtx.fillStyle = BACKGROUND;
+                backdropCtx.fillRect(0, 0, width, height);
+                backdropCtx.lineWidth = 1;
+                backdropCtx.lineJoin = 'round';
+                backdropCtx.strokeStyle = 'rgba(232, 230, 227, 0.07)';
+                backdropCtx.beginPath();
+                addCurve(backdropCtx, orbit.path, 0, pathPoints, 0, pathPoints);
+                backdropCtx.stroke();
+            }
+
+            function draw() {
+                paintBackdrop();
+                ctx.globalCompositeOperation = 'source-over';
+                ctx.drawImage(backdrop, 0, 0, width, height);
+
+                // Lines only, added together: paths that are still side by
+                // side read as one bright thread, and it comes apart into
+                // separate colors as they diverge
+                ctx.globalCompositeOperation = 'lighter';
+                ctx.lineWidth = 1.25;
+                ctx.lineJoin = 'round';
+
+                const points = Math.min(filled, drawnPoints);
+                const perBand = Math.ceil(points / BANDS);
+                const oldest = head - points + TRAIL_POINTS;
+
+                for (let tracer = 0; tracer < state.count; tracer++) {
+                    for (let band = 0; band < BANDS; band++) {
+                        const from = band * perBand;
+                        const count = Math.min(perBand + 2, points - from);
+                        if (count < 3) {
+                            continue;
+                        }
+                        ctx.beginPath();
+                        addCurve(ctx, trail, tracer * TRAIL_POINTS, TRAIL_POINTS, oldest + from, count);
+                        ctx.strokeStyle = styles[tracer][band];
+                        ctx.stroke();
+                    }
+                }
+            }
+
+            function updateReadout() {
+                const time = (state.steps * DT).toFixed(1);
+                const gap = separation(state);
+                const shown = gap >= 1 ? gap.toFixed(1) : gap.toPrecision(2);
+                readoutEl.textContent = `t ${time} · paths apart ${shown}`;
+            }
+
+            // Shorter trails on a device that can't hold the frame rate
+            function governTrails(elapsed) {
+                frameMs += (elapsed - frameMs) * 0.05;
+                if (frameMs > 30) {
+                    drawnPoints = Math.max(MIN_DRAWN_POINTS, Math.floor(drawnPoints * 0.97));
+                } else if (frameMs < 20) {
+                    drawnPoints = Math.min(TRAIL_POINTS, Math.ceil(drawnPoints * 1.01));
+                }
+            }
+
+            // The loop runs only while there is something to see: not paused,
+            // the page visible, and the canvas on screen
+            function tick(now) {
+                frame = requestAnimationFrame(tick);
+                const elapsed = lastFrame === null ? 0 : Math.min(now - lastFrame, MAX_FRAME_MS);
+                lastFrame = now;
+
+                if (elapsed > 0) {
+                    governTrails(elapsed);
+                }
+                stepSimulation(elapsed);
+                easeView();
+                draw();
+
+                if (now - lastReadout >= READOUT_MS) {
+                    lastReadout = now;
+                    updateReadout();
+                }
+            }
+
+            function updateRunning() {
+                const shouldRun = !paused && pageVisible && onScreen;
+                if (shouldRun && frame === null) {
+                    lastFrame = null;
+                    frame = requestAnimationFrame(tick);
+                } else if (!shouldRun && frame !== null) {
+                    cancelAnimationFrame(frame);
+                    frame = null;
+                }
+            }
+
+            // With the loop stopped, a change still has to reach the screen
+            function refresh() {
+                if (frame === null) {
+                    Object.assign(view, goal);
+                    draw();
+                }
+                updateReadout();
+            }
+
+            function setPaused(value) {
+                paused = value;
+                pauseButton.textContent = paused ? 'play' : 'pause';
+                updateRunning();
+            }
+
+            function measure() {
+                const ratio = Math.min(window.devicePixelRatio || 1, MAX_PIXEL_RATIO);
+                width = canvas.clientWidth;
+                height = canvas.clientHeight;
+                canvas.width = backdrop.width = Math.round(width * ratio);
+                canvas.height = backdrop.height = Math.round(height * ratio);
+                ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
+                backdropCtx.setTransform(ratio, 0, 0, ratio, 0, 0);
+                backdropOrbit = null;
+                document.documentElement.style.setProperty('--bar-height', `${barEl.offsetHeight}px`);
+            }
+
+            function resize() {
+                measure();
+                fitView();
+                Object.assign(view, goal);
+                draw();
+            }
+
+            // Controls
+
+            const sliders = new Map();
+
+            function toSlider(key, value) {
+                const spec = PARAMS[key];
+                return spec.log
+                    ? (Math.log(value / spec.min) / Math.log(spec.max / spec.min)) * 1000
+                    : value;
+            }
+
+            function fromSlider(key, value) {
+                const spec = PARAMS[key];
+                return spec.log ? spec.min * Math.pow(spec.max / spec.min, value / 1000) : value;
+            }
+
+            function formatParam(key, value) {
+                if (PARAMS[key].log) {
+                    return value.toPrecision(2);
+                }
+                return Number.isInteger(PARAMS[key].step) ? String(value) : value.toFixed(2);
+            }
+
+            function buildSliders() {
+                const parent = document.getElementById('sliders');
+
+                for (const key of [...LIVE_KEYS, ...RESTART_KEYS]) {
+                    const spec = PARAMS[key];
+                    const row = document.createElement('div');
+                    row.className = 'row';
+
+                    const label = document.createElement('label');
+                    label.htmlFor = `param-${key}`;
+                    label.textContent = spec.label;
+
+                    const output = document.createElement('output');
+                    output.htmlFor = `param-${key}`;
+
+                    const input = document.createElement('input');
+                    input.id = `param-${key}`;
+                    input.type = 'range';
+                    input.min = spec.log ? 0 : spec.min;
+                    input.max = spec.log ? 1000 : spec.max;
+                    input.step = spec.log ? 1 : spec.step;
+
+                    input.addEventListener('input', () => {
+                        const value = fromSlider(key, Number(input.value));
+                        params = clampParams({ ...params, [key]: value });
+                        output.value = formatParam(key, params[key]);
+                        leavePreset();
+
+                        if (RESTART_KEYS.includes(key)) {
+                            restart();
+                        } else if (key !== 'speed') {
+                            refreshOrbit();
+                        }
+                        refresh();
+                    });
+
+                    row.append(label, output, input);
+                    parent.append(row);
+                    sliders.set(key, { input, output });
+                }
+            }
+
+            function syncControls() {
+                for (const [key, { input, output }] of sliders) {
+                    input.value = toSlider(key, params[key]);
+                    output.value = formatParam(key, params[key]);
+                }
+                seedInput.value = params.seed;
+            }
+
+            function applyPreset(preset) {
+                params = clampParams({ ...params, ...preset.params });
+                presetSelect.value = preset.id;
+                noteEl.textContent = preset.note;
+                syncControls();
+                restart();
+                refresh();
+            }
+
+            function leavePreset() {
+                presetSelect.value = '';
+                noteEl.textContent = '';
+            }
+
+            function setSeed(value) {
+                params = clampParams({ ...params, seed: value });
+                seedInput.value = params.seed;
+
+                // A preset with its own seed only keeps its promise on that seed
+                const preset = PRESETS.find(({ id }) => id === presetSelect.value);
+                if (preset && 'seed' in preset.params && preset.params.seed !== params.seed) {
+                    leavePreset();
+                }
+                restart();
+                refresh();
+            }
+
+            function resetRun() {
+                restart();
+                refresh();
+            }
+
+            for (const preset of PRESETS) {
+                presetSelect.add(new Option(preset.label, preset.id));
+            }
+            const customOption = new Option('custom', '');
+            customOption.disabled = true;
+            presetSelect.add(customOption);
+
+            presetSelect.addEventListener('change', () => {
+                applyPreset(PRESETS.find((preset) => preset.id === presetSelect.value));
+            });
+
+            seedInput.min = PARAMS.seed.min;
+            seedInput.max = PARAMS.seed.max;
+            seedInput.step = PARAMS.seed.step;
+            seedInput.addEventListener('change', () => setSeed(seedInput.value));
+
+            function nextSeed() {
+                setSeed(params.seed >= PARAMS.seed.max ? PARAMS.seed.min : params.seed + 1);
+            }
+
+            document.getElementById('next-seed').addEventListener('click', nextSeed);
+            document.getElementById('reset').addEventListener('click', resetRun);
+            pauseButton.addEventListener('click', () => setPaused(!paused));
+
+            // A tap releases every path from that point. The view shows x and
+            // z, so the unseen y is set equal to x, where x stops changing.
+            canvas.addEventListener('click', (event) => {
+                const x = view.x + (event.offsetX - view.screenX) / view.scale;
+                const z = view.z - (event.offsetY - view.screenY) / view.scale;
+                record(true);
+                release(state, params, x, x, z);
+                record(false);
+                hintEl.hidden = true;
+                refresh();
+            });
+
+            // Keys reach the page only while it has focus, so every action
+            // above also has a button
+            document.addEventListener('keydown', (event) => {
+                // A held key must not restart the run over and over
+                if (event.ctrlKey || event.metaKey || event.altKey || event.repeat) {
+                    return;
+                }
+
+                const target = event.target;
+                if (target.closest('input[type="number"], select')) {
+                    return;
+                }
+
+                if (event.key === ' ') {
+                    // Space already presses whatever button has focus
+                    if (target.closest('button, summary')) {
+                        return;
+                    }
+                    event.preventDefault();
+                    setPaused(!paused);
+                } else if (event.key.toLowerCase() === 'r') {
+                    resetRun();
+                } else if (event.key.toLowerCase() === 'n') {
+                    nextSeed();
+                } else if (PRESETS[Number(event.key) - 1]) {
+                    applyPreset(PRESETS[Number(event.key) - 1]);
+                }
+            });
+
+            // Lifecycle: stop when hidden, off screen or torn down
+
+            function onVisibilityChange() {
+                pageVisible = !document.hidden;
+                updateRunning();
+            }
+
+            const resizeObserver = new ResizeObserver(resize);
+            const screenObserver = 'IntersectionObserver' in window
+                ? new IntersectionObserver((entries) => {
+                    onScreen = entries[entries.length - 1].isIntersecting;
+                    updateRunning();
+                })
+                : null;
+
+            function connect() {
+                document.addEventListener('visibilitychange', onVisibilityChange);
+                resizeObserver.observe(canvas);
+                if (screenObserver) {
+                    screenObserver.observe(canvas);
+                }
+            }
+
+            function disconnect() {
+                document.removeEventListener('visibilitychange', onVisibilityChange);
+                resizeObserver.disconnect();
+                if (screenObserver) {
+                    screenObserver.disconnect();
+                }
+                if (frame !== null) {
+                    cancelAnimationFrame(frame);
+                    frame = null;
+                }
+            }
+
+            window.addEventListener('pagehide', disconnect);
+            window.addEventListener('pageshow', (event) => {
+                // Back from the page cache, where pagehide has stopped everything
+                if (event.persisted) {
+                    connect();
+                    updateRunning();
+                }
+            });
+
+            buildSliders();
+            syncControls();
+            presetSelect.value = PRESETS[0].id;
+            noteEl.textContent = PRESETS[0].note;
+            measure();
+            restart();
+            updateReadout();
+            draw();
+            connect();
+            updateRunning();
+        })();
+    </script>
+</body>
+</html>

@@ -12,5 +12,10 @@ __pycache__/
 wrangler.jsonc
 requirements.txt
 
-# Planning notes stay in the repository but off the site.
+# Planning notes and agent instructions stay in the repository but off the site.
 *dev_plan.md
+CLAUDE.md
+.claude/
+
+# So do the engines' tests.
+*.test.js

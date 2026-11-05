@@ -158,10 +158,19 @@ classification and related pieces. Because of these routes, no category in
 
   `world`, `interactions` and `modes` are required. `title` overrides
   `<title>`, and `id`, if given, must match the file name.
+- **an engine** is an interactive piece with a folder of its own,
+  `canvas/<id>/`: `index.html` is the page, `sim.js` holds the simulation with
+  no canvas code, and `sim.test.js` tests it. `sim.js` is a classic script, not
+  a module, so the page still works from disk. It sets a global in the browser
+  and assigns `module.exports` under node. Run the tests from the repository
+  root with `node --test`, which needs no install. Files ending in `.test.js`
+  aren't published. Engines are public at their URL as soon as they're on
+  `main`, and the gallery doesn't list them yet.
 - **the vocabulary** (12 worlds, systems, interactions and modes) is defined
   at the top of `build_gallery.py`. The build fails on any value it doesn't
   list. A piece with no classification at all still builds, as unclassified,
   with a warning.
 - **everything committed is public.** Every file not listed in
-  `.assetsignore` is served at gallery.eigenomar.com, including the notes
-  and plans in the repository root.
+  `.assetsignore` is served at gallery.eigenomar.com. The plans and
+  `CLAUDE.md` stay off the site, but they're still readable in the public
+  GitHub repository.
