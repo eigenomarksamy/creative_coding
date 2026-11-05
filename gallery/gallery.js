@@ -3,12 +3,13 @@
  * Everything is driven by gallery-data.js, which build_gallery.py writes.
  * Routes are hash based so the page also works when opened from disk:
  *
- *   #/                                  categories
- *   #/pycairo                           one category
- *   #/pycairo/render-engine             one group
- *   #/pycairo/render-engine?scene=fault line
+ *   #/                                  directories
+ *   #/raw                               one directory
+ *   #/engines/render-engine             one group
+ *   #/engines/render-engine?scene=fault line
  *                                       one group, filtered
- *   #/worlds                            every piece, from every toolkit
+ *   #/illustrations/7-levels/cosmos     one section of a group
+ *   #/worlds                            every piece in the gallery
  *   #/worlds?world=cosmic&system=oscillators
  *                                       every piece, filtered
  *   #/worlds/cosmos_origin              one piece and its related pieces
@@ -29,6 +30,22 @@
     // The worlds view and the piece pages live here. build_gallery.py
     // refuses a category with this id.
     var WORLDS_ROUTE = "worlds";
+
+    // Routes from when the gallery was grouped by toolkit, each with where
+    // its pieces live now. An unknown category falls back to the home page,
+    // so without these an old link would lose its place without any error.
+    // build_gallery.py refuses a category with one of these ids.
+    var MOVED_ROUTES = {
+        "pygame": ["raw", "pygame"],
+        "pygame/sketches": ["raw", "pygame"],
+        "pycairo": ["raw", "pycairo"],
+        "pycairo/sketches": ["raw", "pycairo"],
+        "pycairo/12": ["illustrations", "12"],
+        "pycairo/render-engine": ["engines", "render-engine"],
+        "pycairo/cosmos": ["illustrations", "7-levels", "cosmos"],
+        "canvas": ["animated", "canvas"],
+        "canvas/sketches": ["animated", "canvas"]
+    };
 
     // Facet keys that read item.taxonomy instead of item.meta. A world
     // filter matches a piece's primary world or any of its secondary ones.
@@ -217,6 +234,18 @@
         var query = params ? params.toString() : "";
 
         return "#/" + path + (query ? "?" + query : "");
+    }
+
+    // Where an old route lives now, or null. A group that no longer exists
+    // lands where its category went, as an unknown group always has.
+    function movedRoute(segments) {
+        function target(key) {
+            return Object.prototype.hasOwnProperty.call(MOVED_ROUTES, key)
+                ? MOVED_ROUTES[key]
+                : null;
+        }
+
+        return target(segments.slice(0, 2).join("/")) || target(segments[0]);
     }
 
     function findCategory(id) {
@@ -648,35 +677,46 @@
 
     /* ------------------------------------------------------------ pages */
 
+    // The first thumbnail among items, for a card's cover.
+    function coverOf(items) {
+        var withThumb = items.filter(function (item) {
+            return item.thumb;
+        })[0];
+
+        return withThumb ? withThumb.thumb : null;
+    }
+
+    // A card for a category, a group or a section.
+    function createCard(href, cover, title, blurb, count) {
+        return el("a", { class: "category-card", href: href }, [
+            cover
+                ? el("img", {
+                      class: "cover",
+                      src: cover,
+                      alt: "",
+                      loading: "lazy"
+                  })
+                : el("div", { class: "cover-placeholder", text: "▶" }),
+            el("div", { class: "body" }, [
+                el("h2", { text: title }),
+                blurb ? el("p", { text: blurb }) : null,
+                el("span", { class: "count", text: plural(count, "piece") })
+            ])
+        ]);
+    }
+
     function renderHome() {
         renderBreadcrumb([{ label: "creative coding" }]);
         renderNav(null);
         visibleItems = [];
 
         var cards = DATA.categories.map(function (category) {
-            var cover = category.cover
-                ? el("img", {
-                      class: "cover",
-                      src: category.cover,
-                      alt: "",
-                      loading: "lazy"
-                  })
-                : el("div", { class: "cover-placeholder", text: "▶" });
-
-            return el(
-                "a",
-                { class: "category-card", href: buildHash([category.id]) },
-                [
-                    cover,
-                    el("div", { class: "body" }, [
-                        el("h2", { text: category.title }),
-                        el("p", { text: category.blurb }),
-                        el("span", {
-                            class: "count",
-                            text: plural(category.count, "piece")
-                        })
-                    ])
-                ]
+            return createCard(
+                buildHash([category.id]),
+                category.cover,
+                category.title,
+                category.blurb,
+                category.count
             );
         });
 
@@ -692,7 +732,7 @@
                     text:
                         "generated drawings and live sketches from this " +
                         "repository, by the world they belong to or the " +
-                        "toolkit that made them."
+                        "kind of work they are."
                 })
             ])
         );
@@ -727,7 +767,7 @@
                     el("h2", { text: "worlds" }),
                     el("p", {
                         text:
-                            "every piece from every toolkit, by the world it " +
+                            "every piece in the gallery, by the world it " +
                             "belongs to: how it looks, the system that " +
                             "drives it and the idea it explores."
                     }),
@@ -741,6 +781,46 @@
                 ])
             ]
         );
+    }
+
+    // The pieces in one section of a group. With no id, the pieces in no
+    // section, which sit directly on the group's page.
+    function sectionItems(group, sectionId) {
+        return group.items.filter(function (item) {
+            return item.section === sectionId;
+        });
+    }
+
+    // A group with sections is a page of folders, with any pieces that are
+    // in none of them below the cards.
+    function createSectionList(category, group) {
+        var fragment = document.createDocumentFragment();
+
+        fragment.appendChild(
+            el(
+                "div",
+                { class: "category-grid section-grid" },
+                group.sections.map(function (section) {
+                    var items = sectionItems(group, section.id);
+
+                    return createCard(
+                        buildHash([category.id, group.id, section.id]),
+                        coverOf(items),
+                        section.title,
+                        section.blurb,
+                        items.length
+                    );
+                })
+            )
+        );
+
+        var loose = sectionItems(group);
+
+        if (loose.length) {
+            fragment.appendChild(createItemGrid(group, loose, false));
+        }
+
+        return fragment;
     }
 
     function renderGroupSection(category, group, params, withHeading) {
@@ -762,6 +842,11 @@
             fragment.appendChild(
                 el("p", { class: "section-blurb", text: group.blurb })
             );
+        }
+
+        if ((group.sections || []).length) {
+            fragment.appendChild(createSectionList(category, group));
+            return fragment;
         }
 
         var facets = group.facets || [];
@@ -838,34 +923,12 @@
         }
 
         var cards = category.groups.map(function (group) {
-            var cover = group.items.filter(function (item) {
-                return item.thumb;
-            })[0];
-
-            return el(
-                "a",
-                {
-                    class: "category-card",
-                    href: buildHash([category.id, group.id])
-                },
-                [
-                    cover
-                        ? el("img", {
-                              class: "cover",
-                              src: cover.thumb,
-                              alt: "",
-                              loading: "lazy"
-                          })
-                        : el("div", { class: "cover-placeholder", text: "▶" }),
-                    el("div", { class: "body" }, [
-                        el("h2", { text: group.title }),
-                        el("p", { text: group.blurb }),
-                        el("span", {
-                            class: "count",
-                            text: plural(group.items.length, "piece")
-                        })
-                    ])
-                ]
+            return createCard(
+                buildHash([category.id, group.id]),
+                coverOf(group.items),
+                group.title,
+                group.blurb,
+                group.items.length
             );
         });
 
@@ -890,6 +953,35 @@
         );
 
         view.appendChild(renderGroupSection(category, group, params, false));
+    }
+
+    function renderSection(category, group, section) {
+        renderBreadcrumb([
+            { label: "creative coding", href: "#/" },
+            { label: category.title, href: buildHash([category.id]) },
+            { label: group.title, href: buildHash([category.id, group.id]) },
+            { label: section.title }
+        ]);
+        renderNav(category.id);
+        visibleItems = [];
+
+        clear(view);
+        view.appendChild(
+            el("div", { class: "page-head" }, [
+                el("h1", { text: section.title }),
+                el("p", { text: category.title + " · " + group.title })
+            ])
+        );
+
+        if (section.blurb) {
+            view.appendChild(
+                el("p", { class: "section-blurb", text: section.blurb })
+            );
+        }
+
+        view.appendChild(
+            createItemGrid(group, sectionItems(group, section.id), false)
+        );
     }
 
     /* ------------------------------------------------------------ worlds */
@@ -1038,7 +1130,7 @@
                 el("h1", { text: "worlds" }),
                 el("p", {
                     text:
-                        "every piece from every toolkit, by the world it " +
+                        "every piece in the gallery, by the world it " +
                         "belongs to. a piece can belong to several worlds " +
                         "and is shown once."
                 })
@@ -1434,6 +1526,15 @@
 
     function render() {
         var route = parseRoute();
+        var moved = movedRoute(route.segments);
+
+        // Replaced, so the back button skips the old address. The hashchange
+        // this fires renders the new route.
+        if (moved) {
+            window.location.replace(buildHash(moved, route.params));
+            return;
+        }
+
         var category = findCategory(route.segments[0]);
 
         var focused = document.activeElement;
@@ -1462,8 +1563,13 @@
             renderCategory(category, route.params);
         } else {
             var group = findGroup(category, route.segments[1]);
+            var section = group
+                ? findById(group.sections || [], route.segments[2])
+                : null;
 
-            if (group) {
+            if (section) {
+                renderSection(category, group, section);
+            } else if (group) {
                 renderGroup(category, group, route.params);
             } else {
                 renderCategory(category, route.params);
@@ -1484,7 +1590,12 @@
             return;
         }
 
-        lastFocused = document.activeElement;
+        // Stepping comes back through here with focus already inside, so only
+        // the first open knows where to return it.
+        if (lightbox.hidden) {
+            lastFocused = document.activeElement;
+        }
+
         lightboxIndex = index;
 
         var item = visibleItems[index];

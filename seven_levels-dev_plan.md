@@ -12,7 +12,7 @@ dev plan for the art behind the seven reading tracks: 49 level images and 2 conn
 - **done:** none.
 - **scope of this repo:** SL0–SL11. the work in `eigenomar.com` is listed in its own document, [seven levels: eigenomar site actions](https://claude.ai/artifact/6TZ8CSu8qPxna9coRE7nBW), and is never implemented here.
 - **source package:** the briefs and example data are in `/mnt/c/dev_ws/eigenomar/eigenomar/tmp/seven_levels/creative_coding_seven_levels_plan/`. that folder is gitignored in the other repo, so SL0 brings them here.
-- **relation to the worlds plan:** this is a separate lane with one link: SL1 needs CC14, which builds the gallery directories this work sits in. no CC ticket needs an SL ticket.
+- **relation to the worlds plan:** this is a separate lane with one link: SL1 needs CC14, which built the gallery directories this work sits in and was done on 2026-11-05. no CC ticket needs an SL ticket.
 
 **decided by the owner on 2026-11-04:**
 
@@ -41,15 +41,17 @@ flowchart TD
   SL9 --> SL11["SL11 close-out"]
   SL10 --> SL11
 
+  classDef done fill:#e5f4e4,stroke:#2e7d32,color:#1b3a1d
   classDef next fill:#e7f1fb,stroke:#1565c0,stroke-width:2px,color:#0d2b4e
   classDef other stroke-dasharray:4 3
   class SL0 next
+  class CC14 done
   class CC14 other
 ```
 
-blue is next, and the dashed box is a ticket in the worlds plan.
+green is done, blue is next, and the dashed box is a ticket in the worlds plan.
 
-**one lane only:** SL0 → CC14 → SL1 → SL2 → SL3 → SL4 → SL5 → SL6 → SL7 → SL8 → SL9 → SL10 → SL11.
+**one lane only:** SL0 → SL1 → SL2 → SL3 → SL4 → SL5 → SL6 → SL7 → SL8 → SL9 → SL10 → SL11.
 
 **two lanes:** SL3 can run alongside SL1 and SL2, because it touches only `cc_pycairo/`. SL10 can run alongside SL7–SL9, because it needs only the graph drawing from SL6. the track order from SL5 on is a choice made for reuse, not a hard dependency, so a track can jump the queue if the site needs it, at the cost of rebuilding what it would have reused.
 
@@ -66,7 +68,7 @@ the package said to adapt to the repo's conventions. this table is where that ch
 | shared code | a small helper if needed | none. `glow` is copied into all 7 cosmos scripts | `cc_pycairo/seven_levels_kit.py`. a helper joins it at its second use (the rule in §2 of the worlds plan) |
 | dependencies | add only when needed | stdlib, `cairo` and `noise`. no script in `cc_pycairo/` uses numpy | numpy only for grid simulations. it's installed, and the Cloudflare build never runs these scripts, so it's noted in the `requirements.txt` comment, not added as a requirement |
 | registry | a `manifest.json` in the output folder | `.txt` manifests for order and titles, and generated files gitignored and built on deploy | a hand-written `seven_levels.json` at the repo root. the build derives `cc_pycairo/gen/seven_levels/manifest.json` from it, with each status read from the disk. that file is gitignored and served, like `gallery-data.js`. the registry holds no book or author, so changing a book touches only the site's reading page |
-| gallery | one collection with track filters and overview cards | two levels, category and group, until CC14 adds a third | the `7-levels` group under `illustrations`, with a folder for each track and the two connection diagrams as images directly on its page. folders replace the filter chips and the overview cards. the universe track's folder is labeled cosmos |
+| gallery | one collection with track filters and overview cards | three levels since CC14: category, group and section | the `7-levels` group under `illustrations`, with a folder for each track and the two connection diagrams as images directly on its page. folders replace the filter chips and the overview cards. the universe track's folder is labeled cosmos |
 | taxonomy | not covered | set once per series (Q1) | per track in the registry, because seven tracks span several worlds. this amends Q1 |
 | alt text | semantic | the lightbox uses `item.title` | items get an `alt` field, kept out of `meta`, which is printed on tiles |
 
@@ -236,6 +238,10 @@ sizes as in the worlds plan: **S** takes under an hour and **M** fills one sessi
   - validate in the build, exiting 1 on failure: unique ids, the naming rule in §1, and every connection endpoint exists.
   - write `cc_pycairo/gen/seven_levels/manifest.json` with status, dimensions and public URL. gitignore it, and keep the rule that a build which finds nothing new changes nothing.
   - update the README's "adding work", and add numpy to the comment in `requirements.txt`.
+- **from CC14:**
+  - the group reads `cosmos.txt` today, and its `section` field puts all seven pieces in the cosmos folder. drop that field when the registry starts setting `section` on each item. `collect_sections` already checks each item's value.
+  - all seven folders are declared in `sections`, in the order of the ticket's tree, and only cosmos has a blurb. a folder's card and page show no blurb if it has none, so add them as tracks arrive.
+  - the group's blurb says "cosmos is the first", and the page's subtitle is `group.directory`, today `cosmos.txt`. both need rewording here. cosmos's own blurb names `cosmos.txt` too.
 - **done when:** the build is clean with no images present, the manifest lists all 51 as `planned`, and a test image shows up in its folder and flips to `generated`.
 
 ### SL2 · universe migration · S
@@ -325,3 +331,4 @@ checked by script on 2026-11-04. the good news first: tracks, nodes, 21 meta pai
 | 2026-11-04 | none | the owner settled the three decisions in §0: files are named by look rather than by book, the new track images are 4:5, and the cosmos group retires behind aliases. all 49 level names are now in §2 and SL2 |
 | 2026-11-04 | none | the 7 levels work now sits in the gallery directories from CC14: one folder per track plus meta and atomic, replacing the track filter. SL1 needs CC14. the first track shows as cosmos, as a label only |
 | 2026-11-04 | none | the owner changed meta and atomic from folders to images directly on the 7 levels page, so 7 levels has seven folders and two images |
+| 2026-11-05 | none | CC14 is done, so SL1 now waits only on SL0. the `7-levels` group exists with cosmos as its one folder, and SL1 gained **from CC14** notes |

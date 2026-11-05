@@ -195,6 +195,13 @@ a:hover {
     gap: 20px;
 }
 
+/* auto-fill, so a group with one section keeps a card-sized card, and the
+   gap is for any pieces that sit below the cards. */
+.section-grid {
+    grid-template-columns: repeat(auto-fill, minmax(min(280px, 100%), 1fr));
+    margin-bottom: 20px;
+}
+
 .category-card {
     display: flex;
     flex-direction: column;

@@ -181,92 +181,24 @@ LIVE_FIELDS = ("interactions", "modes")
 PAGE_FIELDS = ("id", "title") + SERIES_FIELDS + LIVE_FIELDS
 
 # Gallery routes that a category id would collide with: #/worlds is every
-# piece by world, and #/worlds/<id> is one piece.
-RESERVED_ROUTES = ("worlds",)
+# piece by world, #/worlds/<id> is one piece, and the old toolkit categories
+# redirect to the directories that replaced them (MOVED_ROUTES in
+# gallery/gallery.js).
+RESERVED_ROUTES = ("worlds", "pygame", "pycairo", "canvas")
 
-# Each group reads one directory. Groups exist so a category can be split
-# further later on without touching the page itself.
+# The gallery's directories, by kind of work. Each group reads one directory
+# or manifest. A group may also declare sections, folders one level below it:
+# its pieces stay in the group's items, and each names its folder in
+# item["section"] (see collect_sections).
 CATEGORIES = [
     {
-        "id": "pygame",
-        "title": "pygame",
+        "id": "engines",
+        "title": "engines",
         "blurb": (
-            "numbered studies in shape and polar math. every sketch draws "
-            "once, saves a JPG and exits."
+            "systems that make work from rules and parameters, not one "
+            "drawing at a time."
         ),
         "groups": [
-            {
-                "id": "sketches",
-                "title": "sketches",
-                "blurb": (
-                    "jpger_NN.jpg is rendered by the pnger_NN.py of the "
-                    "same number."
-                ),
-                "directory": "cc_pygame/gen",
-                "kind": "image",
-                "source": "pygame_sketch",
-                "world": "geometric",
-                "worlds": ["abstract", "perceptual"],
-                "systems": ["procedural-geometry"],
-                "concept": (
-                    "order from repetition: simple shapes multiplied by a "
-                    "rule"
-                ),
-            },
-        ],
-    },
-    {
-        "id": "pycairo",
-        "title": "pycairo",
-        "blurb": (
-            "flow fields, layered Bézier brushwork and gradient masses, "
-            "first as one-off sketches and then as a parameterised engine, "
-            "then a series drawn from mathematical models."
-        ),
-        "groups": [
-            {
-                "id": "12",
-                "title": "12.",
-                "blurb": (
-                    "a selected series, in the order and under the titles "
-                    "set out in 12.txt."
-                ),
-                "manifest": "12.txt",
-                "search": ["cc_pycairo/gen"],
-                "kind": "image",
-                "source": "pycairo_sketch",
-                "world": "abstract",
-                "worlds": ["organic", "fluid"],
-                "systems": ["noise-fields", "recursive-growth"],
-                "concept": (
-                    "the elements as motion: wind, heat, soil and water "
-                    "traced in strokes"
-                ),
-            },
-            {
-                "id": "sketches",
-                "title": "sketches",
-                "blurb": (
-                    "one script, one image. each file hardcodes its own "
-                    "palette and composition. the pieces selected for 12. "
-                    "are listed there rather than here."
-                ),
-                "directory": "cc_pycairo/gen",
-                "exclude_manifests": ["12.txt"],
-                "kind": "image",
-                "source": "pycairo_sketch",
-                "world": "abstract",
-                "worlds": ["organic", "geometric"],
-                "systems": [
-                    "noise-fields",
-                    "procedural-geometry",
-                    "recursive-growth",
-                ],
-                "concept": (
-                    "texture, flow and branching, explored one script at "
-                    "a time"
-                ),
-            },
             {
                 "id": "render-engine",
                 "title": "render engine",
@@ -291,20 +223,118 @@ CATEGORIES = [
                     "changes feeling"
                 ),
             },
+        ],
+    },
+    {
+        "id": "raw",
+        "title": "raw",
+        "blurb": (
+            "studies and one-off sketches, straight from the script that "
+            "drew them."
+        ),
+        "groups": [
             {
-                "id": "cosmos",
-                "title": "cosmos",
+                "id": "pygame",
+                "title": "pygame",
                 "blurb": (
-                    "seven pieces built on mathematical models instead of "
-                    "Bézier strokes: spiral galaxies, coupled oscillators, "
-                    "Platonic solids, curved spacetime, field lines, drum "
-                    "modes and spherical harmonics. in the order set out "
-                    "in cosmos.txt."
+                    "numbered studies in shape and polar math. every sketch "
+                    "draws once, saves a JPG and exits. jpger_NN.jpg is "
+                    "rendered by the pnger_NN.py of the same number."
+                ),
+                "directory": "cc_pygame/gen",
+                "kind": "image",
+                "source": "pygame_sketch",
+                "world": "geometric",
+                "worlds": ["abstract", "perceptual"],
+                "systems": ["procedural-geometry"],
+                "concept": (
+                    "order from repetition: simple shapes multiplied by a "
+                    "rule"
+                ),
+            },
+            {
+                "id": "pycairo",
+                "title": "pycairo",
+                "blurb": (
+                    "one script, one image. each file hardcodes its own "
+                    "palette and composition. the pieces selected for 12. "
+                    "are listed there rather than here."
+                ),
+                "directory": "cc_pycairo/gen",
+                "exclude_manifests": ["12.txt"],
+                "kind": "image",
+                "source": "pycairo_sketch",
+                "world": "abstract",
+                "worlds": ["organic", "geometric"],
+                "systems": [
+                    "noise-fields",
+                    "procedural-geometry",
+                    "recursive-growth",
+                ],
+                "concept": (
+                    "texture, flow and branching, explored one script at "
+                    "a time"
+                ),
+            },
+        ],
+    },
+    {
+        "id": "illustrations",
+        "title": "illustrations",
+        "blurb": "series with an order and titles of their own.",
+        "groups": [
+            {
+                "id": "12",
+                "title": "12.",
+                "blurb": (
+                    "a selected series, in the order and under the titles "
+                    "set out in 12.txt."
+                ),
+                "manifest": "12.txt",
+                "search": ["cc_pycairo/gen"],
+                "kind": "image",
+                "source": "pycairo_sketch",
+                "world": "abstract",
+                "worlds": ["organic", "fluid"],
+                "systems": ["noise-fields", "recursive-growth"],
+                "concept": (
+                    "the elements as motion: wind, heat, soil and water "
+                    "traced in strokes"
+                ),
+            },
+            {
+                "id": "7-levels",
+                "title": "7 levels",
+                "blurb": (
+                    "the art behind seven reading tracks, a folder for each. "
+                    "cosmos is the first."
                 ),
                 "manifest": "cosmos.txt",
                 "search": ["cc_pycairo/gen/cosmos"],
                 "kind": "image",
                 "source": "pycairo_sketch",
+                # The one folder this manifest fills.
+                "section": "cosmos",
+                "sections": [
+                    {
+                        "id": "cosmos",
+                        "title": "cosmos",
+                        "blurb": (
+                            "seven pieces built on mathematical models "
+                            "instead of Bézier strokes: spiral galaxies, "
+                            "coupled oscillators, Platonic solids, curved "
+                            "spacetime, field lines, drum modes and "
+                            "spherical harmonics. in the order set out in "
+                            "cosmos.txt."
+                        ),
+                    },
+                    {"id": "time", "title": "time"},
+                    {"id": "sound", "title": "sound"},
+                    {"id": "information", "title": "information"},
+                    {"id": "chaos", "title": "chaos"},
+                    {"id": "communication", "title": "communication"},
+                    {"id": "play", "title": "play"},
+                ],
                 "world": "cosmic",
                 "worlds": ["geometric", "mystic"],
                 "systems": ["oscillators", "procedural-geometry"],
@@ -313,16 +343,16 @@ CATEGORIES = [
         ],
     },
     {
-        "id": "canvas",
-        "title": "canvas",
+        "id": "animated",
+        "title": "animated",
         "blurb": (
             "live sketches in plain JavaScript. these run in the page "
             "instead of rendering to a file."
         ),
         "groups": [
             {
-                "id": "sketches",
-                "title": "sketches",
+                "id": "canvas",
+                "title": "canvas",
                 "blurb": "click a preview to run it.",
                 "directory": "canvas",
                 "kind": "sketch",
@@ -967,7 +997,7 @@ def check_unique_ids(categories: list[dict]) -> None:
     Fail when two pieces share an id.
 
     Ids come from file names, and the worlds view gathers pieces from every
-    toolkit, so an id has to be unique across the whole gallery.
+    directory, so an id has to be unique across the whole gallery.
     """
     seen: dict[str, str] = {}
 
@@ -1118,6 +1148,41 @@ def collect_facets(group: dict, items: list[dict]) -> list[dict]:
     return facets
 
 
+def collect_sections(
+    where: str,
+    group: dict,
+    items: list[dict],
+) -> list[dict]:
+    """
+    Build the sections a group shows, in the order it declares them.
+
+    A section with no pieces isn't shown, and a piece with no section sits
+    directly on the group's page, below the cards. That page has no grid to
+    filter, so a group can't have both sections and facets.
+    """
+    declared = group.get("sections", [])
+    ids = [section["id"] for section in declared]
+    used = {item["section"] for item in items if "section" in item}
+
+    if len(set(ids)) < len(ids):
+        raise MetadataError(f"{where}: two sections share an id")
+
+    unknown = sorted(used - set(ids))
+
+    if unknown:
+        raise MetadataError(
+            f"{where}: unknown section(s) {', '.join(unknown)}. "
+            f"known: {', '.join(ids) or 'none'}"
+        )
+
+    if declared and group.get("facets"):
+        raise MetadataError(
+            f"{where}: a group can't have both sections and facets"
+        )
+
+    return [section for section in declared if section["id"] in used]
+
+
 def build_gallery_data(
     repo_root: Path,
     gallery_root: Path,
@@ -1194,6 +1259,10 @@ def build_gallery_data(
                 for item in items:
                     item["taxonomy"] = copy.deepcopy(taxonomy)
 
+            if group.get("section"):
+                for item in items:
+                    item["section"] = group["section"]
+
             groups.append(
                 {
                     "id": group["id"],
@@ -1202,6 +1271,9 @@ def build_gallery_data(
                     "kind": group["kind"],
                     "directory": group.get("directory") or group["manifest"],
                     "facets": collect_facets(group, items),
+                    "sections": collect_sections(
+                        f"{category['id']}/{group['id']}", group, items
+                    ),
                     "items": items,
                 }
             )

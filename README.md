@@ -3,9 +3,10 @@ a repo where i'm learning creative coding
 
 ## gallery
 
-`gallery/index.html` browses everything in this repo, grouped by toolkit:
-pygame, pycairo (the `12.` series, the sketches, the render engine output,
-the `cosmos` series) and the interactive canvas sketches.
+`gallery/index.html` browses everything in this repo, grouped by kind of
+work: engines (the render engine output), raw (the pygame and pycairo
+sketches), illustrations (the `12.` series and 7 levels) and animated (the
+canvas sketches). The worlds view cuts across all of them.
 
 The thumbnails and the data the page reads are not kept in the repository.
 Build them once after cloning, and again after adding new renders.
@@ -109,19 +110,25 @@ Every push to `main` then rebuilds the thumbnails and redeploys.
 Every view has its own address, so any of these can be opened directly:
 
 ```
-gallery/index.html#/pygame
-gallery/index.html#/pycairo/12
-gallery/index.html#/pycairo/render-engine?scene=fault line&palette=ember cobalt
+gallery/index.html#/raw
+gallery/index.html#/illustrations/12
+gallery/index.html#/illustrations/7-levels/cosmos
+gallery/index.html#/engines/render-engine?scene=fault line&palette=ember cobalt
 gallery/index.html#/worlds
 gallery/index.html#/worlds?world=cosmic&system=oscillators
 gallery/index.html#/worlds/cosmos_origin
 ```
 
-`#/worlds` gathers every piece from every toolkit and filters it by world,
+`#/worlds` gathers every piece in the gallery and filters it by world,
 system and interaction. A world filter matches a piece's primary world or
 any of its secondary ones. `#/worlds/<id>` is one piece, with its
-classification and related pieces. Because of these routes, no category in
-`CATEGORIES` can use the id `worlds`.
+classification and related pieces.
+
+Addresses from when the gallery was grouped by toolkit (`#/pygame`,
+`#/pycairo/...`, `#/canvas`) redirect to where those pieces live now, and
+keep their filters. `MOVED_ROUTES` in `gallery/gallery.js` lists them.
+Because of these routes, no category in `CATEGORIES` can use the id `worlds`,
+`pygame`, `pycairo` or `canvas`.
 
 ### adding work
 
@@ -132,6 +139,13 @@ classification and related pieces. Because of these routes, no category in
   piece appears once. `facets` turns filename fields into filter chips.
   `world`, `worlds`, `systems` and `concept` classify every piece in the
   series at once.
+- **a section** is a folder inside a group, one level down, at
+  `#/<category>/<group>/<section>`. A group lists its folders in `sections`,
+  each with an `id`, a `title` and an optional `blurb`, and `section` on the
+  group puts every piece it reads in one of them. The pieces stay in the
+  group's `items`, each with a `section` field. A section with no pieces
+  isn't shown, a piece with no section sits on the group's page below the
+  cards, and a group can't have both `sections` and `facets`.
 - **a manifest** (`12.txt`, `cosmos.txt`) sets the order and titles of a
   series, one piece per line as `position: title: image_stem`. Position and
   title are optional, and `#` starts a comment.
