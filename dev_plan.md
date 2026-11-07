@@ -17,7 +17,7 @@ the work runs in lanes. each lane has its own ticket prefix, ticket table and or
 
 | lane | prefix | what it builds | tickets | next | done |
 |---|---|---|---|---|---|
-| worlds and engines | CC | interactive generative engines, and world-based discovery in the gallery | §4.1 | CC11a ∥ CC6 (step 4), whose one need, CC5, is done | CC1, CC2, CC3, CC12 (2026-11-03), CC4, CC14 (2026-11-05), CC5 (2026-11-07) |
+| worlds and engines | CC | interactive generative engines, and world-based discovery in the gallery | §4.1 | CC11a ∥ CC6 (step 4), whose one need, CC5, is done | CC1, CC2, CC3, CC12 (2026-11-03), CC4, CC14 (2026-11-05), CC5, CC13 (2026-11-07) |
 | seven levels | SL | static pycairo art for the seven reading tracks | §4.2 | SL0. nothing is built yet: no script, image or gallery change exists for this work | none |
 
 - **milestone 1** (worlds and engines): CC5, CC7 and CC10 are published, giving three engines in three worlds (dynamical, organic, mystic), built on the CC2–CC3 taxonomy.
@@ -99,7 +99,7 @@ green is done, blue is the next ticket in each lane, and the dashed box is work 
 
 the queue changes the original order in two ways. CC11 is split, so share links reach each engine right after it ships instead of being added to both later (Q6, amended). CC12 is new and optional. every hard dependency in §4 still holds.
 
-**any time:** CC13 touches only the gallery footer and needs nothing, so it fits between any two steps. it stays out of the steps and the diagram above.
+**any time:** CC13 touched only the gallery footer and needed nothing, so it fitted between any two steps. done on 2026-11-07, after CC5. it stays out of the steps and the diagram above.
 
 **CC14:** done on 2026-11-05, ahead of CC5. it stays out of the steps, and the diagram shows it only because SL1 needs it, so SL1 now waits only on SL0.
 
@@ -326,7 +326,7 @@ world-based discovery in the gallery, and the interactive generative engines.
 | CC11a | share links and image export: strange attractor | S | CC5 | todo |
 | CC11b | share links and image export: artificial garden | S | CC7, CC11a | todo |
 | CC12 | flicker and lifecycle fixes for the three old sketches | S | CC1 | done |
-| CC13 | footer button to eigenomar.com | S | none | todo |
+| CC13 | footer button to eigenomar.com | S | none | done |
 | CC14 | gallery directories | M | none | done |
 
 **order:** the queue in §0 sets the order. EC1 in `eigenomar.com` follows CC5, not the whole queue, and EC2 follows EC1 (appendix A). CC4 needs only CC1, so it runs alongside CC2–CC3. CC11a and CC11b both come before CC8, so that share links and export exist in two engines before anything is extracted (Q6).
@@ -547,14 +547,15 @@ world **mystic** · concept: symbolism, pattern-making and the search for meanin
 
 #### CC13 · footer button to eigenomar.com · S
 
-- **status:** asked for by the owner on 2026-11-04. not started.
-- **why:** nothing in the gallery links to `eigenomar.com`, so a visitor who lands here has no way to the main site.
+- **status:** asked for by the owner on 2026-11-04. done on 2026-11-07.
+- **why:** nothing in the gallery linked to `eigenomar.com`, so a visitor who lands here has no way to the main site.
 - **do:**
   - in `gallery/index.html`, add a link to `https://eigenomar.com`, labelled `eigenomar.com`, to `.site-footer`, beside `#footer-note`. it is static markup: `renderFooter()` in `gallery/gallery.js` writes only to `#footer-note`, so it doesn't change.
   - in `gallery/gallery.css`, style the link as a small button in the look of `.chip`, with the existing tokens.
   - it opens in the same tab, since leaving loses nothing.
 - **done when:** the button shows on every gallery view, works by keyboard with visible focus, and fits at phone width. the gallery still opens from `file://`.
 - **not here:** links on the sketch and engine pages, or changes to the header nav.
+- **result (2026-11-07):** `.site-footer` holds a link, `a.footer-link`, after `#footer-note`, and is now a wrapping flex row: the note on the left and the button on the right, with the button dropping under the note on a phone. the button copies `.chip` with the existing tokens: a pill with accent text on `--surface` and a `--border-strong` edge. on hover the text turns `--text` and the edge `--accent`. under keyboard focus the edge turns `--accent` and the fill `--accent-dim`, following the tiles' `:focus-visible`. it is a plain link in the same tab, so `gallery.js` is unchanged. checked in headless Chrome from `file://` on all 18 routes at 320, 375, 768 and 1440 px: the button shows with the right href and label, stays inside the page without sideways scroll, and doesn't overlap the note. Shift+Tab and Tab reach it with visible focus, and Enter opens `https://eigenomar.com/` in the same tab, with no new tab.
 
 #### CC14 · gallery directories · M
 
@@ -1041,3 +1042,4 @@ the ticket column names a ticket, a lane for a note about a whole lane, or none.
 | 2026-11-07 | none | reconciled with `eigenomar.com`'s dev plan, from its comparison of 2026-11-04. §7 gained the pieces behind the main site's easter eggs (its Q12, Q13, Q16 and Q17), with rules for URLs, framing and the date seed, and a flow field row for its L5. its L7 joined the signal decay row, and its L6 became a note on CC6, which also says Garden of Possibilities will share CC6's logic. CC11 now asks CC11a to write down its seed format. in appendix A, the changes to the main plan are marked done (its decision D11), and EC1–EC2 are mapped to its E1–E3. EC1 now follows CC5 rather than CC10 in the diagram, step 3 and the order line, and it no longer calls the pieces interactive before CC5. the external references and the scope line are updated. nothing was built |
 | 2026-11-07 | none | merged `seven_levels-dev_plan.md` into this file, which was renamed from `worlds_and_features-dev_plan.md` to `dev_plan.md`, still excluded from the site by `*dev_plan.md`. the work now runs in two lanes, worlds and engines (§4.1) and seven levels (§4.2), with one lanes table and one queue diagram in §0, and rules there for adding tickets and lanes. §0–§7 keep their numbers. the seven levels plan's sections are now §4.2.1–§4.2.3, its owner decisions Q8–Q11, its checklist part of §5 and its log part of this one. `CLAUDE.md` points here. nothing was built |
 | 2026-11-07 | CC5 | strange attractor published. the build lists `canvas/<id>/index.html` folders under engines, interactive (`#/engines/interactive`), with the folder name as id, and the engine shows first in `#/worlds` with its page at `#/worlds/strange-attractor`. the page has its meta block, an about panel with its concept, instructions and keys, and its title when opened directly. it draws only when the picture changed and idles once every path is at rest, with a hint to release them again (`fastest` in `sim.js`). measuring frame cost showed it is the length of trail drawn, so the trails are unchanged. decided that `n` and `r` stand in for a tap on keys. 29 tests pass, 42 page checks and 37 gallery checks pass in headless Chrome from `file://`, and the build is clean with 265 items. the README documents engines in the gallery. EC1 in `eigenomar.com` can start once this is deployed. not tried on a real phone or with a GPU |
+| 2026-11-07 | CC13 | footer button done: a link to `https://eigenomar.com`, labelled `eigenomar.com`, sits right of the footer note on every gallery view, styled like a chip with the existing tokens, and drops under the note on a phone. it opens in the same tab and has a visible keyboard focus. `gallery/index.html` and `gallery/gallery.css` only. 71 checks pass in headless Chrome from `file://` across 18 routes at 320 to 1440 px, the build is clean and unchanged with 265 items, and `node --test` passes 29 tests |
