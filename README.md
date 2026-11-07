@@ -4,9 +4,10 @@ a repo where i'm learning creative coding
 ## gallery
 
 `gallery/index.html` browses everything in this repo, grouped by kind of
-work: engines (the render engine output), raw (the pygame and pycairo
-sketches), illustrations (the `12.` series and 7 levels) and animated (the
-canvas sketches). The worlds view cuts across all of them.
+work: engines (the interactive engines and the render engine output), raw
+(the pygame and pycairo sketches), illustrations (the `12.` series and 7
+levels) and animated (the canvas sketches). The worlds view cuts across all
+of them.
 
 The thumbnails and the data the page reads are not kept in the repository.
 Build them once after cloning, and again after adding new renders.
@@ -111,18 +112,25 @@ Every view has its own address, so any of these can be opened directly:
 
 ```
 gallery/index.html#/raw
+gallery/index.html#/engines/interactive
 gallery/index.html#/illustrations/12
 gallery/index.html#/illustrations/7-levels/cosmos
 gallery/index.html#/engines/render-engine?scene=fault line&palette=ember cobalt
 gallery/index.html#/worlds
 gallery/index.html#/worlds?world=cosmic&system=oscillators
 gallery/index.html#/worlds/cosmos_origin
+gallery/index.html#/worlds/strange-attractor
 ```
 
 `#/worlds` gathers every piece in the gallery and filters it by world,
 system and interaction. A world filter matches a piece's primary world or
 any of its secondary ones. `#/worlds/<id>` is one piece, with its
 classification and related pieces.
+
+A live sketch or engine also has its own page outside the gallery, such as
+`canvas/gol.html` or `canvas/strange-attractor/index.html`. Link to an
+engine's `index.html` itself rather than its folder, because a folder
+opened from disk shows a file listing.
 
 Addresses from when the gallery was grouped by toolkit (`#/pygame`,
 `#/pycairo/...`, `#/canvas`) redirect to where those pieces live now, and
@@ -154,7 +162,8 @@ Because of these routes, no category in `CATEGORIES` can use the id `worlds`,
   runtime fall back to a script with the image's name, or `pnger_NN.py` for
   `jpger_NN.jpg`.
 - **a live sketch** is a self-contained `.html` file at the top level of
-  `canvas/`. Its `<title>` is its title in the gallery. It classifies
+  `canvas/`, listed under animated, canvas. Its `<title>` is its title in
+  the gallery. It classifies
   itself in a block in its `<head>`, which the browser ignores:
 
   ```html
@@ -178,8 +187,14 @@ Because of these routes, no category in `CATEGORIES` can use the id `worlds`,
   a module, so the page still works from disk. It sets a global in the browser
   and assigns `module.exports` under node. Run the tests from the repository
   root with `node --test`, which needs no install. Files ending in `.test.js`
-  aren't published. Engines are public at their URL as soon as they're on
-  `main`, and the gallery doesn't list them yet.
+  aren't published. `index.html` carries the same meta block as a live
+  sketch, and the build lists every folder in `canvas/` that has an
+  `index.html` under engines, interactive (`#/engines/interactive`), with
+  the folder name as its id. A folder without one, such as shared code in
+  `canvas/lib/`, is skipped. The gallery's piece page links `sim.js` as the
+  engine's source. In `CATEGORIES`, `"pages": "folders"` reads engines and
+  `"pages": "files"` reads sketches. Engines are public at their URL as soon
+  as they're on `main`.
 - **the vocabulary** (12 worlds, systems, interactions and modes) is defined
   at the top of `build_gallery.py`. The build fails on any value it doesn't
   list. A piece with no classification at all still builds, as unclassified,

@@ -243,6 +243,26 @@
         return Math.sqrt(sum / count);
     }
 
+    // The speed of the fastest path, in units per unit of time: zero only
+    // when every path sits on a rest point. For the page to tell when the
+    // picture has stopped changing, so it may use Math.sqrt. A path that
+    // has become NaN gives NaN, which never counts as at rest.
+    function fastest(state, params) {
+        const { sigma, rho, beta } = params;
+        const positions = state.positions;
+        let most = 0;
+        for (let i = 0; i < positions.length; i += 3) {
+            const x = positions[i];
+            const y = positions[i + 1];
+            const z = positions[i + 2];
+            const dx = sigma * (y - x);
+            const dy = x * (rho - z) - y;
+            const dz = x * y - beta * z;
+            most = Math.max(most, dx * dx + dy * dy + dz * dz);
+        }
+        return Math.sqrt(most);
+    }
+
     // Follow one orbit from a start point, for the page to fit its view and
     // draw the shape behind the live paths. path holds x, z pairs, one for
     // every `stride` steps; the bounds cover every step.
@@ -312,6 +332,7 @@
         clampParams,
         createState,
         defaults,
+        fastest,
         mulberry32,
         palette,
         probeOrbit,

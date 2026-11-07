@@ -11,8 +11,9 @@ also works when index.html is opened straight from disk, without a server.
 
 Every piece is also classified by world, system and interaction, using the
 vocabulary below. An image series sets these fields once on its group in
-CATEGORIES. A live sketch sets them in its own page, in a
-<script type="application/json" id="meta"> block. The build fails on any
+CATEGORIES. A live sketch, which is a canvas/<id>.html file, or an
+engine, which is a canvas/<id>/index.html folder, sets them in its own
+page, in a <script type="application/json" id="meta"> block. The build fails on any
 value outside the vocabulary, and each item carries the result as
 item["taxonomy"], or None when its piece is not classified yet.
 
@@ -200,6 +201,19 @@ CATEGORIES = [
         ),
         "groups": [
             {
+                "id": "interactive",
+                "title": "interactive",
+                "blurb": (
+                    "engines that run live in the page, to watch and to "
+                    "steer. click a preview to run it."
+                ),
+                # One folder per engine, canvas/<id>/index.html. The files
+                # directly in canvas/ are the animated sketches below.
+                "directory": "canvas",
+                "pages": "folders",
+                "kind": "sketch",
+            },
+            {
                 "id": "render-engine",
                 "title": "render engine",
                 "blurb": (
@@ -355,6 +369,7 @@ CATEGORIES = [
                 "title": "canvas",
                 "blurb": "click a preview to run it.",
                 "directory": "canvas",
+                "pages": "files",
                 "kind": "sketch",
             },
         ],
@@ -1035,29 +1050,58 @@ def vocabulary_payload() -> dict:
     }
 
 
+def sketch_pages(directory: Path, pages: str) -> list[tuple[str, Path]]:
+    """
+    The pages a sketch group lists, as (id, page) pairs in natural order.
+
+    "files" lists every .html file directly in the directory, and its id is
+    the file stem. "folders" lists every folder holding an index.html, and
+    its id is the folder name, since every engine's page is called index.
+    A folder without one, such as shared code in canvas/lib/, is skipped.
+    """
+    if pages == "folders":
+        found = [
+            (path.name, path / "index.html")
+            for path in directory.iterdir()
+            if path.is_dir() and (path / "index.html").is_file()
+        ]
+    else:
+        found = [
+            (path.stem, path)
+            for path in directory.iterdir()
+            if path.is_file() and path.suffix.casefold() in SKETCH_EXTENSIONS
+        ]
+
+    return sorted(
+        found,
+        key=lambda page: natural_sort_key(
+            page[1].relative_to(directory).as_posix()
+        ),
+    )
+
+
 def collect_sketch_items(
     repo_root: Path,
     group: dict,
 ) -> list[dict]:
-    """Build one item per interactive HTML sketch."""
+    """Build one item per live sketch or engine page."""
+    pages = group.get("pages", "files")
+
+    if pages not in ("files", "folders"):
+        raise MetadataError(
+            f"CATEGORIES {group['id']}: pages must be 'files' or "
+            f"'folders', not {pages!r}"
+        )
+
     directory = repo_root / group["directory"]
 
     if not directory.is_dir():
         print(f"  skipped, directory not found: {group['directory']}")
         return []
 
-    paths = sorted(
-        (
-            path
-            for path in directory.iterdir()
-            if path.is_file() and path.suffix.casefold() in SKETCH_EXTENSIONS
-        ),
-        key=lambda path: natural_sort_key(path.name),
-    )
-
     items: list[dict] = []
 
-    for path in paths:
+    for page_id, path in sketch_pages(directory, pages):
         repo_relative = path.relative_to(repo_root).as_posix()
 
         fields = read_page_metadata(
@@ -1075,10 +1119,10 @@ def collect_sketch_items(
         else:
             taxonomy = build_taxonomy(fields, repo_relative, live=True)
 
-        if fields.get("id", path.stem) != path.stem:
+        if fields.get("id", page_id) != page_id:
             raise MetadataError(
                 f"{repo_relative}: the meta block's id {fields['id']!r} "
-                f"must match the page's id {path.stem!r}"
+                f"must match the page's id {page_id!r}"
             )
 
         title = fields.get("title")
@@ -1090,21 +1134,31 @@ def collect_sketch_items(
                 f"{repo_relative}: title must be a line of text"
             )
 
+        # A sketch is its own source. An engine's source is the simulation
+        # beside its page, which holds the rules without the drawing.
+        source = repo_relative
+        simulation = path.parent / "sim.js"
+
+        if pages == "folders" and simulation.is_file():
+            source = simulation.relative_to(repo_root).as_posix()
+
         items.append(
             {
-                "id": path.stem,
+                "id": page_id,
                 "kind": "sketch",
                 "title": (
                     (title or "").strip()
                     or extract_html_title(path)
-                    or humanize(path.stem)
+                    or humanize(page_id)
                 ),
+                # The page itself, never its folder: a folder link opened
+                # from disk shows a file listing
                 "full": relative_to_gallery(repo_relative),
                 "bytes": path.stat().st_size,
                 "meta": {},
                 "taxonomy": taxonomy,
-                "source": relative_to_gallery(repo_relative),
-                "sourceLabel": repo_relative,
+                "source": relative_to_gallery(source),
+                "sourceLabel": source,
             }
         )
 

@@ -10,6 +10,7 @@ const {
     clampParams,
     createState,
     defaults,
+    fastest,
     mulberry32,
     palette,
     probeOrbit,
@@ -376,6 +377,58 @@ test('separation is zero for one point and measures the gap for two', () => {
     assert.equal(separation(state), 0);
     state.positions[0] = 7;
     assert.equal(separation(state), 3);
+});
+
+test('fastest is zero on the rest points and the speed of the flow elsewhere', () => {
+    const params = clampParams();
+    const eye = Math.sqrt(params.beta * (params.rho - 1));
+    const state = {
+        count: 3,
+        positions: Float64Array.of(0, 0, 0, eye, eye, params.rho - 1, -eye, -eye, params.rho - 1),
+    };
+    assert.ok(fastest(state, params) < 1e-12);
+
+    // At (1, 0, 0) the flow is (-σ, ρ, 0)
+    state.positions[0] = 1;
+    assert.ok(Math.abs(fastest(state, params) - Math.hypot(params.sigma, params.rho)) < 1e-12);
+
+    state.positions[4] = NaN;
+    assert.ok(Number.isNaN(fastest(state, params)));
+});
+
+// The page stops drawing once every path has moved less than half a pixel
+// over a whole trail. At 15 pixels a unit, about what the page shows, and a
+// trail of 1280 steps, that is this speed held for 1280 steps.
+function stepsToRest(params, limit) {
+    const restSpeed = 0.5 / (15 * 1280 * DT);
+    const state = createState(params);
+    let since = null;
+    while (state.steps < limit) {
+        advance(state, params, 1);
+        if (fastest(state, params) < restSpeed) {
+            since = since === null ? state.steps : since;
+            if (state.steps - since >= 1280) {
+                return state.steps;
+            }
+        } else {
+            since = null;
+        }
+    }
+    return null;
+}
+
+test('settling and fading chaos come to rest, butterfly and closed loops never do', () => {
+    // Settling rests within 5834 to 8125 steps over seeds 1 to 200
+    for (const seed of [1, 2, 3]) {
+        const steps = stepsToRest(presetParams('settling', { seed }), 12000);
+        assert.ok(steps !== null, `settling seed ${seed}`);
+    }
+    // Fading chaos rests after 44620 steps, about 93 seconds at its speed
+    assert.equal(stepsToRest(presetParams('fading-chaos'), 50000), 44620);
+
+    for (const id of ['butterfly', 'closed-loops']) {
+        assert.equal(stepsToRest(presetParams(id), 20000), null, id);
+    }
 });
 
 test('the probe contains the butterfly and matches its known shape', () => {

@@ -4,10 +4,26 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>strange attractor</title>
+    <!-- How the gallery classifies this piece. The page reads it too, for
+         its title and concept. -->
+    <script type="application/json" id="meta">
+    {
+        "id": "strange-attractor",
+        "title": "strange attractor",
+        "world": "dynamical",
+        "worlds": ["abstract", "geometric"],
+        "systems": ["attractors", "particle-fields"],
+        "interactions": ["parameter-manipulation", "pointer"],
+        "modes": ["observe", "intervene"],
+        "concept": "determinism without prediction: paths that start a hair apart under the same rules end up anywhere"
+    }
+    </script>
     <style>
         :root {
             --bg: #0a0a0c;
             --surface: rgba(19, 19, 23, 0.88);
+            /* Panels cover the header in a small frame, so no text shows through */
+            --panel: #131317;
             --border: #3a3a44;
             --text: #e8e6e3;
             --muted: #8f8d96;
@@ -55,6 +71,23 @@
 
         .header p {
             margin: 0;
+        }
+
+        /* The name, then what the preset shows, then the numbers and the hint */
+        .header h1 {
+            margin: 0 0 2px;
+            color: var(--text);
+            font-size: 15px;
+            font-weight: 600;
+        }
+
+        /* In a frame, the page around it already names the piece */
+        .framed .header h1 {
+            display: none;
+        }
+
+        #note {
+            color: var(--text);
         }
 
         /* Both lines keep their height when empty, so the view doesn't jump */
@@ -114,7 +147,8 @@
             max-width: 130px;
         }
 
-        details {
+        /* The two panels sit together at the right end of the bar */
+        #about {
             margin-left: auto;
         }
 
@@ -139,7 +173,7 @@
             padding: 10px 12px;
             border: 1px solid var(--border);
             border-radius: 6px;
-            background: var(--surface);
+            background: var(--panel);
         }
 
         .row {
@@ -177,8 +211,41 @@
             color: var(--muted);
         }
 
+        .about h2 {
+            margin: 0 0 4px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .about p,
+        .about ul {
+            margin: 0 0 8px;
+        }
+
+        .about ul {
+            padding-left: 16px;
+        }
+
+        .about li + li {
+            margin-top: 4px;
+        }
+
+        .about .concept {
+            color: var(--muted);
+        }
+
+        /* Five controls fit one row of a 340px gallery card */
+        @media (max-width: 360px) {
+            button,
+            select,
+            summary {
+                padding: 4px 8px;
+            }
+        }
+
         /* In a small frame the picture comes before the words */
         @media (max-height: 300px) {
+            .header h1,
             #note {
                 display: none;
             }
@@ -196,6 +263,7 @@
         aria-label="Colored lines trace the Lorenz attractor, starting as one thread and spreading apart"></canvas>
 
     <div class="header">
+        <h1 id="title">strange attractor</h1>
         <p id="note"></p>
         <p id="readout"></p>
         <p id="hint">tap anywhere to release the paths from there</p>
@@ -205,7 +273,37 @@
         <button id="pause" type="button">pause</button>
         <button id="reset" type="button">reset</button>
         <select id="preset" aria-label="preset"></select>
-        <details>
+        <details id="about">
+            <summary>about</summary>
+            <div class="panel about">
+                <h2 id="about-title">strange attractor</h2>
+                <p id="about-concept" class="concept"></p>
+                <p>every path follows the same three equations, the Lorenz
+                    system, and nothing in them is random. the paths start a
+                    hair apart, and on average the gap between them grows
+                    about two and a half times with each unit of t, until
+                    they cover the whole shape. nothing is left to chance,
+                    and still a difference too small to see sends each path
+                    somewhere else: that is chaos.</p>
+                <p>the faint line behind them is one long path, which shows
+                    the shape they all move on.</p>
+                <ul>
+                    <li>tap or click anywhere to release every path from that
+                        point and watch them part again.</li>
+                    <li>the presets show the same system with other settings:
+                        too little heat to stay chaotic, or so much that it
+                        finds order again.</li>
+                    <li>in controls, ρ, σ and β change the rules while the
+                        paths move. the starting gap, the number of paths and
+                        the seed start them again.</li>
+                    <li>the same seed and settings always give the same run.</li>
+                </ul>
+                <p class="keys">keys: space pause · r reset · n next seed,
+                    which starts the paths from a new place · 1–4 presets ·
+                    esc closes a panel</p>
+            </div>
+        </details>
+        <details id="controls">
             <summary>controls</summary>
             <div class="panel">
                 <div id="sliders"></div>
@@ -214,7 +312,6 @@
                     <input id="seed" type="number" inputmode="numeric">
                     <button id="next-seed" type="button">next</button>
                 </div>
-                <p class="keys">space pause · r reset · n next seed · 1–4 presets</p>
             </div>
         </details>
     </div>
@@ -224,7 +321,7 @@
         (() => {
             'use strict';
 
-            const { PARAMS, PRESETS, advance, clampParams, createState,
+            const { PARAMS, PRESETS, advance, clampParams, createState, fastest,
                 palette, probeOrbit, release, separation, DT } = window.StrangeAttractor;
 
             // Every path keeps this many points, one for every TRAIL_STRIDE
@@ -247,6 +344,13 @@
             const VIEW_EASING = 0.12;
             const READOUT_MS = 200;
 
+            // Once every path has moved less than this many pixels over a
+            // whole trail, the picture has stopped changing, so the loop
+            // idles until something changes
+            const REST_PIXELS = 0.5;
+            const TRAIL_STEPS = TRAIL_POINTS * TRAIL_STRIDE;
+            const REST_HINT = 'every path is at rest. tap anywhere to release them again';
+
             // Sliders in panel order. The first group changes how the paths
             // move on from where they are. The second group decides the initial
             // state, so a change to it starts them again.
@@ -258,6 +362,7 @@
             const noteEl = document.getElementById('note');
             const readoutEl = document.getElementById('readout');
             const hintEl = document.getElementById('hint');
+            const TAP_HINT = hintEl.textContent;
             const pauseButton = document.getElementById('pause');
             const presetSelect = document.getElementById('preset');
             const seedInput = document.getElementById('seed');
@@ -298,6 +403,13 @@
             let paused = false;
             let pageVisible = !document.hidden;
             let onScreen = true;
+
+            // A frame is drawn only when the picture has changed: a new trail
+            // point, a moving view, or anything the visitor did
+            let dirty = true;
+            let resting = false;
+            let restSince = null;
+            let tapped = false;
 
             // Starting again from the seed: the same parameters and seed
             // always give this same state
@@ -352,11 +464,17 @@
                 }
             }
 
+            // Returns whether the view moved
             function easeView() {
+                let moved = false;
                 for (const key of Object.keys(goal)) {
-                    const gap = goal[key] - view[key];
-                    view[key] = Math.abs(gap) < 0.001 ? goal[key] : view[key] + gap * VIEW_EASING;
+                    if (view[key] !== goal[key]) {
+                        const gap = goal[key] - view[key];
+                        view[key] = Math.abs(gap) < 0.001 ? goal[key] : view[key] + gap * VIEW_EASING;
+                        moved = true;
+                    }
                 }
+                return moved;
             }
 
             function record(lifted) {
@@ -368,6 +486,7 @@
                 }
                 head = (head + 1) % TRAIL_POINTS;
                 filled = Math.min(filled + 1, TRAIL_POINTS);
+                dirty = true;
             }
 
             function stepSimulation(elapsed) {
@@ -481,8 +600,42 @@
                 }
             }
 
+            // Rest means every path has been slow enough, for a whole trail, to
+            // move less than REST_PIXELS: then no trail can change any more
+            function checkRest() {
+                const restSpeed = REST_PIXELS / (goal.scale * TRAIL_STEPS * DT);
+                if (!(fastest(state, params) < restSpeed)) {
+                    restSince = null;
+                    return;
+                }
+                if (restSince === null) {
+                    restSince = state.steps;
+                } else if (state.steps - restSince >= TRAIL_STEPS) {
+                    resting = true;
+                    hintEl.textContent = REST_HINT;
+                    hintEl.hidden = false;
+                    Object.assign(view, goal);
+                    draw();
+                    updateReadout();
+                    updateRunning();
+                }
+            }
+
+            // Anything the visitor does may set the paths moving again
+            function wake() {
+                restSince = null;
+                dirty = true;
+                if (resting) {
+                    resting = false;
+                    hintEl.textContent = TAP_HINT;
+                    hintEl.hidden = tapped;
+                    updateRunning();
+                }
+            }
+
             // The loop runs only while there is something to see: not paused,
-            // the page visible, and the canvas on screen
+            // the page visible, the canvas on screen, and the paths not all
+            // at rest
             function tick(now) {
                 frame = requestAnimationFrame(tick);
                 const elapsed = lastFrame === null ? 0 : Math.min(now - lastFrame, MAX_FRAME_MS);
@@ -492,17 +645,23 @@
                     governTrails(elapsed);
                 }
                 stepSimulation(elapsed);
-                easeView();
-                draw();
+                if (easeView()) {
+                    dirty = true;
+                }
+                if (dirty) {
+                    dirty = false;
+                    draw();
+                }
 
                 if (now - lastReadout >= READOUT_MS) {
                     lastReadout = now;
                     updateReadout();
                 }
+                checkRest();
             }
 
             function updateRunning() {
-                const shouldRun = !paused && pageVisible && onScreen;
+                const shouldRun = !paused && pageVisible && onScreen && !resting;
                 if (shouldRun && frame === null) {
                     lastFrame = null;
                     frame = requestAnimationFrame(tick);
@@ -514,6 +673,7 @@
 
             // With the loop stopped, a change still has to reach the screen
             function refresh() {
+                wake();
                 if (frame === null) {
                     Object.assign(view, goal);
                     draw();
@@ -683,9 +843,24 @@
                 record(true);
                 release(state, params, x, x, z);
                 record(false);
+                tapped = true;
                 hintEl.hidden = true;
                 refresh();
             });
+
+            // One panel at a time: they open in the same place
+            const panels = [...document.querySelectorAll('.bar details')];
+            for (const panel of panels) {
+                panel.addEventListener('toggle', () => {
+                    if (panel.open) {
+                        for (const other of panels) {
+                            if (other !== panel) {
+                                other.open = false;
+                            }
+                        }
+                    }
+                });
+            }
 
             // Keys reach the page only while it has focus, so every action
             // above also has a button
@@ -696,6 +871,18 @@
                 }
 
                 const target = event.target;
+
+                // Escape closes an open panel, from anywhere inside it too,
+                // and leaves focus on its button
+                if (event.key === 'Escape') {
+                    const open = panels.find((panel) => panel.open);
+                    if (open) {
+                        open.open = false;
+                        open.querySelector('summary').focus();
+                    }
+                    return;
+                }
+
                 if (target.closest('input[type="number"], select')) {
                     return;
                 }
@@ -759,6 +946,22 @@
                     updateRunning();
                 }
             });
+
+            // The title and concept come from the meta block in the head,
+            // which the gallery reads too, so they're written once
+            try {
+                const meta = JSON.parse(document.getElementById('meta').textContent);
+                if (meta.title) {
+                    document.getElementById('title').textContent = meta.title;
+                    document.getElementById('about-title').textContent = meta.title;
+                }
+                document.getElementById('about-concept').textContent = meta.concept || '';
+            } catch (error) {
+                // The names written in the page stay as they are
+            }
+
+            // Comparing windows works across origins, also from file://
+            document.documentElement.classList.toggle('framed', window.self !== window.top);
 
             buildSliders();
             syncControls();
