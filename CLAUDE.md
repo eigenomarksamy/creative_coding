@@ -1,1 +1,2 @@
+- Commands, the same on Windows and WSL (`python3` there): `python dev.py setup|build|test|check|serve|open`. Run `check` (tests, then the build) before pushing. See the README's commands section.
 - The one dev plan for this repo, in lanes (worlds & engines CC, seven levels SL; tickets, decisions, log): `dev_plan.md`. Read its §0 (state) first, and as work ships update its lane's row in §0, its ticket table in §4, the queue diagram and the log. New work goes in that file as §0 "adding work" says, never in a new plan file.

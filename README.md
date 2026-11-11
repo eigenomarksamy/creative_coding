@@ -12,10 +12,42 @@ of them.
 The thumbnails and the data the page reads are not kept in the repository.
 Build them once after cloning, and again after adding new renders.
 
+### commands
+
+`dev.py` runs the everyday commands the same way on Windows, WSL, Linux and
+macOS. It needs only Python, and nothing has to be activated first: the
+build runs in `.venv` when there is one, and otherwise in the Python running
+`dev.py`.
+
+```bash
+python dev.py setup          # create .venv and install requirements.txt into it
+python dev.py build          # build the thumbnails and the gallery data
+python dev.py build --force  # rebuild every thumbnail
+python dev.py test           # run the engines' tests with node --test
+python dev.py check          # test, then build: run this before pushing
+python dev.py open           # open the gallery from disk
+python dev.py serve          # serve it at http://127.0.0.1:8765/gallery/
+```
+
+Use `python3` where there's no `python` on the path, as on Ubuntu, and on
+Windows `py` works too. Each command prints what it runs, and the sections
+below give the same steps by hand.
+
+### Windows and WSL
+
+A clone on Windows and a clone in WSL work the same way side by side.
+`.gitattributes` keeps every text file LF in both, whatever Git's
+`core.autocrlf` says, so a Windows build writes the same gallery data as WSL
+and Cloudflare. Keep a `.venv` for each clone, because an environment made
+on one side doesn't run on the other, and `dev.py setup` says so if it finds
+one. A clone in WSL can also skip `.venv` and build with a Pillow installed
+for the whole system.
+
 ### setup
 
-Create a virtual environment in the repository root, activate it, then
-install the one dependency the build needs:
+`python dev.py setup` does this. By hand, create a virtual environment in
+the repository root, activate it, then install the one dependency the build
+needs:
 
 ```bash
 python -m venv .venv
@@ -60,8 +92,10 @@ by git. A rebuild that finds nothing new leaves them untouched.
 
 ### opening it
 
-No server is needed, the gallery data is a plain `.js` file. Open
-`gallery/index.html` in a browser, or from the repository root:
+No server is needed, the gallery data is a plain `.js` file.
+`python dev.py open` opens it in the default browser, and from WSL in the
+Windows one. By hand, open `gallery/index.html` in a browser, or from the
+repository root:
 
 ```bash
 xdg-open gallery/index.html   # Linux
@@ -78,9 +112,11 @@ file://wsl.localhost/Ubuntu/home/eigenomar/dev_ws/creative_coding/gallery/index.
 
 ### serving it
 
-Needed only to view the gallery from another machine. Run this from the
-repository root, not from `gallery/`, because the tiles reference the
-full size images as `../cc_pycairo/...`:
+Needed only to view the gallery over http, or from another machine.
+`python dev.py serve` listens on 127.0.0.1 only, and
+`python dev.py serve --bind 0.0.0.0` shares it with the local network. By
+hand, run this from the repository root, not from `gallery/`, because the
+tiles reference the full size images as `../cc_pycairo/...`:
 
 ```bash
 python -m http.server 8765
@@ -104,7 +140,9 @@ Create → Import a repository* with:
 - build command: `python3 -m pip install -r requirements.txt && python3 build_gallery.py`
 - deploy command: `npx wrangler deploy`
 
-Every push to `main` then rebuilds the thumbnails and redeploys.
+Every push to `main` then rebuilds the thumbnails and redeploys. The
+Cloudflare build doesn't use `dev.py`, and it doesn't run the tests, so run
+`python dev.py check` before pushing.
 
 ### linking to a view
 
@@ -186,7 +224,8 @@ Because of these routes, no category in `CATEGORIES` can use the id `worlds`,
   no canvas code, and `sim.test.js` tests it. `sim.js` is a classic script, not
   a module, so the page still works from disk. It sets a global in the browser
   and assigns `module.exports` under node. Run the tests from the repository
-  root with `node --test`, which needs no install. Files ending in `.test.js`
+  root with `node --test` (or `python dev.py test`), which needs no install.
+  Files ending in `.test.js`
   aren't published. `index.html` carries the same meta block as a live
   sketch, and the build lists every folder in `canvas/` that has an
   `index.html` under engines, interactive (`#/engines/interactive`), with

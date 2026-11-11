@@ -2,6 +2,7 @@
 # Everything else in the repository is served as-is.
 .git/
 .gitignore
+.gitattributes
 .assetsignore
 .vscode/
 .venv/
@@ -11,6 +12,7 @@ __pycache__/
 *.pyc
 wrangler.jsonc
 requirements.txt
+dev.py
 
 # Planning notes and agent instructions stay in the repository but off the site.
 *dev_plan.md

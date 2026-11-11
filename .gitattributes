@@ -1,0 +1,10 @@
+# Text files are LF in the repository and in every checkout, Windows
+# included, whatever core.autocrlf says. A Windows checkout then matches the
+# WSL one and the Cloudflare build byte for byte: the gallery data records
+# each sketch's size, the site serves the files as they are, and a CRLF
+# shebang breaks build_gallery.py if this checkout is run from WSL.
+* text=auto eol=lf
+
+# The committed renders.
+*.png binary
+*.jpg binary
