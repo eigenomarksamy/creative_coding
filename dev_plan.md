@@ -6,9 +6,7 @@ the one dev plan for `creative_coding` (this repo). its work runs in lanes, whic
 - **seven levels (SL)** makes the static art behind the seven reading tracks: 49 level images and 2 connection diagrams.
 - **ecosystem onboarding (EO)** makes the repo discoverable and coordinated in the eigenomar ecosystem, without changing how it is built or delivered.
 
-**reading guide.** §0 is the state of every lane, the queue of tickets to pick up next, and how to add work. §1 describes the repo as it is. §2 and §3 are the rules and vocabulary that every lane uses. §4 holds the lanes and their tickets: §4.1 worlds and engines, §4.2 seven levels, §4.3 ecosystem onboarding. §5 is the checklist each ticket must pass. §6 records the design decisions. §7 is the backlog. appendix A is work for a different repo. the log at the bottom records what has shipped, in every lane.
-
-**external references.** some IDs here belong to the `eigenomar.com` dev plan, not to this repo. D5 is its discovery ticket for related entries, and D11 is one of its decisions (D1–D14), which are a separate family. L5–L8 are its lab tickets, E1–E3 its creative coding tickets, and W2 another of its tickets. Q12, Q13, Q16 and Q17 are its easter-egg tickets, not this plan's decisions Q1–Q7.
+**reading guide.** §0 is the state of every lane, the queue of tickets to pick up next, and how to add work. §1 describes the repo as it is. §2 and §3 are the rules and vocabulary that every lane uses. §4 holds the lanes and their tickets: §4.1 worlds and engines, §4.2 seven levels, §4.3 ecosystem onboarding. §5 is the checklist each ticket must pass. §6 records the design decisions. §7 is the backlog. the log at the bottom records what has shipped, in every lane.
 
 ---
 
@@ -20,12 +18,12 @@ the work runs in lanes. each lane has its own ticket prefix, ticket table and or
 |---|---|---|---|---|---|
 | worlds and engines | CC | interactive generative engines, and world-based discovery in the gallery | §4.1 | CC11a ∥ CC6 (step 4), whose one need, CC5, is done | CC1, CC2, CC3, CC12 (2026-11-03), CC4, CC14 (2026-11-05), CC5, CC13 (2026-11-07) |
 | seven levels | SL | static pycairo art for the seven reading tracks | §4.2 | SL0. nothing is built yet: no script, image or gallery change exists for this work | none |
-| ecosystem onboarding | EO | the repo's place in the eigenomar ecosystem: a manifest, the shared Claude rules, issues in the ecosystem's Project, and the portability gaps | §4.3 | EO5 ∥ EO6, which need nothing. the rest wait on the ecosystem, the site's plan or the owner | EO1 (2026-11-12) |
+| ecosystem onboarding | EO | the repo's place in the eigenomar ecosystem: a manifest, the shared Claude rules, issues in the ecosystem's Project, and the portability gaps | §4.3 | EO5 ∥ EO6, which need nothing. the rest wait on the ecosystem, the site's plan or the owner | EO1, EO4 (2026-11-12) |
 
 - **milestone 1** (worlds and engines): CC5, CC7 and CC10 are published, giving three engines in three worlds (dynamical, organic, mystic), built on the CC2–CC3 taxonomy.
-- **scope of this repo:** CC1–CC14 (the owner approved CC12 on 2026-11-03 and asked for CC13 and CC14 on 2026-11-04) and SL0–SL11. the pieces behind `eigenomar.com`'s easter eggs are built here too, each once it is promoted from §7. EC1–EC2 (appendix A) and the seven levels' site actions (§4.2) belong to `eigenomar.com` and are never implemented here. the changes this plan asked of the main plan were made there on 2026-11-03.
+- **scope of this repo:** CC1–CC14 (the owner approved CC12 on 2026-11-03 and asked for CC13 and CC14 on 2026-11-04) and SL0–SL11.
 - **repos:** `creative_coding` is the home of every engine, algorithm, renderer, control and gallery page, and no new repo is needed. `eigenomar.com` presents the project under art and links to it. `gallery.eigenomar.com` is served from this repo (see §1).
-- **tracking link:** [this file on GitHub](https://github.com/eigenomarksamy/creative_coding/blob/main/dev_plan.md) is the one link for following this work from other repos, and `eigenomar.com`'s `dev-plan.md` uses it. it shows what is pushed to `main`. keep no copy of this plan anywhere else, because a copy can drift.
+- **tracking link:** [this file on GitHub](https://github.com/eigenomarksamy/creative_coding/blob/main/dev_plan.md) is the one link for following this work from other repos. it shows what is pushed to `main`. keep no copy of this plan anywhere else, because a copy can drift. confidential work is the exception: it never goes in this file, and the ecosystem's shared rules say where it goes (adding work, below).
 - **between the lanes:** SL1 needs CC14, which is done, and no CC ticket needs an SL ticket. the open tickets of both lanes meet in `build_gallery.py` (SL1's registry, and CC7 or CC10 only if they need new vocabulary, since CC5's scan lists a new engine folder by itself), the README and this file.
 - **long-term direction:** independent engines connected by their concepts, whose systems and interactions might later be combined without losing what makes each one distinct. there is no general composer until the gates in §7 are met.
 
@@ -58,7 +56,7 @@ flowchart TD
     CC14["CC14 gallery directories"]
   end
   subgraph SLL["seven levels (SL)"]
-    SL0["SL0 brief and data"] --> SL1["SL1 gallery pipeline"]
+    SL0["SL0 data from the briefs"] --> SL1["SL1 gallery pipeline"]
     SL0 --> SL3["SL3 kit and style pilot"]
     SL1 --> SL2["SL2 universe migration"]
     SL3 --> SL4["SL4 chaos"]
@@ -83,17 +81,14 @@ flowchart TD
     EO7["EO7 WSL notes"]
   end
   CC14 --> SL1
-  CC5 --> EC1["EC1, then EC2 in eigenomar.com"]
 
   classDef done fill:#e5f4e4,stroke:#2e7d32,color:#1b3a1d
   classDef next fill:#e7f1fb,stroke:#1565c0,stroke-width:2px,color:#0d2b4e
-  classDef other stroke-dasharray:4 3
-  class CC12,CC2,CC3,CC4,CC14,CC5,EO1 done
+  class CC12,CC2,CC3,CC4,CC14,CC5,EO1,EO4 done
   class CC11a,CC6,SL0,EO5,EO6 next
-  class EC1 other
 ```
 
-green is done, blue is the next ticket in each lane, and the dashed box is work in another repo.
+green is done, and blue is the next ticket in each lane.
 
 #### worlds and engines (CC)
 
@@ -101,7 +96,7 @@ green is done, blue is the next ticket in each lane, and the dashed box is work 
 |---|---|---|---|
 | 1 | (CC12 →) CC2 ∥ CC4 | CC12: the three `canvas/*.html` scripts. CC2: `build_gallery.py`, plus a meta block in each of the three sketch pages. CC4: the new folder `canvas/strange-attractor/` and `.assetsignore` | CC2 is small and unblocks CC3. CC4 needs only CC1, shares no file with CC2, and is the riskiest ticket, so it starts early. CC12, if approved, takes under an hour and removes flicker from the live site |
 | 2 | CC3 (∥ CC4 if it's still running) | `gallery/`, `build_gallery.py` | follows CC2 directly, while the item model and the facet code are still fresh |
-| 3 | CC5 | `build_gallery.py` (sketch scan), `canvas/strange-attractor/` | the two branches join: CC5 needs CC3 and CC4. coming straight after CC4 keeps the engine fresh for the polish work, which is most of CC5. once it's published, EC1 in `eigenomar.com` can follow (appendix A) |
+| 3 | CC5 | `build_gallery.py` (sketch scan), `canvas/strange-attractor/` | the two branches join: CC5 needs CC3 and CC4. coming straight after CC4 keeps the engine fresh for the polish work, which is most of CC5 |
 | 4 | CC11a ∥ CC6 | `canvas/strange-attractor/` ∥ the new folder `canvas/artificial-garden/` | share links and export go into the attractor while its parameters are fresh. CC6 starts after CC5 has shown what publishing needs, and gives every parameter a range from the start, so CC11b has nothing to retrofit |
 | 5 | CC7 | `canvas/artificial-garden/`, `build_gallery.py` if any metadata is new | the garden is published |
 | 6 | CC11b → CC8 | `canvas/artificial-garden/`, then `canvas/lib/` and both engines | CC11b copies CC11a's pattern. CC8 runs straight after it, while both implementations are fresh, and its gate is met there |
@@ -128,11 +123,11 @@ the queue changes the original order in two ways. CC11 is split, so share links 
 ### adding work
 
 - **a ticket in an existing lane:** the lane's next free number, a row in its table in §4, a node in the queue diagram and a log line. IDs are never reused or renumbered, and a split ticket keeps its number with a letter, like CC11a and CC11b.
-- **a new lane:** for work with its own goal, files and order, as the seven levels have. give it a two-letter prefix that isn't taken (CC, SL and EC here, while `eigenomar.com`'s plan uses single letters), a row in the lanes table above, a subsection of §4 after the last one, with its ticket table, its own notes and its tickets, a subgraph in the queue diagram, and a log line. never a new plan file: this file is the one tracking link.
+- **a new lane:** for work with its own goal, files and order, as the seven levels have. give it a two-letter prefix that isn't taken, here or by confidential work (below), a row in the lanes table above, a subsection of §4 after the last one, with its ticket table, its own notes and its tickets, a subgraph in the queue diagram, and a log line. never a new plan file: this file is the one tracking link.
 - **a decision:** the next Q number in §6, whichever lane raises it.
 - **an idea not yet committed:** §7, until the owner promotes it into a lane.
 - **a fact or rule for one lane only:** that lane's subsection of §4. §1–§3 and §5–§7 are for what every lane shares, and §0–§7 keep their numbers, so links to them hold.
-- **work for `eigenomar.com`:** appendix A, never a ticket here.
+- **confidential work:** never in this file. the ecosystem's shared rules (EO2) say where it goes. it keeps this file's lanes, prefixes and numbering, so a new ID or prefix must be free in both places.
 
 ## 1. repo facts
 
@@ -346,7 +341,7 @@ world-based discovery in the gallery, and the interactive generative engines.
 | CC13 | footer button to eigenomar.com | S | none | done |
 | CC14 | gallery directories | M | none | done |
 
-**order:** the queue in §0 sets the order. EC1 in `eigenomar.com` follows CC5, not the whole queue, and EC2 follows EC1 (appendix A). CC4 needs only CC1, so it runs alongside CC2–CC3. CC11a and CC11b both come before CC8, so that share links and export exist in two engines before anything is extracted (Q6).
+**order:** the queue in §0 sets the order. CC4 needs only CC1, so it runs alongside CC2–CC3. CC11a and CC11b both come before CC8, so that share links and export exist in two engines before anything is extracted (Q6).
 
 #### CC1 · repository and gallery audit · S
 
@@ -466,6 +461,7 @@ world **organic** · concept: emergence, adaptation and indirect control.
   - add environmental parameters such as growth rate, branching and resource availability.
   - let visitors influence growth indirectly by placing resources or obstacles.
   - keep the simulation rules separate from rendering, in `canvas/artificial-garden/sim.js`, laid out and tested like CC4 (Q4, Q5).
+  - keep the step function in `sim.js` pure: it depends only on its arguments, with no DOM, canvas, timers or globals.
 - **from CC5:** what publishing took, so the core can have it from the start:
   - the meta block in `index.html` is all the build needs. the folder appears under engines, interactive by itself, so don't give the page another name.
   - frame cost is the length of line drawn, not the number of strokes. bound how much the canvas draws, draw only when the picture changed, and stop the loop when nothing can change any more.
@@ -473,9 +469,6 @@ world **organic** · concept: emergence, adaptation and indirect control.
   - check what each preset claims across many seeds, not only the default. CC4's first notes for three of its four presets were false for some or most seeds, and tests on one or five seeds passed anyway. an audit over 200 seeds found them.
   - test growth constraints, resource interactions and deterministic initialization.
 - **from CC1 and the queue:** CC11a lands in strange attractor first, so follow its pattern from the start. give every parameter a default and a range, and build the initial state from the seed and parameters alone, so that CC11b only adds URL encoding and export.
-- **from `eigenomar.com`:**
-  - the main plan's L6, recursive growth, moved here, and artificial garden is the nearest work. its spec lists depth, branching angle, symmetry, growth rate and randomness. take what fits without widening CC6, and list anything left over in §7 when CC6 is done.
-  - the main site's planned game, Garden of Possibilities, has the same mechanic: growing an organism indirectly by placing attractors or obstacles with limited resources. it will share CC6's logic rather than copy it, so keep the step function in `sim.js` pure: it depends only on its arguments, with no DOM, canvas, timers or globals. the shared package stays parked (§7).
 - **done when:** the organism evolves under consistent rules, and a visitor's intervention changes how it develops in a way that matters.
 - **not here:** a full ecosystem, genetic evolution, multiplayer.
 
@@ -536,11 +529,11 @@ world **mystic** · concept: symbolism, pattern-making and the search for meanin
 #### CC11 · share links and image export · CC11a S + CC11b S
 
 - **split (Q6, amended by CC1):** CC11a builds this into strange attractor right after CC5. CC11b brings the same into artificial garden right after CC7, copying CC11a's pattern. CC11 is done when both are.
-- **from `eigenomar.com`:** the main site will link to the date-seeded piece (§7) with a date in the URL, in the seed format CC11a settles on. write that format into CC11a's result.
 - **do:**
   - CC1 found nothing to reuse: no export, URL state or storage exists in any page (§1.3). the closest pattern is the gallery's hash params, read and written with `URLSearchParams`, which also work from `file://`.
   - build it into both strange attractor and artificial garden, accepting some duplication for now. CC8 extracts it afterwards (Q6).
   - make configurations shareable through a seed and parameters encoded in the URL.
+  - write the seed format CC11a settles on into CC11a's result.
   - validate restored values and clamp them to their allowed ranges.
   - add randomize, reset and copy-link controls where they fit.
   - export the canvas as a PNG whose filename includes the experiment name and seed.
@@ -619,13 +612,11 @@ every piece that exists today moves like this, and all 264 are accounted for:
 
 the art behind the seven reading tracks: 49 level images and 2 connection diagrams, all in one flat folder, `cc_pycairo/gen/seven_levels/`. seven of the 51 already exist as the cosmos series, so 44 are new. the work in `eigenomar.com` is listed in its own document, [seven levels: eigenomar site actions](https://claude.ai/artifact/6TZ8CSu8qPxna9coRE7nBW), and is never implemented here. the owner's decisions for this lane are Q8–Q11 (§6).
 
-- **source package:** the briefs and example data are in `/mnt/c/dev_ws/eigenomar/eigenomar/tmp/seven_levels/creative_coding_seven_levels_plan/`. that folder is gitignored in the other repo, so SL0 brings them here.
-
 sizes and the "needs" column work as in §4. "site" names the action in the site document that the ticket unblocks once deployed.
 
 | ID | ticket | size | needs | site | status |
 |---|---|---|---|---|---|
-| SL0 | brief and data into the repo | S | none | action 9 | todo |
+| SL0 | data from the briefs into the repo | S | none | action 9 | todo |
 | SL1 | gallery pipeline | M | SL0, CC14 | action 5 | todo |
 | SL2 | universe migration | S | SL1 | action 7 | todo |
 | SL3 | kit and style pilot | M | SL0 | none | todo |
@@ -640,7 +631,7 @@ sizes and the "needs" column work as in §4. "site" names the action in the site
 
 #### 4.2.1 how the work fits this repo
 
-the package said to adapt to the repo's conventions. this table is where that changed its suggestions. the choices are provisional, made 2026-11-04.
+the seven levels package, the briefs and example data that SL0 works from, said to adapt to the repo's conventions. this table is where that changed its suggestions. the choices are provisional, made 2026-11-04.
 
 | topic | package says | this repo | this plan |
 |---|---|---|---|
@@ -790,14 +781,14 @@ checked by script on 2026-11-04. the good news first: tracks, nodes, 21 meta pai
 | 6 | the manifest's filenames, and the naming contract and migration table in brief 09, use level labels. the manifest also carries `book` and `author` | use the stems in §4.2.2 and SL2, and drop both fields | SL0 |
 | 7 | 14 of the 35 connected pairs are mirrored, so 49 directed edges are only 35 lines | draw 35 lines, marking the mirrored ones as two-way. keep all 49 in the data, since each direction has its own question | SL10 |
 
-#### SL0 · brief and data into the repo · S
+#### SL0 · data from the briefs into the repo · S
 
 - **do:**
-  - copy briefs 01–09 into `seven_levels_briefs/`, and add that folder to `.assetsignore`, since everything else committed is served.
+  - keep briefs 01–09 and the package's example data out of this repo. they are confidential, so the ecosystem's shared rules say where they go (§0, adding work). only the two files below, derived from them, are committed here.
   - write `seven_levels.json` from `assets-manifest.example.json`: tracks with position, gallery label, world, worlds, systems, concept and color, and levels with id, level, label, accent, stem, `alt` and `caption`, taking the stems from §4.2.2 and SL2. leave out `path`, `public_url` and `status`, which are derived, and `book` and `author`, which belong to the site's reading pages.
   - write `seven_levels_connections.json` from `connections.example.json`.
   - apply the corrections in §4.2.3.
-- **done when:** both files parse, and the registry holds 49 levels and 2 connection diagrams.
+- **done when:** both files parse, the registry holds 49 levels and 2 connection diagrams, and they are the only files SL0 commits.
 
 #### SL1 · gallery pipeline · M
 
@@ -875,7 +866,7 @@ the repo's place in the eigenomar ecosystem, a set of independent repos coordina
 | EO1 | `project.yaml` at the root | S | none | done |
 | EO2 | the shared Claude rules in `CLAUDE.md` | S | the shared rules file in `meta-eigenomar` | todo |
 | EO3 | drop the retired site document from §4.2 | S | the site's plan holding this series' site work | todo |
-| EO4 | move the confidential planning content out | M | the owner's go-ahead | todo |
+| EO4 | move the confidential planning content out | M | the owner's go-ahead | done |
 | EO5 | `canvas/snake2.html` to LF | S | none | todo |
 | EO6 | install notes for the sketches, per platform | S | none | todo |
 | EO7 | retire the WSL notes | S | the owner confirms no WSL clone is left | todo |
@@ -915,6 +906,7 @@ the repo's place in the eigenomar ecosystem, a set of independent repos coordina
   - give §0's "adding work" a rule for confidential work: it never goes in this file, and the shared rules (EO2) say where it goes. the tracking link in §0 and `CLAUDE.md`'s "never in a new plan file" get the same exception.
 - **needs:** the owner's go-ahead. which parts move, and where, was decided on 2026-11-12.
 - **done when:** none of the marked content is left in this file, every ticket that stays still reads on its own, and only this file and `CLAUDE.md` changed.
+- **result (2026-11-12):** the marked content is out of this file, with no copy left here, and what stayed is reworded so every ticket still reads on its own. §0's adding work has the rule for confidential work, and the tracking link and `CLAUDE.md` have the same exception. only this file and `CLAUDE.md` changed.
 
 #### EO5 · `canvas/snake2.html` to LF · S
 
@@ -1039,31 +1031,13 @@ these are proposed concepts, not committed tickets. promote each one separately 
 | the impossible machine | mechanical | causality | build interconnected kinetic mechanisms |
 | perception trap | perceptual | the limits of perception | manipulate optical illusions and contradictory geometry |
 | memory of water | fluid | impermanence | leave disturbances that slowly diffuse and disappear |
-| flow field | fluid (suggested) | not set yet | particles moving through a noise field. the main plan's L5 moved here, and its spec lists particle count, field strength, noise scale, turbulence, attractors and repellers, speed and trail persistence |
+| flow field | fluid (suggested) | not set yet | particles moving through a noise field |
 | orbital dreams | cosmic | infinity and scale | manipulate interacting celestial trajectories |
-| signal decay | glitch | entropy | deform and corrupt procedural visual signals. the main plan's L7, glitch lab, moved here: pixel sorting, displacement, feedback and procedural corruption, applied to a generated or uploaded image, with nothing uploaded to a server |
+| signal decay | glitch | entropy | deform and corrupt procedural visual signals |
 | living typography | typographic | language and meaning | create letters that behave like evolving organisms |
 | imaginary geography | topographic | formation and exploration | generate and reshape procedural landscapes |
 | symmetry studies | geometric | order and repetition | construct and transform generative patterns |
 | emotional noise | abstract | expression and chance | guide an evolving composition through forces and noise |
-
-### pieces for `eigenomar.com`'s easter eggs
-
-the main site decided that the visual engines behind its easter eggs are built here. it links to each piece by a stable URL, or frames it with a fallback for when the gallery is down, and it never bundles gallery code. its tickets Q12, Q13, Q16 and Q17 wait on these pieces. like the future engines, they are proposals: promote each one separately once milestone 1 has shipped, or sooner if the owner says so.
-
-| piece | what it is | needed by | how the main site uses it |
-|---|---|---|---|
-| the turntable | a turntable where scratching backward, with the arrow keys too, reveals a clue | Q13 | framed in a dialog |
-| the rooms of `/liminal` | three short rooms, threshold, reflection and causality, each at its own URL, because the main site loads only the room a visitor is in | Q16 | framed |
-| the observer | the final artwork of an optional mystery, on observation, identity and uncertainty | Q17 | framed |
-| the date-seeded piece | draws its own deterministic artwork for each date seed | Q12 | linked, with the date in the URL |
-| entropy.exe | a slider moves a composition from order to chaos, the text changes along with it, and there is a secret at full chaos | nothing, though E2 can feature it | linked |
-| a secret seed | a seed in a gallery piece that gives a deliberately designed hidden artwork | nothing | none |
-
-- every piece needs a stable URL.
-- a framed piece must work by keyboard. keys reach an iframe only while it has focus, so the main site moves focus into the frame.
-- the gallery sends no `frame-ancestors` or `X-Frame-Options` today, so framing works (checked on 2026-11-07: the repo has no `_headers` file, and the live response sends neither). if it ever sends them, they must allow `https://eigenomar.com`.
-- the date-seeded piece takes its date in the seed format CC11a settles on. the main site builds that URL, so the format has to be written down here, in CC11a's result.
 
 ### parked
 
@@ -1084,59 +1058,6 @@ each item waits until its gate is met.
 
 ---
 
-## appendix A · `eigenomar.com` work (not this repo)
-
-this is kept here for context. apply it in the main website repo and its dev plan.
-
-| ID | ticket | size | needs | status |
-|---|---|---|---|---|
-| EC1 | creative coding entry and discovery | S | CC3, CC5 | todo |
-| EC2 | related entries and journeys | S | EC1, D5 | todo |
-
-**in the main plan,** these two are split into three tickets. EC1 is its E1 and E2, and EC2 is its E3, whose journey is a candidate for its ticket W2. E1 introduces the collection and links the worlds view, so it can land before CC5. E2 features experiments, so it waits for CC5.
-
-### EC1 · creative coding entry and discovery · S
-
-- **ready since CC5 (2026-11-07):** both needs are done, so EC1 can start once CC5 is deployed. the experiment to feature is strange attractor, at `#/worlds/strange-attractor` in the gallery and `canvas/strange-attractor/index.html` on its own, and the gallery now has a piece that reads input, so the entry may call the collection interactive.
-- **do:**
-  - keep the existing creative coding entry in the art section.
-  - update its description to introduce creative coding worlds as a collection of generative pieces. call them interactive only from CC5 on, because until then no piece in the gallery reads input (§1.1).
-  - link to `gallery.eigenomar.com` and its world-based navigation.
-  - feature representative experiments only if the gallery gives them stable direct URLs.
-  - keep the main site static and independent of the gallery's runtime.
-  - don't duplicate the gallery's rendering code or interactive controls.
-- **done when:** the art section clearly introduces the collection, sends visitors to the gallery, and still works when the gallery is down.
-- **not here:** rebuilding the gallery on the main site, loading a gallery framework, adding a new top-level navigation item.
-
-### EC2 · related entries and journeys · S
-
-- **gate:** EC1 and D5 are complete, and the relevant engines are published.
-- **do:**
-  - connect the creative coding entry to related writings and interactive pieces.
-  - link strange attractor to the existing phase portrait and the mathematical writings that fit.
-  - link artificial garden to writings on emergence, recursion or complexity, once they exist.
-  - link sigil laboratory to geometric or symbolic explorations where relevant.
-  - add an optional guided journey through selected concepts once there are enough meaningful stops.
-  - use the site's existing related-entry system.
-- **done when:** visitors can follow curated links between creative coding, mathematics, philosophy and other published work, with no new navigation system.
-- **not here:** automatic semantic recommendations, a knowledge graph, duplicating the gallery's filters.
-
-### changes to the main dev plan
-
-done: the main plan's decision D11 settled them on 2026-11-03, and it marks L5–L8 as moved here (L5 and L7 to §7, L6 to a note on CC6, and L8 replaced by CC6–CC7).
-
-**sharing code across repos:** don't create a shared package yet. if both repos genuinely need the same simulation core, first get a second consumer working, then consider extracting a small independent package. create another repo only once that need is shown.
-
-### definition of done for the main site, in addition to §5
-
-- the existing art structure and navigation are preserved.
-- the site works without the gallery running.
-- no gallery source is copied into the main repo.
-- all internal and external links are checked.
-- the site stays static.
-
----
-
 ## log
 
 the ticket column names a ticket, a lane for a note about a whole lane, or none.
@@ -1149,7 +1070,7 @@ the ticket column names a ticket, a lane for a note about a whole lane, or none.
 | 2026-11-03 | CC3 | world-based discovery done: `#/worlds` with world/system/interaction chips and counts, a page for every piece at `#/worlds/<id>` with related pieces, a worlds card on the home page and a worlds link in the nav, and `worlds` reserved in the build. also reduced-motion guards, a lightbox Tab trap, focus kept while filtering, and grids and the nav fitted to 320 px. the toolkit views' DOM is unchanged apart from the nav and chip attributes. 46 behavior checks pass in headless Chrome from `file://`, the build is clean, and `node --test` exits 0 |
 | 2026-11-03 | CC12 | approved by the owner and done. `gol.html` colors each position once and steps at 30 generations a second, and `snake2.html` keeps each segment's hue, so neither flickers. all three slow down under reduced motion and idle while hidden or out of view. checked against the old pages in headless Chrome, where color changes on surviving cells and segments went from all of them to none. the build is clean |
 | 2026-11-03 | none | thumbnail layout fix, outside the tickets. the image grids were fixed-width columns where each tile was as tall as its image, so the 375×3000 strip `jpger_77` made a tile about 2600 px tall on desktop (2850 px on a phone) and `jpger_76` was a 41 px sliver. image tiles are now justified rows: equal image height within each row, the row filling the page, order kept left to right for manifests and the lightbox, and a short last row left at row height. pieces longer than 2:1 are cropped to 2:1 in their tile only, with sharper thumbnails for them. the piece page preview is capped at 75vh. in headless Chrome at 320, 768 and 1440 px across every tile view, nothing scrolls sideways, no row has uneven image heights, and the tallest tile image is 351 px. the pygame page went from 11093 to 7388 px tall on desktop and from 35521 to 14233 px on a phone. the build is clean and the data file is unchanged. local thumbnails of the two strips need `--force` or deleting to pick up the new size, and a fresh deploy builds them anyway |
-| 2026-11-04 | none | this file on GitHub is now the one link for following the plan from other repos (§0), so no copy can drift, and `eigenomar.com`'s `dev-plan.md` links to it. the queue in §0 gained a Mermaid diagram, which GitHub renders, and §1.3 now shows metadata as done. a Claude Doc copy made the same day was reduced to a pointer here |
+| 2026-11-04 | none | this file on GitHub is now the one link for following the plan from other repos (§0), so no copy can drift. the queue in §0 gained a Mermaid diagram, which GitHub renders, and §1.3 now shows metadata as done. a Claude Doc copy made the same day was reduced to a pointer here |
 | 2026-11-04 | CC13 | added, not built. the owner asked for a button in the gallery footer that goes to `eigenomar.com`. it needs nothing, so it fits between any two steps (§0) |
 | 2026-11-04 | none | the seven levels art got its own plan, `seven_levels-dev_plan.md` (SL0–SL11), as a separate lane. §0 points to it. nothing was built |
 | 2026-11-04 | SL | plan written from the seven levels package, as `seven_levels-dev_plan.md`. the repo and the site were read and left unchanged, apart from that file and a pointer in the worlds plan. the cosmos scripts were re-rendered outside the repo to confirm they reproduce byte for byte, and the package's data was checked by script (§4.2.3) |
@@ -1162,9 +1083,9 @@ the ticket column names a ticket, a lane for a note about a whole lane, or none.
 | 2026-11-05 | SL | CC14 is done, so SL1 now waits only on SL0. the `7-levels` group exists with cosmos as its one folder, and SL1 gained **from CC14** notes |
 | 2026-11-05 | none | lightbox focus fix, outside the tickets. `openLightbox` overwrote `lastFocused` on every step, so closing after stepping dropped focus on `body`. it now records focus only on the first open, and focus returns to the tile after stepping by keys or buttons |
 | 2026-11-05 | none | the owner answered the last open questions. `.assetsignore` now excludes `CLAUDE.md` and `.claude/`, and tests stay out of the Cloudflare build. the owner also looked at the rings in fading chaos and settling, at most two large ones, and is fine with them, so CC5 doesn't need to soften them |
-| 2026-11-07 | none | reconciled with `eigenomar.com`'s dev plan, from its comparison of 2026-11-04. §7 gained the pieces behind the main site's easter eggs (its Q12, Q13, Q16 and Q17), with rules for URLs, framing and the date seed, and a flow field row for its L5. its L7 joined the signal decay row, and its L6 became a note on CC6, which also says Garden of Possibilities will share CC6's logic. CC11 now asks CC11a to write down its seed format. in appendix A, the changes to the main plan are marked done (its decision D11), and EC1–EC2 are mapped to its E1–E3. EC1 now follows CC5 rather than CC10 in the diagram, step 3 and the order line, and it no longer calls the pieces interactive before CC5. the external references and the scope line are updated. nothing was built |
 | 2026-11-07 | none | merged `seven_levels-dev_plan.md` into this file, which was renamed from `worlds_and_features-dev_plan.md` to `dev_plan.md`, still excluded from the site by `*dev_plan.md`. the work now runs in two lanes, worlds and engines (§4.1) and seven levels (§4.2), with one lanes table and one queue diagram in §0, and rules there for adding tickets and lanes. §0–§7 keep their numbers. the seven levels plan's sections are now §4.2.1–§4.2.3, its owner decisions Q8–Q11, its checklist part of §5 and its log part of this one. `CLAUDE.md` points here. nothing was built |
-| 2026-11-07 | CC5 | strange attractor published. the build lists `canvas/<id>/index.html` folders under engines, interactive (`#/engines/interactive`), with the folder name as id, and the engine shows first in `#/worlds` with its page at `#/worlds/strange-attractor`. the page has its meta block, an about panel with its concept, instructions and keys, and its title when opened directly. it draws only when the picture changed and idles once every path is at rest, with a hint to release them again (`fastest` in `sim.js`). measuring frame cost showed it is the length of trail drawn, so the trails are unchanged. decided that `n` and `r` stand in for a tap on keys. 29 tests pass, 42 page checks and 37 gallery checks pass in headless Chrome from `file://`, and the build is clean with 265 items. the README documents engines in the gallery. EC1 in `eigenomar.com` can start once this is deployed. not tried on a real phone or with a GPU |
+| 2026-11-07 | CC5 | strange attractor published. the build lists `canvas/<id>/index.html` folders under engines, interactive (`#/engines/interactive`), with the folder name as id, and the engine shows first in `#/worlds` with its page at `#/worlds/strange-attractor`. the page has its meta block, an about panel with its concept, instructions and keys, and its title when opened directly. it draws only when the picture changed and idles once every path is at rest, with a hint to release them again (`fastest` in `sim.js`). measuring frame cost showed it is the length of trail drawn, so the trails are unchanged. decided that `n` and `r` stand in for a tap on keys. 29 tests pass, 42 page checks and 37 gallery checks pass in headless Chrome from `file://`, and the build is clean with 265 items. the README documents engines in the gallery. not tried on a real phone or with a GPU |
 | 2026-11-07 | CC13 | footer button done: a link to `https://eigenomar.com`, labelled `eigenomar.com`, sits right of the footer note on every gallery view, styled like a chip with the existing tokens, and drops under the note on a phone. it opens in the same tab and has a visible keyboard focus. `gallery/index.html` and `gallery/gallery.css` only. 71 checks pass in headless Chrome from `file://` across 18 routes at 320 to 1440 px, the build is clean and unchanged with 265 items, and `node --test` passes 29 tests |
 | 2026-11-11 | none | Windows setup, outside the tickets. the repo now also runs from a clone on Windows, and the WSL clone works as before. `.gitattributes` keeps text files LF in every checkout, because Git for Windows' `core.autocrlf=true` had checked 172 of them out as CRLF, which changes each sketch's `bytes` in the data and breaks the shebang under WSL. `dev.py`, stdlib only and Python 3.10+, gives one set of commands on both: `setup`, `build`, `test`, `check` (tests, then the build, to run before pushing), `serve` and `open`, which hands WSL's path to the Windows browser. the build runs in the active environment, then `.venv`, then the Python running `dev.py`, and `setup` refuses a `.venv` made on the other system. `.assetsignore` excludes both new files, and the Cloudflare build is unchanged. the README has a commands section and a Windows and WSL section. on Windows, `check` passes with 29 tests and 265 items, and the data equals the WSL clone's apart from the build time. run from WSL on the same checkout, node 20 finds the same 29 tests and the build finds the data already up to date. `serve` returns 200 for the gallery, its data, a render and the engine. `open` was not launched on either system, and only its WSL path conversion was checked |
 | 2026-11-12 | EO | lane added by the eigenomar ecosystem's onboarding run, against version 1.4 of its contract: §4.3 with EO1–EO9, a row in §0, a subgraph and a note in the queue, and this line. EO1 done: `project.yaml` at the root, not validated, since the ecosystem's schema doesn't exist yet. on Windows, `python dev.py check` passes from a `c:` and a `C:` drive letter, with 29 tests and 265 items, and changes nothing. the sketches' dependencies weren't installed, so no sketch was run, and pip shows `noise` has no wheel for any platform (EO6). nothing else in the repo changed |
+| 2026-11-12 | EO4 | the content the owner marked confidential is out of this file, with no copy left here, and what stayed is reworded so every ticket still reads on its own. confidential work never goes in this file: §0's adding work and tracking link, and `CLAUDE.md`, now say so, and the ecosystem's shared rules say where it goes. only this file and `CLAUDE.md` changed. nothing was built |
