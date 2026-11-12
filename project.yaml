@@ -1,0 +1,31 @@
+schema_version: 1
+
+# this repository's manifest for the eigenomar ecosystem: what it is and where
+# its documents are. it is public, like everything committed here.
+
+id: creative_coding
+name: creative coding
+description: generative art, live sketches and interactive engines, and the gallery that shows them
+status: active
+tags: [python, pycairo, pygame, javascript, canvas-2d, generative-art, cloudflare-workers]
+
+links:
+  deployment: https://gallery.eigenomar.com
+
+documents:
+  plan: dev_plan.md
+  architecture: [dev_plan.md#11-architecture-and-conventions, README.md#adding-work]
+  engineering: [README.md#commands, README.md#deploying-it]
+  decisions: dev_plan.md#6-decisions
+
+delivery:
+  ci: none                 # tests run locally with python dev.py check (dev_plan.md §0)
+  releases: none
+  deployment: cloudflare
+  deploys_on: merge        # every push to main rebuilds and redeploys the gallery
+
+artifacts:
+  diagrams: null
+  test_reports: null
+  coverage: null
+  monitoring: null
