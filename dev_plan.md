@@ -18,11 +18,11 @@ the work runs in lanes. each lane has its own ticket prefix, ticket table and or
 |---|---|---|---|---|---|
 | worlds and engines | CC | interactive generative engines, and world-based discovery in the gallery | §4.1 | CC11a ∥ CC6 (step 4), whose one need, CC5, is done | CC1, CC2, CC3, CC12 (2026-11-03), CC4, CC14 (2026-11-05), CC5, CC13 (2026-11-07) |
 | seven levels | SL | static pycairo art for the seven reading tracks | §4.2 | SL1 ∥ SL3, whose one need, SL0, is done. no script, image or gallery change exists for this work yet | SL0 (2026-11-13) |
-| ecosystem onboarding | EO | the repo's place in the eigenomar ecosystem: a manifest, the shared Claude rules, issues in the ecosystem's Project, and the portability gaps | §4.3 | EO5 ∥ EO6, which need nothing. the rest wait on the ecosystem, the site's plan or the owner | EO1, EO4 (2026-11-12) |
+| ecosystem onboarding | EO | the repo's place in the eigenomar ecosystem: a manifest, the shared Claude rules, issues in the ecosystem's Project, and the portability gaps | §4.3 | EO5 ∥ EO6 ∥ EO7 ∥ EO10, which need nothing more. EO8 waits on the ecosystem and the owner | EO1, EO4 (2026-11-12), EO2, EO3, EO9 (2026-11-13) |
 
 - **milestone 1** (worlds and engines): CC5, CC7 and CC10 are published, giving three engines in three worlds (dynamical, organic, mystic), built on the CC2–CC3 taxonomy.
 - **scope of this repo:** CC1–CC14 (the owner approved CC12 on 2026-11-03 and asked for CC13 and CC14 on 2026-11-04) and SL0–SL11.
-- **repos:** `creative_coding` is the home of every engine, algorithm, renderer, control and gallery page, and no new repo is needed. `eigenomar.com` presents the project under art and links to it. `gallery.eigenomar.com` is served from this repo (see §1).
+- **repos:** this repo is the home of every engine, algorithm, renderer, control and gallery page, served at `gallery.eigenomar.com` (§1), and `eigenomar.com` presents it under art and links to it, never copying its code (shared decision SD1).
 - **tracking link:** [this file on GitHub](https://github.com/eigenomarksamy/creative_coding/blob/main/dev_plan.md) is the one link for following this work from other repos. it shows what is pushed to `main`. keep no copy of this plan anywhere else, because a copy can drift. confidential work is the exception: it never goes in this file, and the ecosystem's shared rules say where it goes (adding work, below).
 - **between the lanes:** SL1 needs CC14, which is done, and no CC ticket needs an SL ticket. the open tickets of both lanes meet in `build_gallery.py` (SL1's registry, and CC7 or CC10 only if they need new vocabulary, since CC5's scan lists a new engine folder by itself), the README and this file.
 - **long-term direction:** independent engines connected by their concepts, whose systems and interactions might later be combined without losing what makes each one distinct. there is no general composer until the gates in §7 are met.
@@ -79,13 +79,14 @@ flowchart TD
     EO5["EO5 snake2 to LF"]
     EO6["EO6 sketch install notes"]
     EO7["EO7 WSL notes"]
+    EO10["EO10 project.yaml off the gallery"]
   end
   CC14 --> SL1
 
   classDef done fill:#e5f4e4,stroke:#2e7d32,color:#1b3a1d
   classDef next fill:#e7f1fb,stroke:#1565c0,stroke-width:2px,color:#0d2b4e
-  class CC12,CC2,CC3,CC4,CC14,CC5,SL0,EO1,EO4 done
-  class CC11a,CC6,SL1,SL3,EO5,EO6 next
+  class CC12,CC2,CC3,CC4,CC14,CC5,SL0,EO1,EO4,EO2,EO3,EO9 done
+  class CC11a,CC6,SL1,SL3,EO5,EO6,EO7,EO10 next
 ```
 
 green is done, and blue is the next ticket in each lane.
@@ -118,7 +119,7 @@ the queue changes the original order in two ways. CC11 is split, so share links 
 
 #### ecosystem onboarding (EO)
 
-**any time:** no EO ticket touches the gallery's code, so each one fits between any two steps of the other lanes, as CC13 did. EO8 and EO9 come after EO4. the other needs are outside this repo, and §4.3 names them.
+**any time:** no EO ticket touches the gallery's code, so each one fits between any two steps of the other lanes, as CC13 did. EO5, EO6, EO7 and EO10 need nothing more. EO8 needs EO4, which is done, and its other needs are outside this repo, as §4.3 says.
 
 ### adding work
 
@@ -610,24 +611,24 @@ every piece that exists today moves like this, and all 264 are accounted for:
 
 ### 4.2 seven levels (SL)
 
-the art behind the seven reading tracks: 49 level images and 2 connection diagrams, all in one flat folder, `cc_pycairo/gen/seven_levels/`. seven of the 51 already exist as the cosmos series, so 44 are new. the work in `eigenomar.com` is listed in its own document, [seven levels: eigenomar site actions](https://claude.ai/artifact/6TZ8CSu8qPxna9coRE7nBW), and is never implemented here. the owner's decisions for this lane are Q8–Q11 (§6).
+the art behind the seven reading tracks: 49 level images and 2 connection diagrams, all in one flat folder, `cc_pycairo/gen/seven_levels/`. seven of the 51 already exist as the cosmos series, so 44 are new. the site's work for this series is planned with the site and never implemented here, and each piece of it waits until the SL ticket it needs is deployed. the owner's decisions for this lane are Q8–Q11 (§6).
 
-sizes and the "needs" column work as in §4. "site" names the action in the site document that the ticket unblocks once deployed.
+sizes and the "needs" column work as in §4.
 
-| ID | ticket | size | needs | site | status |
-|---|---|---|---|---|---|
-| SL0 | data from the briefs into the repo | S | none | action 9 | done |
-| SL1 | gallery pipeline | M | SL0, CC14 | action 5 | todo |
-| SL2 | universe migration | S | SL1 | action 7 | todo |
-| SL3 | kit and style pilot | M | SL0 | none | todo |
-| SL4 | chaos | M | SL2, SL3 | action 8 | todo |
-| SL5 | sound | M | SL3, after SL4 | action 8 | todo |
-| SL6 | time | M | SL3, after SL5 | action 8 | todo |
-| SL7 | information | M | SL3, after SL6 | action 8 | todo |
-| SL8 | communication | M | SL3, after SL7 | action 8 | todo |
-| SL9 | play | M | SL3, after SL8 | action 8 | todo |
-| SL10 | connections | M | SL0, SL1, after SL6 | action 10 | todo |
-| SL11 | close-out | S | SL4–SL10 | none | todo |
+| ID | ticket | size | needs | status |
+|---|---|---|---|---|
+| SL0 | data from the briefs into the repo | S | none | done |
+| SL1 | gallery pipeline | M | SL0, CC14 | todo |
+| SL2 | universe migration | S | SL1 | todo |
+| SL3 | kit and style pilot | M | SL0 | todo |
+| SL4 | chaos | M | SL2, SL3 | todo |
+| SL5 | sound | M | SL3, after SL4 | todo |
+| SL6 | time | M | SL3, after SL5 | todo |
+| SL7 | information | M | SL3, after SL6 | todo |
+| SL8 | communication | M | SL3, after SL7 | todo |
+| SL9 | play | M | SL3, after SL8 | todo |
+| SL10 | connections | M | SL0, SL1, after SL6 | todo |
+| SL11 | close-out | S | SL4–SL10 | todo |
 
 #### 4.2.1 how the work fits this repo
 
@@ -822,7 +823,7 @@ checked by script on 2026-11-04. the good news first: tracks, nodes, 21 meta pai
   - render them, and confirm each new file is byte-identical to its `gen/cosmos/` original.
   - fill in `alt` and `caption` for the seven.
   - replace the seven old items in the cosmos folder with the new files, so each piece appears once. add aliases so `#/worlds/cosmos_<name>` opens the new id, and update the README's example. CC14 already redirects `#/pycairo/cosmos`.
-  - keep `cc_pycairo/gen/cosmos/` and `cosmos.txt` in place: the site's universe article links to those files until site action 7 ships.
+  - keep `cc_pycairo/gen/cosmos/` and `cosmos.txt` in place until the site's universe article points at the new files.
 - **done when:** the migration leaves the gallery's item count unchanged (7 out, 7 in), the 7 new URLs and the 7 old ones all return PNGs when deployed, and the old hash routes land on the right pieces.
 
 | old file | new file |
@@ -869,39 +870,44 @@ checked by script on 2026-11-04. the good news first: tracks, nodes, 21 meta pai
 
 ### 4.3 ecosystem onboarding (EO)
 
-the repo's place in the eigenomar ecosystem, a set of independent repos coordinated from `meta-eigenomar`, which holds the ecosystem's contract. the goal is to make this repo discoverable and coordinated there without changing how it is built or delivered. planned on 2026-11-12 by the ecosystem's onboarding run, against version 1.4 of the contract.
+the repo's place in the eigenomar ecosystem, a set of independent repos coordinated from `meta-eigenomar`, which holds the ecosystem's contract. the goal is to make this repo discoverable and coordinated there without changing how it is built or delivered. planned on 2026-11-12 by the ecosystem's onboarding run, against version 1.4 of the contract, and re-run on 2026-11-13 against version 1.5, applying the owner's answers to the open questions below.
 
 **stays as it is:** `dev.py`, `build_gallery.py` and `node --test`, run locally, with no CI (§0, question 3). the Cloudflare build, and its deploy on every push to `main` (§1.1). work straight on `main`, with no tags, releases or changelog, so the log below stays the record. this file as the one plan, with its lanes, IDs, queue and log, the README as the engineering notes, and §6 as the decisions. no document is added: §1.1, the README and §6 already cover what the ecosystem asks for, and the queue is the one diagram.
 
 | ID | ticket | size | needs | status |
 |---|---|---|---|---|
 | EO1 | `project.yaml` at the root | S | none | done |
-| EO2 | the shared Claude rules in `CLAUDE.md` | S | the shared rules file in `meta-eigenomar` | todo |
-| EO3 | drop the retired site document from §4.2 | S | the site's plan holding this series' site work | todo |
+| EO2 | the shared Claude rules in `CLAUDE.md` | S | the shared rules file in `meta-eigenomar` | done |
+| EO3 | drop the retired site document from §4.2 | S | the site's plan holding this series' site work | done |
 | EO4 | move the confidential planning content out | M | the owner's go-ahead | done |
 | EO5 | `canvas/snake2.html` to LF | S | none | todo |
 | EO6 | install notes for the sketches, per platform | S | none | todo |
 | EO7 | retire the WSL notes | S | the owner confirms no WSL clone is left | todo |
-| EO8 | an issue for every open ticket | M | EO4, the ecosystem's GitHub Project, the owner's approval | todo |
-| EO9 | the decisions shared with the site | S | EO4, the shared decision records in `meta-eigenomar` | todo |
+| EO8 | an issue for every open ticket | M | EO4, the ecosystem's GitHub Project and its linking conventions, the owner's approval | todo |
+| EO9 | the decisions shared with the site | S | EO4, the shared decision records in `meta-eigenomar` | done |
+| EO10 | `project.yaml` off the gallery | S | none | todo |
 
-**checked on Windows on 2026-11-12,** without installing anything: `python dev.py check` passes whether the drive letter is `c:`, as VS Code opens the folder, or `C:`, with 29 tests and 265 items, and changes nothing. so the gallery installs and runs on Windows, and the sketches are EO6's: their dependencies weren't installed, and one of them always compiles. no `.bat`, `.ps1` or `.sh` script exists, `.gitattributes` asks for LF, and no tracked code holds an absolute path.
+**checked on Windows on 2026-11-12, and again on 2026-11-13,** without installing anything: `python dev.py check` passes whether the drive letter is `c:`, as VS Code opens the folder, or `C:`, with 29 tests and 265 items, and changes nothing. so the gallery installs and runs on Windows, and the sketches are EO6's: their dependencies weren't installed, and one of them always compiles. no `.bat`, `.ps1` or `.sh` script exists, `.gitattributes` asks for LF, and no tracked code holds an absolute path.
+
+**Linux:** there is no CI (§0, question 3), so nothing runs the tests on Linux. the owner accepts that gap (2026-11-12): the tests cover a pure JavaScript simulation, and Cloudflare's build runs `build_gallery.py` on Linux on every push.
 
 **commits:** every commit so far is the owner's, made on `main`, so sessions here don't commit, and `CLAUDE.md` grants no standing approval for it. it couldn't for `main` anyway, because every push to `main` deploys.
 
 #### EO1 · `project.yaml` at the root · S
 
 - **do:** add the manifest the ecosystem reads, pointing at documents that already exist, with `null` for those that don't.
-- **result (2026-11-12):** added with `status: active`, the gallery's URL, this file as the plan, §1.1 and the README's adding work as the architecture, the README's commands and deploying sections as the engineering notes, §6 as the decisions, `ci: none`, `releases: none` and `deploys_on: merge`. not validated, because the ecosystem's manifest schema doesn't exist yet. `.assetsignore` doesn't list it, so the gallery serves it too (open question 1).
+- **result (2026-11-12):** added with `status: active`, the gallery's URL, this file as the plan, §1.1 and the README's adding work as the architecture, the README's commands and deploying sections as the engineering notes, §6 as the decisions, `ci: none`, `releases: none` and `deploys_on: merge`. not validated, because the ecosystem's manifest schema doesn't exist yet. `.assetsignore` doesn't list it, so the gallery serves it too (open question 1, now EO10).
+- **validated (2026-11-13)** with the ecosystem's validator: the manifest is valid, and every path and anchor in it resolves. nothing in it changed.
 
 #### EO2 · the shared Claude rules in `CLAUDE.md` · S
 
 - **do:** put the ecosystem's shared import on the first line of `CLAUDE.md`, above the two rules there, which stay as they are.
 - **done when:** the import resolves from this clone, and `CLAUDE.md` alone still says how to build and test, for a clone without `meta-eigenomar` beside it.
+- **result (2026-11-13):** the import is the first line of `CLAUDE.md`, and its two rules below it are unchanged, so they still say how to build and test without it. the ecosystem's validator finds the import, started from a `c:` drive letter as well. no standing approval for commits is added (see "commits" above).
 
 #### EO3 · drop the retired site document from §4.2 · S
 
-- **why:** §4.2's opening links a document listing the site's work for this series. it is retired and no longer updated, and the site's own plan takes that work over. the "site" column in §4.2's table, the line that explains it, and SL2's "until site action 7 ships" name that document's numbered actions.
+- **why:** §4.2's opening links a document listing the site's work for this series. it is retired and no longer updated, and the site's own plan takes that work over. the "site" column in §4.2's table, the line that explained it, and SL2's gate for keeping the cosmos files named that document's numbered actions.
 - **do:**
   - in §4.2's opening, replace the link with one sentence: the site's work for this series is planned with the site, and each piece of it waits until the SL ticket it needs is deployed.
   - drop the "site" column and the line that explains it. the site's tickets name the SL ticket each one waits on, so this plan doesn't repeat them.
@@ -909,6 +915,7 @@ the repo's place in the eigenomar ecosystem, a set of independent repos coordina
   - the log keeps its history.
 - **needs:** the site's plan holding that work, so no gate is lost when the column goes.
 - **done when:** nothing outside the log links or numbers the retired document.
+- **result (2026-11-13):** the site's plan holds that work now, each piece with the SL ticket it waits on, so no gate was lost. §4.2's opening has the sentence above in place of the link, the "site" column and its line are gone, and SL2 keeps the cosmos files until the site's universe article points at the new files. nothing in this file or the README links or numbers the retired document, and the log never did.
 
 #### EO4 · move the confidential planning content out · M
 
@@ -947,18 +954,18 @@ the repo's place in the eigenomar ecosystem, a set of independent repos coordina
 
 - **why:** development moved to the Windows clone on 2026-11-11, and the ecosystem dropped WSL the same day. `CLAUDE.md` ("the same on Windows and WSL"), the README's "Windows and WSL" section with its `wsl.localhost` address, and §1.1's platforms and local tools rows still describe two clones.
 - **do:** describe one Windows clone, with the Cloudflare build as the build's Linux run. `dev.py`'s WSL handling can stay, since it costs nothing.
-- **needs:** the owner confirms no WSL clone is left.
+- **needs:** the owner confirms no WSL clone is left. met on 2026-11-13: no one works in a WSL clone any more. the old one is still there under a new name, clean, at a commit from before the move, and holds nothing that isn't on GitHub, so deleting it is the owner's step and doesn't hold this ticket up.
 
 #### EO8 · an issue for every open ticket · M
 
 - **do:**
-  - open one issue in this repo for each open ticket of every lane, and add it to the ecosystem's GitHub Project. today that is CC6–CC10, CC11a, CC11b, SL1–SL11 and EO2–EO9.
+  - open one issue in this repo for each open ticket of every lane, and add it to the ecosystem's GitHub Project. on 2026-11-13 that is 23: CC6–CC10, CC11a, CC11b, SL1–SL11, EO5–EO8 and EO10.
   - the issue's title starts with the ticket's ID, and its body links the ticket's section here instead of copying it. the ticket keeps its content and history here, and the issue carries its status, priority and blockers.
   - the Project's status is the one that counts. whoever changes a status in one place updates the other in the same session, so §0, the tables in §4 and the queue keep matching it.
-  - an SL ticket that site work waits on gets a blocking link to the site's issue.
+  - an SL ticket that site work waits on gets a blocking link to the site's issue. the site's tickets say which SL ticket each one waits on, since this plan no longer lists them (EO3).
   - §7's ideas get no issue until they are promoted.
   - issues here are public, so the owner sees each one's exact text before it is written.
-- **needs:** EO4, so no issue repeats what moves out, plus the Project and the owner's approval.
+- **needs:** EO4, so no issue repeats what moves out, plus the Project and the owner's approval. EO4 is done and the Project exists (2026-11-13). the ecosystem's conventions for linking an issue to its ticket, and for its blockers, are still being written, and the issues follow them.
 - **done when:** every open ticket has exactly one issue in the Project, and a done ticket's issue is closed.
 
 #### EO9 · the decisions shared with the site · S
@@ -966,13 +973,21 @@ the repo's place in the eigenomar ecosystem, a set of independent repos coordina
 - **why:** some of this plan's rules bind the site too, such as §0's repos bullet and §7's parked shared engine package. the ecosystem keeps a decision that binds two repos in one shared record, which each plan follows instead of keeping its own version.
 - **do:** once those records exist, reduce each version here to a line that states the outcome and names its record.
 - **needs:** EO4, and the shared records in `meta-eigenomar`.
+- **result (2026-11-13):** the records exist. §0's repos bullet and §7's parked shared engine package each state the outcome in one line and cite shared decision SD1, without a path, because a public plan can't usefully link a private record.
 
-**open questions for the owner:**
+#### EO10 · `project.yaml` off the gallery · S
 
-1. EO1: `project.yaml` isn't in `.assetsignore`, so the gallery serves it, as it serves `README.md`. it holds nothing private. keep it served, or exclude it with the other config?
-2. EO5: normalize `snake2.html` now, in a commit of its own, or keep it CRLF and record it as the one exception?
-3. EO7: is any WSL clone left?
-4. EO7: the tests ran on Linux only in the WSL clone. once it is gone, should anything run `node --test` on Linux, or is Windows enough while the tests stay out of the Cloudflare build (§0, question 3)?
+- **why:** the gallery serves every file that `.assetsignore` doesn't list, so it has served `project.yaml` at `/project.yaml` since EO1 was pushed (it returned 200 on 2026-11-13). the file holds nothing private, so this is tidiness, not privacy: the owner chose to keep it off the site with the other config (open question 1).
+- **do:** add `project.yaml` to `.assetsignore`, beside `wrangler.jsonc` and `requirements.txt`, under the same heading.
+- **needs:** nothing. it changes what the deployment serves, which an onboarding run doesn't do, so it is a ticket of its own.
+- **done when:** once deployed, `/project.yaml` returns 404 while `/README.md` still returns 200, and the ecosystem's validator still passes, since it reads the repo, not the site.
+
+**open questions for the owner,** answered on 2026-11-12:
+
+1. ~~EO1: keep `project.yaml` served, or exclude it with the other config?~~ exclude it. it holds nothing private, so this is tidiness, and it changes the deployment, so it is EO10.
+2. ~~EO5: normalize `snake2.html` now, or keep it CRLF as the one exception?~~ normalize it now, in a commit of its own.
+3. ~~EO7: is any WSL clone left?~~ one was. it held nothing that isn't on GitHub, and no one works in it now (EO7's needs).
+4. ~~EO7: should anything run `node --test` on Linux?~~ no. the owner accepts the gap, as "Linux" above says.
 
 ---
 
@@ -1066,7 +1081,7 @@ each item waits until its gate is met.
 | interactive gallery map | enough engines are published, with meaningful relationships between them |
 | advanced WebGL rendering | Canvas 2D performance or visual needs justify the extra complexity |
 | replayable interaction histories | deterministic simulation and input recording are shown working in a concrete experiment |
-| shared engine package across repos | two independent consumers need the same tested simulation logic |
+| shared engine package across repos | two independent consumers need the same tested simulation logic, and until then no simulation is built in two repos (shared decision SD1) |
 
 ---
 
@@ -1102,3 +1117,4 @@ the ticket column names a ticket, a lane for a note about a whole lane, or none.
 | 2026-11-12 | EO | lane added by the eigenomar ecosystem's onboarding run, against version 1.4 of its contract: §4.3 with EO1–EO9, a row in §0, a subgraph and a note in the queue, and this line. EO1 done: `project.yaml` at the root, not validated, since the ecosystem's schema doesn't exist yet. on Windows, `python dev.py check` passes from a `c:` and a `C:` drive letter, with 29 tests and 265 items, and changes nothing. the sketches' dependencies weren't installed, so no sketch was run, and pip shows `noise` has no wheel for any platform (EO6). nothing else in the repo changed |
 | 2026-11-12 | EO4 | the content the owner marked confidential is out of this file, with no copy left here, and what stayed is reworded so every ticket still reads on its own. confidential work never goes in this file: §0's adding work and tracking link, and `CLAUDE.md`, now say so, and the ecosystem's shared rules say where it goes. only this file and `CLAUDE.md` changed. nothing was built |
 | 2026-11-13 | SL0 | data from the briefs done: `seven_levels.json`, with 7 tracks, 49 levels and 2 diagrams, and `seven_levels_connections.json`, with 21 meta edges (10 of them strong), 49 atomic edges and 6 journeys of 27 steps, each with a reason, at the root. derived from the package with §4.2.3's corrections 1–3, 5 and 6, and 4 left to the owner before SL10. the taxonomy per track and the seven colors are proposals, for SL1 and SL3's review. checked by script against the package, the briefs and the build's vocabulary. `python dev.py check` passes, and the build is unchanged at 265 items. SL1 ∥ SL3 are next |
+| 2026-11-13 | EO | re-run by the ecosystem's onboarding, against version 1.5 of its contract, applying the owner's answers to §4.3's open questions. EO2 done: the shared rules' import is the first line of `CLAUDE.md`. EO3 done: the site's plan holds this series' site work with its gates, so §4.2 no longer links or numbers the retired document. EO9 done: §0's repos bullet and §7's parked shared engine package cite shared decision SD1. EO10 added, to keep `project.yaml` off the gallery, and EO7's need is met. the manifest validates against the ecosystem's schema, and `python dev.py check` passes from a `c:` and a `C:` drive letter, with 29 tests and 265 items, and changes nothing. only this file and `CLAUDE.md` changed. nothing was built |
