@@ -17,7 +17,7 @@ the work runs in lanes. each lane has its own ticket prefix, ticket table and or
 | lane | prefix | what it builds | tickets | next | done |
 |---|---|---|---|---|---|
 | worlds and engines | CC | interactive generative engines, and world-based discovery in the gallery | §4.1 | CC11a ∥ CC6 (step 4), whose one need, CC5, is done | CC1, CC2, CC3, CC12 (2026-11-03), CC4, CC14 (2026-11-05), CC5, CC13 (2026-11-07) |
-| seven levels | SL | static pycairo art for the seven reading tracks | §4.2 | SL0. nothing is built yet: no script, image or gallery change exists for this work | none |
+| seven levels | SL | static pycairo art for the seven reading tracks | §4.2 | SL1 ∥ SL3, whose one need, SL0, is done. no script, image or gallery change exists for this work yet | SL0 (2026-11-13) |
 | ecosystem onboarding | EO | the repo's place in the eigenomar ecosystem: a manifest, the shared Claude rules, issues in the ecosystem's Project, and the portability gaps | §4.3 | EO5 ∥ EO6, which need nothing. the rest wait on the ecosystem, the site's plan or the owner | EO1, EO4 (2026-11-12) |
 
 - **milestone 1** (worlds and engines): CC5, CC7 and CC10 are published, giving three engines in three worlds (dynamical, organic, mystic), built on the CC2–CC3 taxonomy.
@@ -84,8 +84,8 @@ flowchart TD
 
   classDef done fill:#e5f4e4,stroke:#2e7d32,color:#1b3a1d
   classDef next fill:#e7f1fb,stroke:#1565c0,stroke-width:2px,color:#0d2b4e
-  class CC12,CC2,CC3,CC4,CC14,CC5,EO1,EO4 done
-  class CC11a,CC6,SL0,EO5,EO6 next
+  class CC12,CC2,CC3,CC4,CC14,CC5,SL0,EO1,EO4 done
+  class CC11a,CC6,SL1,SL3,EO5,EO6 next
 ```
 
 green is done, and blue is the next ticket in each lane.
@@ -616,7 +616,7 @@ sizes and the "needs" column work as in §4. "site" names the action in the site
 
 | ID | ticket | size | needs | site | status |
 |---|---|---|---|---|---|
-| SL0 | data from the briefs into the repo | S | none | action 9 | todo |
+| SL0 | data from the briefs into the repo | S | none | action 9 | done |
 | SL1 | gallery pipeline | M | SL0, CC14 | action 5 | todo |
 | SL2 | universe migration | S | SL1 | action 7 | todo |
 | SL3 | kit and style pilot | M | SL0 | none | todo |
@@ -789,6 +789,12 @@ checked by script on 2026-11-04. the good news first: tracks, nodes, 21 meta pai
   - write `seven_levels_connections.json` from `connections.example.json`.
   - apply the corrections in §4.2.3.
 - **done when:** both files parse, the registry holds 49 levels and 2 connection diagrams, and they are the only files SL0 commits.
+- **result (2026-11-13):** both files are at the root, and both parse. briefs 01–09 stay out of this repo, where the shared rules say. the package's data was checked again by script, and §4.2.3's findings hold.
+  - **the registry** lists the seven tracks in reading order. each has `position`, `gallery_label`, `world`, `worlds`, `systems`, `concept`, `color` and its seven `levels`, each with `id`, `level`, `label`, `accent`, `stem`, `alt` and `caption`. universe's `gallery_label` is cosmos (Q11), which is also its folder's id from CC14. the two diagrams follow under `diagrams`, with `id`, `label`, `stem`, `alt` and `caption`. `alt` and `caption` are `null` until each image exists (§4.2.1, step 7). labels and accents match the package and the briefs on all 49 levels, and every stem follows the naming rule.
+  - **the taxonomy** is a proposal drawn from each track's planned techniques (§4.2.2), and every value is in the build's vocabulary. universe keeps the cosmos group's values, so SL2 changes no piece's worlds. the primary worlds are time mechanical, sound geometric, information geometric, chaos dynamical, communication typographic and play geometric. SL1 wires it in and amends Q1.
+  - **the corrections** (§4.2.3). 1 and 6: no `path`, `public_url`, `status`, `book`, `author` or `base_path` is left, and the stems are §4.2.2's and SL2's. 2 and 3: `journeys` holds brief 08's six, each of their 27 steps has its own `reason`, and the 49 curated edges are unchanged. 4: no bridge is added, so there are still 49 atomic edges, and the decision moves to SL10. 5: universe violet, time blue, sound rose, information cyan, chaos red, communication ochre and play green, hues 40 to 80 degrees apart, each with at least 5.8:1 contrast on the gallery's `--bg`, to be confirmed at SL3's review.
+  - **the connections file** holds `meta_edges`, `atomic_edges` and `journeys`. it leaves out the package's `tracks` and `nodes`, which repeated the registry's ids and labels, so the registry is the one place they're defined. each meta edge gains `strong`, true for brief 08's ten emphasized links, so SL10 takes them from the data.
+  - `python dev.py check` passes, and the build is unchanged at 265 items: nothing reads the two files until SL1.
 
 #### SL1 · gallery pipeline · M
 
@@ -803,6 +809,10 @@ checked by script on 2026-11-04. the good news first: tracks, nodes, 21 meta pai
   - the group reads `cosmos.txt` today, and its `section` field puts all seven pieces in the cosmos folder. drop that field when the registry starts setting `section` on each item. `collect_sections` already checks each item's value.
   - all seven folders are declared in `sections`, in the order of the ticket's tree, and only cosmos has a blurb. a folder's card and page show no blurb if it has none, so add them as tracks arrive.
   - the group's blurb says "cosmos is the first", and the page's subtitle is `group.directory`, today `cosmos.txt`. both need rewording here. cosmos's own blurb names `cosmos.txt` too.
+- **from SL0:**
+  - the levels are in each track's `levels`, in reading order. a level's `section` is its track's `gallery_label`, which matches the folder ids CC14 declared. the diagrams have no track.
+  - `seven_levels_connections.json` has no `tracks` or `nodes` of its own, so its endpoints are checked against the registry. a journey step's `source` is also the previous step's `target`.
+  - each track's taxonomy is checked against the vocabulary, as a series' fields are. `alt` and `caption` are `null` until written, so the fallback to the title covers them.
 - **done when:** the build is clean with no images present, the manifest lists all 51 as `planned`, and a test image shows up in its folder and flips to `generated`.
 
 #### SL2 · universe migration · S
@@ -831,6 +841,7 @@ checked by script on 2026-11-04. the good news first: tracks, nodes, 21 meta pai
   - write `cc_pycairo/seven_levels_kit.py` with only what cosmos already repeats: `glow`, `mix`, `luminous`, `contour`, a background and a vignette.
   - render chaos.3, chaos.6 and information.3 at 1600×2000.
   - **owner review:** agree the background, glow strength, line weights, margins and how an accent is used. record the result in §4.2.1.
+  - **from SL0:** confirm the seven track colors in `seven_levels.json` at the same review (§4.2.3, 5).
 - **done when:** the owner signs off the three images. from then on the kit is additive: a helper may be added, but changing one changes every image that uses it, so that needs a re-render and a review of all of them.
 
 #### SL4–SL9 · one track each · M
@@ -845,6 +856,7 @@ checked by script on 2026-11-04. the good news first: tracks, nodes, 21 meta pai
   - write `cc_pycairo/connections_meta.py`: seven anchors on a circle, all 21 links faint, and the 10 strong links from brief 08 emphasized.
   - write `cc_pycairo/connections_atomic.py`: a seeded force layout of 49 nodes in seven clusters, keeping each track's numeric order, with the six relation types told apart by stroke pattern as well as color.
   - both read `seven_levels_connections.json`, so the picture can't drift from the data.
+- **from SL0:** `strong` marks brief 08's ten emphasized meta links, and `journeys` holds its six pathways, which the atomic drawing can emphasize. the owner hasn't decided whether information/chaos gets an atomic bridge (§4.2.3, 4), which would change brief 08's count of 49 edges. decide before drawing.
 - **done when:** both are deterministic and readable at full size, both show directly on the 7 levels page, and the atomic drawing stays legible rather than becoming a hairball.
 
 #### SL11 · close-out · S
@@ -940,7 +952,7 @@ the repo's place in the eigenomar ecosystem, a set of independent repos coordina
 #### EO8 · an issue for every open ticket · M
 
 - **do:**
-  - open one issue in this repo for each open ticket of every lane, and add it to the ecosystem's GitHub Project. today that is CC6–CC10, CC11a, CC11b, SL0–SL11 and EO2–EO9.
+  - open one issue in this repo for each open ticket of every lane, and add it to the ecosystem's GitHub Project. today that is CC6–CC10, CC11a, CC11b, SL1–SL11 and EO2–EO9.
   - the issue's title starts with the ticket's ID, and its body links the ticket's section here instead of copying it. the ticket keeps its content and history here, and the issue carries its status, priority and blockers.
   - the Project's status is the one that counts. whoever changes a status in one place updates the other in the same session, so §0, the tables in §4 and the queue keep matching it.
   - an SL ticket that site work waits on gets a blocking link to the site's issue.
@@ -1089,3 +1101,4 @@ the ticket column names a ticket, a lane for a note about a whole lane, or none.
 | 2026-11-11 | none | Windows setup, outside the tickets. the repo now also runs from a clone on Windows, and the WSL clone works as before. `.gitattributes` keeps text files LF in every checkout, because Git for Windows' `core.autocrlf=true` had checked 172 of them out as CRLF, which changes each sketch's `bytes` in the data and breaks the shebang under WSL. `dev.py`, stdlib only and Python 3.10+, gives one set of commands on both: `setup`, `build`, `test`, `check` (tests, then the build, to run before pushing), `serve` and `open`, which hands WSL's path to the Windows browser. the build runs in the active environment, then `.venv`, then the Python running `dev.py`, and `setup` refuses a `.venv` made on the other system. `.assetsignore` excludes both new files, and the Cloudflare build is unchanged. the README has a commands section and a Windows and WSL section. on Windows, `check` passes with 29 tests and 265 items, and the data equals the WSL clone's apart from the build time. run from WSL on the same checkout, node 20 finds the same 29 tests and the build finds the data already up to date. `serve` returns 200 for the gallery, its data, a render and the engine. `open` was not launched on either system, and only its WSL path conversion was checked |
 | 2026-11-12 | EO | lane added by the eigenomar ecosystem's onboarding run, against version 1.4 of its contract: §4.3 with EO1–EO9, a row in §0, a subgraph and a note in the queue, and this line. EO1 done: `project.yaml` at the root, not validated, since the ecosystem's schema doesn't exist yet. on Windows, `python dev.py check` passes from a `c:` and a `C:` drive letter, with 29 tests and 265 items, and changes nothing. the sketches' dependencies weren't installed, so no sketch was run, and pip shows `noise` has no wheel for any platform (EO6). nothing else in the repo changed |
 | 2026-11-12 | EO4 | the content the owner marked confidential is out of this file, with no copy left here, and what stayed is reworded so every ticket still reads on its own. confidential work never goes in this file: §0's adding work and tracking link, and `CLAUDE.md`, now say so, and the ecosystem's shared rules say where it goes. only this file and `CLAUDE.md` changed. nothing was built |
+| 2026-11-13 | SL0 | data from the briefs done: `seven_levels.json`, with 7 tracks, 49 levels and 2 diagrams, and `seven_levels_connections.json`, with 21 meta edges (10 of them strong), 49 atomic edges and 6 journeys of 27 steps, each with a reason, at the root. derived from the package with §4.2.3's corrections 1–3, 5 and 6, and 4 left to the owner before SL10. the taxonomy per track and the seven colors are proposals, for SL1 and SL3's review. checked by script against the package, the briefs and the build's vocabulary. `python dev.py check` passes, and the build is unchanged at 265 items. SL1 ∥ SL3 are next |

@@ -1,0 +1,545 @@
+{
+  "tracks": [
+    {
+      "id": "universe",
+      "position": 1,
+      "gallery_label": "cosmos",
+      "world": "cosmic",
+      "worlds": ["geometric", "mystic"],
+      "systems": ["oscillators", "procedural-geometry"],
+      "concept": "the universe as mathematical structure",
+      "color": "#b47ef1",
+      "levels": [
+        {
+          "id": "universe.1",
+          "level": 1,
+          "label": "existence",
+          "accent": "deep blue",
+          "stem": "universe_01_blue_horizon",
+          "alt": null,
+          "caption": null
+        },
+        {
+          "id": "universe.2",
+          "level": 2,
+          "label": "rhythm",
+          "accent": "turquoise",
+          "stem": "universe_02_turquoise_fireflies",
+          "alt": null,
+          "caption": null
+        },
+        {
+          "id": "universe.3",
+          "level": 3,
+          "label": "mathematics",
+          "accent": "violet",
+          "stem": "universe_03_violet_polyhedron",
+          "alt": null,
+          "caption": null
+        },
+        {
+          "id": "universe.4",
+          "level": 4,
+          "label": "fabric",
+          "accent": "indigo",
+          "stem": "universe_04_indigo_mesh",
+          "alt": null,
+          "caption": null
+        },
+        {
+          "id": "universe.5",
+          "level": 5,
+          "label": "forces",
+          "accent": "amber",
+          "stem": "universe_05_amber_orbits",
+          "alt": null,
+          "caption": null
+        },
+        {
+          "id": "universe.6",
+          "level": 6,
+          "label": "interconnection",
+          "accent": "magenta",
+          "stem": "universe_06_magenta_mandala",
+          "alt": null,
+          "caption": null
+        },
+        {
+          "id": "universe.7",
+          "level": 7,
+          "label": "oneness",
+          "accent": "gold",
+          "stem": "universe_07_gold_sphere",
+          "alt": null,
+          "caption": null
+        }
+      ]
+    },
+    {
+      "id": "time",
+      "position": 2,
+      "gallery_label": "time",
+      "world": "mechanical",
+      "worlds": ["cosmic", "fluid"],
+      "systems": ["oscillators", "particle-fields", "procedural-geometry"],
+      "concept": "how change becomes measurement, asymmetry and causality",
+      "color": "#5f8bf2",
+      "levels": [
+        {
+          "id": "time.1",
+          "level": 1,
+          "label": "change",
+          "accent": "slate blue",
+          "stem": "time_01_slate_trails",
+          "alt": null,
+          "caption": null
+        },
+        {
+          "id": "time.2",
+          "level": 2,
+          "label": "rhythm",
+          "accent": "cyan",
+          "stem": "time_02_cyan_dials",
+          "alt": null,
+          "caption": null
+        },
+        {
+          "id": "time.3",
+          "level": 3,
+          "label": "entropy",
+          "accent": "warm orange",
+          "stem": "time_03_orange_bloom",
+          "alt": null,
+          "caption": null
+        },
+        {
+          "id": "time.4",
+          "level": 4,
+          "label": "relativity",
+          "accent": "electric indigo",
+          "stem": "time_04_indigo_cone",
+          "alt": null,
+          "caption": null
+        },
+        {
+          "id": "time.5",
+          "level": 5,
+          "label": "causality",
+          "accent": "copper",
+          "stem": "time_05_copper_circuit",
+          "alt": null,
+          "caption": null
+        },
+        {
+          "id": "time.6",
+          "level": 6,
+          "label": "timelessness",
+          "accent": "silver",
+          "stem": "time_06_silver_web",
+          "alt": null,
+          "caption": null
+        },
+        {
+          "id": "time.7",
+          "level": 7,
+          "label": "eternity",
+          "accent": "pale gold",
+          "stem": "time_07_gold_spirals",
+          "alt": null,
+          "caption": null
+        }
+      ]
+    },
+    {
+      "id": "sound",
+      "position": 3,
+      "gallery_label": "sound",
+      "world": "geometric",
+      "worlds": ["fluid", "mystic"],
+      "systems": ["oscillators", "procedural-geometry"],
+      "concept": "how vibration becomes listening, music and emotion",
+      "color": "#ec79b3",
+      "levels": [
+        {
+          "id": "sound.1",
+          "level": 1,
+          "label": "vibration",
+          "accent": "ocean blue",
+          "stem": "sound_01_ocean_ripples",
+          "alt": null,
+          "caption": null
+        },
+        {
+          "id": "sound.2",
+          "level": 2,
+          "label": "frequency",
+          "accent": "ice cyan",
+          "stem": "sound_02_ice_strands",
+          "alt": null,
+          "caption": null
+        },
+        {
+          "id": "sound.3",
+          "level": 3,
+          "label": "harmony",
+          "accent": "muted violet",
+          "stem": "sound_03_violet_interlace",
+          "alt": null,
+          "caption": null
+        },
+        {
+          "id": "sound.4",
+          "level": 4,
+          "label": "rhythm",
+          "accent": "coral",
+          "stem": "sound_04_coral_wheels",
+          "alt": null,
+          "caption": null
+        },
+        {
+          "id": "sound.5",
+          "level": 5,
+          "label": "perception",
+          "accent": "emerald",
+          "stem": "sound_05_emerald_coil",
+          "alt": null,
+          "caption": null
+        },
+        {
+          "id": "sound.6",
+          "level": 6,
+          "label": "emotion",
+          "accent": "rose",
+          "stem": "sound_06_rose_currents",
+          "alt": null,
+          "caption": null
+        },
+        {
+          "id": "sound.7",
+          "level": 7,
+          "label": "transcendence",
+          "accent": "soft gold",
+          "stem": "sound_07_gold_rosette",
+          "alt": null,
+          "caption": null
+        }
+      ]
+    },
+    {
+      "id": "information",
+      "position": 4,
+      "gallery_label": "information",
+      "world": "geometric",
+      "worlds": ["glitch", "typographic"],
+      "systems": ["cellular-automata", "noise-fields", "procedural-geometry"],
+      "concept": "how distinctions become signals, codes and computation",
+      "color": "#2fc9da",
+      "levels": [
+        {
+          "id": "information.1",
+          "level": 1,
+          "label": "difference",
+          "accent": "graphite blue",
+          "stem": "information_01_graphite_mosaic",
+          "alt": null,
+          "caption": null
+        },
+        {
+          "id": "information.2",
+          "level": 2,
+          "label": "signal",
+          "accent": "cyan",
+          "stem": "information_02_cyan_static",
+          "alt": null,
+          "caption": null
+        },
+        {
+          "id": "information.3",
+          "level": 3,
+          "label": "encoding",
+          "accent": "violet",
+          "stem": "information_03_violet_bitgrid",
+          "alt": null,
+          "caption": null
+        },
+        {
+          "id": "information.4",
+          "level": 4,
+          "label": "entropy",
+          "accent": "amber",
+          "stem": "information_04_amber_bars",
+          "alt": null,
+          "caption": null
+        },
+        {
+          "id": "information.5",
+          "level": 5,
+          "label": "computation",
+          "accent": "cobalt",
+          "stem": "information_05_cobalt_tape",
+          "alt": null,
+          "caption": null
+        },
+        {
+          "id": "information.6",
+          "level": 6,
+          "label": "intelligence",
+          "accent": "teal",
+          "stem": "information_06_teal_mesh",
+          "alt": null,
+          "caption": null
+        },
+        {
+          "id": "information.7",
+          "level": 7,
+          "label": "reality",
+          "accent": "silver violet",
+          "stem": "information_07_silver_phasors",
+          "alt": null,
+          "caption": null
+        }
+      ]
+    },
+    {
+      "id": "chaos",
+      "position": 5,
+      "gallery_label": "chaos",
+      "world": "dynamical",
+      "worlds": ["abstract", "organic"],
+      "systems": ["attractors", "particle-fields", "reaction-diffusion"],
+      "concept": "how simple rules produce instability, complexity and limits to prediction",
+      "color": "#ee594f",
+      "levels": [
+        {
+          "id": "chaos.1",
+          "level": 1,
+          "label": "order",
+          "accent": "deep blue",
+          "stem": "chaos_01_blue_vortex",
+          "alt": null,
+          "caption": null
+        },
+        {
+          "id": "chaos.2",
+          "level": 2,
+          "label": "motion",
+          "accent": "blue gray",
+          "stem": "chaos_02_steel_ellipses",
+          "alt": null,
+          "caption": null
+        },
+        {
+          "id": "chaos.3",
+          "level": 3,
+          "label": "instability",
+          "accent": "electric red",
+          "stem": "chaos_03_red_butterfly",
+          "alt": null,
+          "caption": null
+        },
+        {
+          "id": "chaos.4",
+          "level": 4,
+          "label": "nonlinearity",
+          "accent": "orange",
+          "stem": "chaos_04_orange_cascade",
+          "alt": null,
+          "caption": null
+        },
+        {
+          "id": "chaos.5",
+          "level": 5,
+          "label": "emergence",
+          "accent": "turquoise",
+          "stem": "chaos_05_turquoise_flock",
+          "alt": null,
+          "caption": null
+        },
+        {
+          "id": "chaos.6",
+          "level": 6,
+          "label": "complexity",
+          "accent": "violet",
+          "stem": "chaos_06_violet_reef",
+          "alt": null,
+          "caption": null
+        },
+        {
+          "id": "chaos.7",
+          "level": 7,
+          "label": "uncertainty",
+          "accent": "muted gold",
+          "stem": "chaos_07_gold_fan",
+          "alt": null,
+          "caption": null
+        }
+      ]
+    },
+    {
+      "id": "communication",
+      "position": 6,
+      "gallery_label": "communication",
+      "world": "typographic",
+      "worlds": ["organic", "geometric"],
+      "systems": ["procedural-geometry", "recursive-growth"],
+      "concept": "how expression becomes signals, language and understanding",
+      "color": "#e9ad35",
+      "levels": [
+        {
+          "id": "communication.1",
+          "level": 1,
+          "label": "expression",
+          "accent": "warm ochre",
+          "stem": "communication_01_ochre_figures",
+          "alt": null,
+          "caption": null
+        },
+        {
+          "id": "communication.2",
+          "level": 2,
+          "label": "signals",
+          "accent": "copper red",
+          "stem": "communication_02_copper_pulses",
+          "alt": null,
+          "caption": null
+        },
+        {
+          "id": "communication.3",
+          "level": 3,
+          "label": "language",
+          "accent": "violet",
+          "stem": "communication_03_violet_tree",
+          "alt": null,
+          "caption": null
+        },
+        {
+          "id": "communication.4",
+          "level": 4,
+          "label": "meaning",
+          "accent": "teal",
+          "stem": "communication_04_teal_twins",
+          "alt": null,
+          "caption": null
+        },
+        {
+          "id": "communication.5",
+          "level": 5,
+          "label": "interpretation",
+          "accent": "deep indigo",
+          "stem": "communication_05_indigo_prism",
+          "alt": null,
+          "caption": null
+        },
+        {
+          "id": "communication.6",
+          "level": 6,
+          "label": "connection",
+          "accent": "soft coral",
+          "stem": "communication_06_coral_threads",
+          "alt": null,
+          "caption": null
+        },
+        {
+          "id": "communication.7",
+          "level": 7,
+          "label": "understanding",
+          "accent": "pale gold",
+          "stem": "communication_07_gold_bridges",
+          "alt": null,
+          "caption": null
+        }
+      ]
+    },
+    {
+      "id": "play",
+      "position": 7,
+      "gallery_label": "play",
+      "world": "geometric",
+      "worlds": ["organic", "mechanical"],
+      "systems": ["agents", "procedural-geometry", "recursive-growth"],
+      "concept": "how curiosity becomes rules, strategy and freedom",
+      "color": "#57c760",
+      "levels": [
+        {
+          "id": "play.1",
+          "level": 1,
+          "label": "curiosity",
+          "accent": "spring green",
+          "stem": "play_01_green_trail",
+          "alt": null,
+          "caption": null
+        },
+        {
+          "id": "play.2",
+          "level": 2,
+          "label": "rules",
+          "accent": "cobalt",
+          "stem": "play_02_cobalt_maze",
+          "alt": null,
+          "caption": null
+        },
+        {
+          "id": "play.3",
+          "level": 3,
+          "label": "strategy",
+          "accent": "warm amber",
+          "stem": "play_03_amber_facets",
+          "alt": null,
+          "caption": null
+        },
+        {
+          "id": "play.4",
+          "level": 4,
+          "label": "competition",
+          "accent": "crimson",
+          "stem": "play_04_crimson_cells",
+          "alt": null,
+          "caption": null
+        },
+        {
+          "id": "play.5",
+          "level": 5,
+          "label": "cooperation",
+          "accent": "turquoise",
+          "stem": "play_05_turquoise_pool",
+          "alt": null,
+          "caption": null
+        },
+        {
+          "id": "play.6",
+          "level": 6,
+          "label": "imagination",
+          "accent": "lavender",
+          "stem": "play_06_lavender_kingdom",
+          "alt": null,
+          "caption": null
+        },
+        {
+          "id": "play.7",
+          "level": 7,
+          "label": "freedom",
+          "accent": "soft gold",
+          "stem": "play_07_gold_delta",
+          "alt": null,
+          "caption": null
+        }
+      ]
+    }
+  ],
+  "diagrams": [
+    {
+      "id": "connections.meta",
+      "label": "meta",
+      "stem": "connections_meta",
+      "alt": null,
+      "caption": null
+    },
+    {
+      "id": "connections.atomic",
+      "label": "atomic",
+      "stem": "connections_atomic",
+      "alt": null,
+      "caption": null
+    }
+  ]
+}

@@ -1,0 +1,669 @@
+{
+  "meta_edges": [
+    {
+      "source": "universe",
+      "target": "time",
+      "strong": true,
+      "where_they_meet": "physical models of reality depend on how spacetime and change are described",
+      "boundary": "do not turn speculative metaphysics into a claim about measured time"
+    },
+    {
+      "source": "universe",
+      "target": "sound",
+      "strong": false,
+      "where_they_meet": "oscillation and synchronization offer concrete physical examples of patterns",
+      "boundary": "do not equate all vibration with music or consciousness"
+    },
+    {
+      "source": "universe",
+      "target": "information",
+      "strong": false,
+      "where_they_meet": "mathematical and informational descriptions compete or cooperate as accounts of reality",
+      "boundary": "a successful model is not automatically a substance"
+    },
+    {
+      "source": "universe",
+      "target": "chaos",
+      "strong": true,
+      "where_they_meet": "physical laws can generate complex, sometimes unpredictable trajectories",
+      "boundary": "chaos does not mean nature is lawless"
+    },
+    {
+      "source": "universe",
+      "target": "communication",
+      "strong": false,
+      "where_they_meet": "scientific claims and spiritual analogies travel through different vocabularies",
+      "boundary": "similar words do not guarantee equivalent evidence"
+    },
+    {
+      "source": "universe",
+      "target": "play",
+      "strong": false,
+      "where_they_meet": "curiosity and freely chosen rules shape how we explore large questions",
+      "boundary": "the universe is not literally a game because game metaphors are useful"
+    },
+    {
+      "source": "time",
+      "target": "sound",
+      "strong": true,
+      "where_they_meet": "duration, pulse, anticipation, and synchrony shape musical experience",
+      "boundary": "a metronome and lived time are different objects of study"
+    },
+    {
+      "source": "time",
+      "target": "information",
+      "strong": false,
+      "where_they_meet": "entropy, records, and change relate information to arrows of time",
+      "boundary": "information entropy and thermodynamic entropy are not synonymous"
+    },
+    {
+      "source": "time",
+      "target": "chaos",
+      "strong": true,
+      "where_they_meet": "evolving systems and finite forecasting horizons place limits on prediction",
+      "boundary": "causal dependence is not the same as forecastability"
+    },
+    {
+      "source": "time",
+      "target": "communication",
+      "strong": false,
+      "where_they_meet": "conversation unfolds through timing, turn-taking, delay, and memory",
+      "boundary": "fast exchange is not always better understanding"
+    },
+    {
+      "source": "time",
+      "target": "play",
+      "strong": false,
+      "where_they_meet": "timing, turns, planning, and temporal horizons structure games",
+      "boundary": "a clock is a rule or constraint, not the purpose of play"
+    },
+    {
+      "source": "sound",
+      "target": "information",
+      "strong": true,
+      "where_they_meet": "acoustic fluctuations can encode signals that survive noise",
+      "boundary": "transmitted patterns are not automatically meaningful"
+    },
+    {
+      "source": "sound",
+      "target": "chaos",
+      "strong": false,
+      "where_they_meet": "oscillators and nonlinear dynamics can explain complex acoustic behavior",
+      "boundary": "complex sound is not necessarily chaotic"
+    },
+    {
+      "source": "sound",
+      "target": "communication",
+      "strong": true,
+      "where_they_meet": "speech, music, silence, and gesture help people coordinate meaning",
+      "boundary": "communication is broader than audible sound"
+    },
+    {
+      "source": "sound",
+      "target": "play",
+      "strong": false,
+      "where_they_meet": "improvisation and rhythm support experimentation and collaborative creation",
+      "boundary": "not all music is play and not all play is musical"
+    },
+    {
+      "source": "information",
+      "target": "chaos",
+      "strong": true,
+      "where_they_meet": "feedback, coding, complexity, and uncertainty describe different aspects of dynamic systems",
+      "boundary": "algorithmic complexity and chaos are not identical"
+    },
+    {
+      "source": "information",
+      "target": "communication",
+      "strong": true,
+      "where_they_meet": "one concerns representation and transmission; the other adds intention and interpretation",
+      "boundary": "successful transmission does not entail understanding"
+    },
+    {
+      "source": "information",
+      "target": "play",
+      "strong": false,
+      "where_they_meet": "rules, search, probabilities, and incentives shape strategies",
+      "boundary": "human play exceeds optimization alone"
+    },
+    {
+      "source": "chaos",
+      "target": "communication",
+      "strong": false,
+      "where_they_meet": "interaction networks can generate social patterns beyond any participant’s plan",
+      "boundary": "an emergent pattern does not excuse individual responsibility"
+    },
+    {
+      "source": "chaos",
+      "target": "play",
+      "strong": true,
+      "where_they_meet": "simple rules can produce surprising, unstable, and rich game states",
+      "boundary": "unpredictable play is not proof of mathematical chaos"
+    },
+    {
+      "source": "communication",
+      "target": "play",
+      "strong": true,
+      "where_they_meet": "rules, feedback, cooperation, and negotiation are shared concerns",
+      "boundary": "a formal strategy does not exhaust human relationships"
+    }
+  ],
+  "atomic_edges": [
+    {
+      "source": "universe.1",
+      "target": "time.1",
+      "type": "foundation",
+      "rationale": "a physical universe contains events and change, the starting point for measuring time",
+      "question": "would a changeless cosmos admit clocks?"
+    },
+    {
+      "source": "universe.2",
+      "target": "sound.4",
+      "type": "mechanism",
+      "rationale": "coupled systems can synchronize, and musical rhythms can recruit attention and movement",
+      "question": "when is shared rhythm genuine synchronization?"
+    },
+    {
+      "source": "universe.3",
+      "target": "information.7",
+      "type": "tension",
+      "rationale": "mathematics-as-reality and information-as-reality make different ontological proposals",
+      "question": "does a good description imply that the world is the description?"
+    },
+    {
+      "source": "universe.4",
+      "target": "time.4",
+      "type": "foundation",
+      "rationale": "questions about spacetime connect directly to relativistic clocks and observers",
+      "question": "what happens to a universal present?"
+    },
+    {
+      "source": "universe.5",
+      "target": "chaos.2",
+      "type": "mechanism",
+      "rationale": "forces influence how systems change through state space",
+      "question": "how do interaction laws produce trajectories?"
+    },
+    {
+      "source": "universe.6",
+      "target": "communication.4",
+      "type": "analogy",
+      "rationale": "parallels between disciplines depend on what their concepts actually mean",
+      "question": "is a similarity of language also a similarity of explanation?"
+    },
+    {
+      "source": "universe.7",
+      "target": "information.7",
+      "type": "tension",
+      "rationale": "two highly ambitious accounts of ultimate reality demand different kinds of justification",
+      "question": "which claims could be tested, and which remain metaphysical?"
+    },
+    {
+      "source": "time.1",
+      "target": "chaos.2",
+      "type": "foundation",
+      "rationale": "change in time is represented as motion through a system’s possible states",
+      "question": "what counts as a state?"
+    },
+    {
+      "source": "time.2",
+      "target": "sound.4",
+      "type": "mechanism",
+      "rationale": "pulses and cycles organize both timekeeping and musical rhythm",
+      "question": "what turns recurrence into a felt beat?"
+    },
+    {
+      "source": "time.3",
+      "target": "information.4",
+      "type": "distinction",
+      "rationale": "thermodynamic entropy and information entropy share mathematical connections but have different uses",
+      "question": "which entropy is being measured here?"
+    },
+    {
+      "source": "time.4",
+      "target": "universe.4",
+      "type": "foundation",
+      "rationale": "relativity is part of the modern account of spacetime and its theoretical extensions",
+      "question": "does geometry change elapsed time?"
+    },
+    {
+      "source": "time.5",
+      "target": "chaos.3",
+      "type": "distinction",
+      "rationale": "sensitivity limits forecasting without abolishing causal structure",
+      "question": "is a prediction failure a causal failure?"
+    },
+    {
+      "source": "time.6",
+      "target": "universe.3",
+      "type": "tension",
+      "rationale": "timeless mathematical descriptions invite a debate about existence and temporal experience",
+      "question": "can a static description fully capture a changing world?"
+    },
+    {
+      "source": "time.7",
+      "target": "universe.7",
+      "type": "analogy",
+      "rationale": "eternity and oneness are metaphysical endpoints rather than measurable times or forces",
+      "question": "do these words express a hypothesis or a worldview?"
+    },
+    {
+      "source": "sound.1",
+      "target": "chaos.2",
+      "type": "mechanism",
+      "rationale": "sound begins with oscillation and motion governed by physical dynamics",
+      "question": "which variables describe a vibrating object?"
+    },
+    {
+      "source": "sound.2",
+      "target": "information.2",
+      "type": "mechanism",
+      "rationale": "acoustic pressure variations can serve as signals for a receiver",
+      "question": "how does noise alter a signal without changing its source?"
+    },
+    {
+      "source": "sound.3",
+      "target": "universe.2",
+      "type": "analogy",
+      "rationale": "harmonic relationships and coupled rhythms invite comparison, but consonance is not synchronization",
+      "question": "what is the difference between tuning and locking phases?"
+    },
+    {
+      "source": "sound.4",
+      "target": "time.2",
+      "type": "foundation",
+      "rationale": "musical rhythm depends on measurable durations and recurring events",
+      "question": "why can the same tempo feel different?"
+    },
+    {
+      "source": "sound.5",
+      "target": "communication.5",
+      "type": "application",
+      "rationale": "listeners infer meaning and sources from imperfect acoustic input",
+      "question": "how much does expectation change what we hear?"
+    },
+    {
+      "source": "sound.6",
+      "target": "play.6",
+      "type": "application",
+      "rationale": "music and improvisational play can invite experimentation and emotional transformation",
+      "question": "when does a performance become a shared imaginary space?"
+    },
+    {
+      "source": "sound.7",
+      "target": "universe.6",
+      "type": "analogy",
+      "rationale": "spiritual interpretations of music can be compared with physics without being treated as proof",
+      "question": "what survives the comparison when metaphor is removed?"
+    },
+    {
+      "source": "information.1",
+      "target": "communication.4",
+      "type": "distinction",
+      "rationale": "distinguishable states support signaling, but meaning depends on context and convention",
+      "question": "when does a difference matter to a receiver?"
+    },
+    {
+      "source": "information.2",
+      "target": "communication.2",
+      "type": "mechanism",
+      "rationale": "a signal becomes communicative when sent through a channel to a recipient",
+      "question": "what counts as success before meaning is considered?"
+    },
+    {
+      "source": "information.3",
+      "target": "communication.3",
+      "type": "foundation",
+      "rationale": "coding conventions and linguistic conventions both map forms to interpretable structures",
+      "question": "how is a code different from a natural language?"
+    },
+    {
+      "source": "information.4",
+      "target": "time.3",
+      "type": "distinction",
+      "rationale": "entropy appears in both statistical mechanics and communication theory, not in identical senses",
+      "question": "which probabilities and states are being counted?"
+    },
+    {
+      "source": "information.5",
+      "target": "play.3",
+      "type": "application",
+      "rationale": "strategic choice resembles search through possibilities under constraints",
+      "question": "what does a good algorithm miss about human play?"
+    },
+    {
+      "source": "information.6",
+      "target": "communication.7",
+      "type": "tension",
+      "rationale": "fluent information processing is not sufficient evidence of shared understanding",
+      "question": "how would you test genuine understanding?"
+    },
+    {
+      "source": "information.7",
+      "target": "universe.3",
+      "type": "tension",
+      "rationale": "informational and mathematical ontologies propose different foundations for physical reality",
+      "question": "what evidence could distinguish these worldviews?"
+    },
+    {
+      "source": "chaos.1",
+      "target": "play.2",
+      "type": "analogy",
+      "rationale": "rules can create an ordered space in which unexpected behavior becomes possible",
+      "question": "can simple rules generate surprising play?"
+    },
+    {
+      "source": "chaos.2",
+      "target": "time.1",
+      "type": "foundation",
+      "rationale": "dynamical systems describe how states change over time",
+      "question": "what does a trajectory leave out?"
+    },
+    {
+      "source": "chaos.3",
+      "target": "time.5",
+      "type": "distinction",
+      "rationale": "sensitive dependence complicates prediction while causal questions remain meaningful",
+      "question": "can we know a cause without predicting an outcome?"
+    },
+    {
+      "source": "chaos.4",
+      "target": "sound.1",
+      "type": "mechanism",
+      "rationale": "nonlinear oscillators can produce distortion, new frequencies, and complex vibration",
+      "question": "what breaks proportionality between input and output?"
+    },
+    {
+      "source": "chaos.5",
+      "target": "universe.2",
+      "type": "mechanism",
+      "rationale": "synchronization is a concrete example of collective organization",
+      "question": "how can local coupling produce a shared rhythm?"
+    },
+    {
+      "source": "chaos.6",
+      "target": "communication.6",
+      "type": "application",
+      "rationale": "collective social patterns can emerge through networks, feedback, and interaction",
+      "question": "when does a group behavior exceed individual intentions?"
+    },
+    {
+      "source": "chaos.7",
+      "target": "play.3",
+      "type": "application",
+      "rationale": "strategy must cope with incomplete information and sensitive outcomes",
+      "question": "how should choices change when prediction becomes unreliable?"
+    },
+    {
+      "source": "communication.1",
+      "target": "play.6",
+      "type": "application",
+      "rationale": "role-play and creative expression make intentions public through symbols and actions",
+      "question": "can you express something before you can name it?"
+    },
+    {
+      "source": "communication.2",
+      "target": "information.2",
+      "type": "mechanism",
+      "rationale": "both tracks study how a pattern passes through a noisy channel",
+      "question": "what is transmitted before anything is interpreted?"
+    },
+    {
+      "source": "communication.3",
+      "target": "information.3",
+      "type": "distinction",
+      "rationale": "grammar, semantics, and social use go beyond straightforward encoding",
+      "question": "what is lost when language is treated as mere code?"
+    },
+    {
+      "source": "communication.4",
+      "target": "information.1",
+      "type": "distinction",
+      "rationale": "shannon-style distinctions do not automatically contain semantic meaning",
+      "question": "when is meaningfulness a property of context?"
+    },
+    {
+      "source": "communication.5",
+      "target": "sound.5",
+      "type": "application",
+      "rationale": "interpreting speech depends on hearing, attention, expectation, and context",
+      "question": "what does the listener contribute?"
+    },
+    {
+      "source": "communication.6",
+      "target": "play.5",
+      "type": "application",
+      "rationale": "shared goals depend on negotiation, turn-taking, trust, and coordination",
+      "question": "how do groups repair misunderstanding during cooperation?"
+    },
+    {
+      "source": "communication.7",
+      "target": "information.6",
+      "type": "tension",
+      "rationale": "accurate responses and actual understanding can come apart",
+      "question": "what would count as evidence of comprehension?"
+    },
+    {
+      "source": "play.1",
+      "target": "information.6",
+      "type": "application",
+      "rationale": "curiosity motivates exploration and learning from uncertain feedback",
+      "question": "what is learned through trial before formal instruction?"
+    },
+    {
+      "source": "play.2",
+      "target": "communication.3",
+      "type": "analogy",
+      "rationale": "games and languages rely on shared conventions, but serve different purposes",
+      "question": "how do rules create a space for meaning?"
+    },
+    {
+      "source": "play.3",
+      "target": "information.5",
+      "type": "application",
+      "rationale": "strategies can be modeled as algorithms over choices and constraints",
+      "question": "what is missing from a purely computational player?"
+    },
+    {
+      "source": "play.4",
+      "target": "communication.5",
+      "type": "application",
+      "rationale": "competition involves signaling, bluffing, reading intentions, and ambiguity",
+      "question": "when does a signal become strategic deception?"
+    },
+    {
+      "source": "play.5",
+      "target": "communication.6",
+      "type": "application",
+      "rationale": "cooperation requires coordination and trust beyond simple message delivery",
+      "question": "how is a shared plan negotiated?"
+    },
+    {
+      "source": "play.6",
+      "target": "sound.6",
+      "type": "application",
+      "rationale": "musical improvisation brings together creativity, emotion, and joint attention",
+      "question": "what is the role of surprise in collective improvisation?"
+    },
+    {
+      "source": "play.7",
+      "target": "communication.7",
+      "type": "application",
+      "rationale": "freely chosen interaction can support understanding without requiring agreement",
+      "question": "how do players negotiate freedom within shared rules?"
+    }
+  ],
+  "journeys": [
+    {
+      "id": "change-to-shared-rhythm",
+      "title": "from change to shared rhythm",
+      "steps": [
+        {
+          "source": "time.1",
+          "target": "chaos.2",
+          "reason": "described precisely, change becomes motion through a space of possible states"
+        },
+        {
+          "source": "chaos.2",
+          "target": "sound.1",
+          "reason": "an oscillator's orbit in phase space is the motion a vibrating source passes on to the medium around it"
+        },
+        {
+          "source": "sound.1",
+          "target": "time.2",
+          "reason": "a steady vibration repeats at a regular period, the kind of regularity a clock counts, from pendulums to quartz"
+        },
+        {
+          "source": "time.2",
+          "target": "sound.4",
+          "reason": "the cycles that keep time also organize music, where recurring pulses become a beat"
+        },
+        {
+          "source": "sound.4",
+          "target": "communication.6",
+          "reason": "keeping a shared beat is a repeated exchange between people, the kind that can strengthen the links between two groups"
+        }
+      ]
+    },
+    {
+      "id": "physics-to-interpretations",
+      "title": "from physics to its interpretations",
+      "steps": [
+        {
+          "source": "universe.1",
+          "target": "universe.3",
+          "reason": "after the scientific picture of what exists comes the question of why mathematics describes it so well"
+        },
+        {
+          "source": "universe.3",
+          "target": "information.7",
+          "reason": "mathematics as reality and information as reality are rival readings of that success, and they claim different things"
+        },
+        {
+          "source": "information.7",
+          "target": "universe.6",
+          "reason": "the amplitudes and phases of a quantum state return in the mandala's waves and symmetry, now as a symbol rather than a model"
+        },
+        {
+          "source": "universe.6",
+          "target": "universe.7",
+          "reason": "the mandala's symbolic interconnection is carried to a single source, a metaphysical view rather than cosmology"
+        }
+      ]
+    },
+    {
+      "id": "noise-to-understanding",
+      "title": "from noise to understanding",
+      "steps": [
+        {
+          "source": "sound.2",
+          "target": "information.2",
+          "reason": "a waveform taken apart into frequencies is also a signal, which noise can blur without changing its source"
+        },
+        {
+          "source": "information.2",
+          "target": "information.3",
+          "reason": "a code is how a signal survives noise: parity bits let a receiver find and correct an error"
+        },
+        {
+          "source": "information.3",
+          "target": "communication.4",
+          "reason": "a code fixes what each symbol stands for, but meaning depends on context, which no code carries by itself"
+        },
+        {
+          "source": "communication.4",
+          "target": "communication.5",
+          "reason": "if meaning shifts with context, one signal can be read in several coherent ways"
+        },
+        {
+          "source": "communication.5",
+          "target": "communication.7",
+          "reason": "understanding starts when different interpretations find shared reference points, without having to become the same"
+        }
+      ]
+    },
+    {
+      "id": "rules-to-play",
+      "title": "from simple rules to unexpected play",
+      "steps": [
+        {
+          "source": "play.2",
+          "target": "chaos.2",
+          "reason": "the rules of a game and the laws of motion are both short statements that decide which paths are possible"
+        },
+        {
+          "source": "chaos.2",
+          "target": "chaos.5",
+          "reason": "from one system following a law to many agents following local rules, where coherent group motion appears"
+        },
+        {
+          "source": "chaos.5",
+          "target": "play.3",
+          "reason": "a flock's order arises without anyone choosing it, while strategy adds players who choose, and an equilibrium is where their choices balance"
+        },
+        {
+          "source": "play.3",
+          "target": "play.5",
+          "reason": "played many times by many players, contributing to a shared pool can become a stable strategy or a fragile one"
+        },
+        {
+          "source": "play.5",
+          "target": "play.6",
+          "reason": "rules that let players build together can also build worlds, as a few symbols combine recursively into a place to play in"
+        }
+      ]
+    },
+    {
+      "id": "entropy-to-prediction-limits",
+      "title": "from entropy to prediction limits",
+      "steps": [
+        {
+          "source": "time.3",
+          "target": "information.4",
+          "reason": "diffusion spreads particles out, and shannon entropy measures how spread out a distribution of symbols is: related in some settings, not the same quantity"
+        },
+        {
+          "source": "information.4",
+          "target": "chaos.3",
+          "reason": "entropy quantifies uncertainty, and in a chaotic system a tiny uncertainty about the start grows until two nearby paths look unrelated"
+        },
+        {
+          "source": "chaos.3",
+          "target": "chaos.7",
+          "reason": "one pair of separating paths becomes an ensemble, and its widening cloud marks how far ahead a forecast can reach"
+        },
+        {
+          "source": "chaos.7",
+          "target": "time.6",
+          "reason": "with prediction limited to a horizon, a speculative question follows: whether time's direction is fundamental at all, or a feature of how configurations relate"
+        }
+      ]
+    },
+    {
+      "id": "improvisation-to-social-world",
+      "title": "from improvisation to a social world",
+      "steps": [
+        {
+          "source": "sound.6",
+          "target": "play.6",
+          "reason": "improvised music moves through emotions without a fixed path, as imaginative play invents its world as it goes"
+        },
+        {
+          "source": "play.6",
+          "target": "communication.1",
+          "reason": "role-play makes inner states visible through symbols and actions, which is where expression begins"
+        },
+        {
+          "source": "communication.1",
+          "target": "communication.6",
+          "reason": "an expression made public invites a response, and repeated exchanges build connections"
+        },
+        {
+          "source": "communication.6",
+          "target": "play.7",
+          "reason": "connections that keep being renewed resemble an open game, with no final victory and more possible paths"
+        }
+      ]
+    }
+  ]
+}
