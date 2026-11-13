@@ -18,7 +18,7 @@ the work runs in lanes. each lane has its own ticket prefix, ticket table and or
 |---|---|---|---|---|---|
 | worlds and engines | CC | interactive generative engines, and world-based discovery in the gallery | §4.1 | CC11a ∥ CC6 (step 4), whose one need, CC5, is done | CC1, CC2, CC3, CC12 (2026-11-03), CC4, CC14 (2026-11-05), CC5, CC13 (2026-11-07) |
 | seven levels | SL | static pycairo art for the seven reading tracks | §4.2 | SL1 ∥ SL3, whose one need, SL0, is done. no script, image or gallery change exists for this work yet | SL0 (2026-11-13) |
-| ecosystem onboarding | EO | the repo's place in the eigenomar ecosystem: a manifest, the shared Claude rules, issues in the ecosystem's Project, and the portability gaps | §4.3 | EO5 ∥ EO6 ∥ EO7 ∥ EO10, which need nothing more. EO8 waits on the ecosystem and the owner | EO1, EO4 (2026-11-12), EO2, EO3, EO9 (2026-11-13) |
+| ecosystem onboarding | EO | the repo's place in the eigenomar ecosystem: a manifest, the shared Claude rules, issues in the ecosystem's Project, and the portability gaps | §4.3 | EO5 ∥ EO6 ∥ EO7 ∥ EO10, which need nothing more | EO1, EO4 (2026-11-12), EO2, EO3, EO9, EO8 (2026-11-13) |
 
 - **milestone 1** (worlds and engines): CC5, CC7 and CC10 are published, giving three engines in three worlds (dynamical, organic, mystic), built on the CC2–CC3 taxonomy.
 - **scope of this repo:** CC1–CC14 (the owner approved CC12 on 2026-11-03 and asked for CC13 and CC14 on 2026-11-04) and SL0–SL11.
@@ -35,7 +35,7 @@ the work runs in lanes. each lane has its own ticket prefix, ticket table and or
 
 ### queue
 
-take the earliest step whose needs are met, in either lane. tickets joined by ∥ can run at the same time in separate branches or worktrees, because they touch different files, and so can a CC ticket and an SL ticket. tickets joined by → run in that order, ideally in the same session. when tickets run in parallel, each one edits only its own rows in §4 and appends its own log line, and a conflict in this file is resolved by keeping both sides.
+in the ecosystem's Project, a lane's next tickets (lanes table, above) are P1 and its other open tickets P2, unless the owner sets a priority on an issue. take the earliest step whose needs are met, in either lane. tickets joined by ∥ can run at the same time in separate branches or worktrees, because they touch different files, and so can a CC ticket and an SL ticket. tickets joined by → run in that order, ideally in the same session. when tickets run in parallel, each one edits only its own rows in §4 and appends its own log line, and a conflict in this file is resolved by keeping both sides.
 
 ```mermaid
 flowchart TD
@@ -85,7 +85,7 @@ flowchart TD
 
   classDef done fill:#e5f4e4,stroke:#2e7d32,color:#1b3a1d
   classDef next fill:#e7f1fb,stroke:#1565c0,stroke-width:2px,color:#0d2b4e
-  class CC12,CC2,CC3,CC4,CC14,CC5,SL0,EO1,EO4,EO2,EO3,EO9 done
+  class CC12,CC2,CC3,CC4,CC14,CC5,SL0,EO1,EO4,EO2,EO3,EO9,EO8 done
   class CC11a,CC6,SL1,SL3,EO5,EO6,EO7,EO10 next
 ```
 
@@ -453,6 +453,7 @@ world **dynamical** · concept: determinism, chaos and sensitivity to initial co
 - **decided (2026-11-07):** a tap keeps no keyboard equivalent of its own. what a tap shows, paths that start together and part, is also what `r` (from the seed's start) and `n` (from a new start) show, and choosing a point by keys would need a cursor on the canvas. the about panel says what `n` does.
 - **result (2026-11-07):** the build lists every `canvas/<id>/index.html` in a new group, engines, interactive (`#/engines/interactive`), with the folder name as its id and `index.html` itself as its link, and skips a folder without one. a sketch group's `pages`, `files` or `folders`, picks the shape, so animated, canvas still lists only the three files. the piece page links `sim.js` as the engine's source, and `#/engines` now shows two cards. apart from the new group, the data file is identical to the one the old build gives. the page has the §3 meta block (dynamical, with abstract and geometric; attractors and particle fields; parameter manipulation and pointer; observe and intervene) and takes its title and concept from it. an about panel gives the concept, what the picture shows, how to use it and the keys. only one panel opens at a time, and Escape closes it. opened directly, the page shows its title, and in a frame it doesn't, because the gallery names it. the preset's note is now in the text color, above the muted readout and hint. a frame is drawn only when the picture changed (a new trail point, a moving view or a visitor's action), so under reduced motion it draws 30 times a second instead of 60. once every path has moved less than half a pixel over a whole trail, the loop stops and the hint offers a tap to release them again. settling gets there in 28–34 s for all of seeds 1–200, fading chaos in 93 s, and butterfly and closed loops never. `fastest` in `sim.js` gives the speed this needs. measured with software raster, the cost of a frame is the length of trail drawn, 23–27 ms at 1280×800 and on a 390×844 phone at ratio 2. 1, 8, 16 or 32 bands, lines instead of curves, and dropping points under a pixel apart all land inside that spread, and `lighter` costs about a fifth, so the trails and their look are unchanged, and `governTrails` stays the bound. the presets are unchanged. 29 tests pass with `node --test`. in headless Chrome from `file://`, with real mouse, touch and key input, 42 checks of the page pass (desktop, a phone at 390×844 with touch, the 340 px card, reduced motion, rest and waking, keys, panels, hidden tab, `pagehide`), and so do 37 of the gallery (the directory, the worlds view and its filters, the piece page, focus and keys inside the frame, pausing out of view, removal on a route change, the old redirects, and the card at phone width). the build is clean with 265 items. not tried on a real phone or with a GPU, and only Chrome was checked.
 
+<a id="cc6"></a>
 #### CC6 · artificial garden: core · M
 
 world **organic** · concept: emergence, adaptation and indirect control.
@@ -473,6 +474,7 @@ world **organic** · concept: emergence, adaptation and indirect control.
 - **done when:** the organism evolves under consistent rules, and a visitor's intervention changes how it develops in a way that matters.
 - **not here:** a full ecosystem, genetic evolution, multiplayer.
 
+<a id="cc7"></a>
 #### CC7 · artificial garden: publish · M
 
 - **do:**
@@ -486,6 +488,7 @@ world **organic** · concept: emergence, adaptation and indirect control.
 - **done when:** visitors can grow, influence, reset and explore the garden as a complete experience.
 - **not here:** competitive goals, elaborate organism editors, game progression.
 
+<a id="cc8"></a>
 #### CC8 · reusable engine conventions · M
 
 - **gate:** at least two engines have shipped (CC5 and CC7), CC11a and CC11b have added share links and export to both, and they show real chances for reuse.
@@ -502,6 +505,7 @@ world **organic** · concept: emergence, adaptation and indirect control.
 - **done when:** both published engines still behave exactly as before, and a new experiment can use the conventions without copying lifecycle code.
 - **not here:** a visual programming system, a node editor, a plugin marketplace, a broad engine rewrite.
 
+<a id="cc9"></a>
 #### CC9 · sigil laboratory: core · M
 
 world **mystic** · concept: symbolism, pattern-making and the search for meaning.
@@ -515,6 +519,7 @@ world **mystic** · concept: symbolism, pattern-making and the search for meanin
 - **done when:** visitors can create distinct procedural sigils through interaction that matters, and the results can be reproduced.
 - **not here:** a formal symbolic language, interpreting meaning, AI-generated imagery.
 
+<a id="cc10"></a>
 #### CC10 · sigil laboratory: publish · M
 
 - **do:**
@@ -527,6 +532,7 @@ world **mystic** · concept: symbolism, pattern-making and the search for meanin
 - **done when:** visitors can create and explore procedural symbols in a complete, responsive experience.
 - **not here:** complex notation systems, accounts, cloud storage.
 
+<a id="cc11a"></a><a id="cc11b"></a>
 #### CC11 · share links and image export · CC11a S + CC11b S
 
 - **split (Q6, amended by CC1):** CC11a builds this into strange attractor right after CC5. CC11b brings the same into artificial garden right after CC7, copying CC11a's pattern. CC11 is done when both are.
@@ -797,6 +803,7 @@ checked by script on 2026-11-04. the good news first: tracks, nodes, 21 meta pai
   - **the connections file** holds `meta_edges`, `atomic_edges` and `journeys`. it leaves out the package's `tracks` and `nodes`, which repeated the registry's ids and labels, so the registry is the one place they're defined. each meta edge gains `strong`, true for brief 08's ten emphasized links, so SL10 takes them from the data.
   - `python dev.py check` passes, and the build is unchanged at 265 items: nothing reads the two files until SL1.
 
+<a id="sl1"></a>
 #### SL1 · gallery pipeline · M
 
 - **do:**
@@ -816,6 +823,7 @@ checked by script on 2026-11-04. the good news first: tracks, nodes, 21 meta pai
   - each track's taxonomy is checked against the vocabulary, as a series' fields are. `alt` and `caption` are `null` until written, so the fallback to the title covers them.
 - **done when:** the build is clean with no images present, the manifest lists all 51 as `planned`, and a test image shows up in its folder and flips to `generated`.
 
+<a id="sl2"></a>
 #### SL2 · universe migration · S
 
 - **do:**
@@ -836,6 +844,7 @@ checked by script on 2026-11-04. the good news first: tracks, nodes, 21 meta pai
 | `cosmos_mandala.png` | `universe_06_magenta_mandala.png` |
 | `cosmos_oneness.png` | `universe_07_gold_sphere.png` |
 
+<a id="sl3"></a>
 #### SL3 · kit and style pilot · M
 
 - **do:**
@@ -845,12 +854,14 @@ checked by script on 2026-11-04. the good news first: tracks, nodes, 21 meta pai
   - **from SL0:** confirm the seven track colors in `seven_levels.json` at the same review (§4.2.3, 5).
 - **done when:** the owner signs off the three images. from then on the kit is additive: a helper may be added, but changing one changes every image that uses it, so that needs a re-render and a review of all of them.
 
+<a id="sl4"></a><a id="sl5"></a><a id="sl6"></a><a id="sl7"></a><a id="sl8"></a><a id="sl9"></a>
 #### SL4–SL9 · one track each · M
 
 - **do:** work through the track's rows in §4.2.2, in order, using the loop in §4.2.1. move a helper into the kit at its second use. work on a branch per track and merge only when all seven images are reviewed, because anything on `main` is public at once.
 - **done when:** the track's seven PNGs are in the folder, the deployed manifest shows them as `generated`, and the track's folder shows seven pieces in level order.
 - **not here:** changing a shipped image to suit a later one, unless the owner asks.
 
+<a id="sl10"></a>
 #### SL10 · connections · M
 
 - **do:**
@@ -860,6 +871,7 @@ checked by script on 2026-11-04. the good news first: tracks, nodes, 21 meta pai
 - **from SL0:** `strong` marks brief 08's ten emphasized meta links, and `journeys` holds its six pathways, which the atomic drawing can emphasize. the owner hasn't decided whether information/chaos gets an atomic bridge (§4.2.3, 4), which would change brief 08's count of 49 edges. decide before drawing.
 - **done when:** both are deterministic and readable at full size, both show directly on the 7 levels page, and the atomic drawing stays legible rather than becoming a hairball.
 
+<a id="sl11"></a>
 #### SL11 · close-out · S
 
 - **do:**
@@ -883,7 +895,7 @@ the repo's place in the eigenomar ecosystem, a set of independent repos coordina
 | EO5 | `canvas/snake2.html` to LF | S | none | todo |
 | EO6 | install notes for the sketches, per platform | S | none | todo |
 | EO7 | retire the WSL notes | S | the owner confirms no WSL clone is left | todo |
-| EO8 | an issue for every open ticket | M | EO4, the ecosystem's GitHub Project and its linking conventions, the owner's approval | todo |
+| EO8 | an issue for every open ticket | M | EO4, the ecosystem's GitHub Project and its linking conventions, the owner's approval | done |
 | EO9 | the decisions shared with the site | S | EO4, the shared decision records in `meta-eigenomar` | done |
 | EO10 | `project.yaml` off the gallery | S | none | todo |
 
@@ -927,12 +939,14 @@ the repo's place in the eigenomar ecosystem, a set of independent repos coordina
 - **done when:** none of the marked content is left in this file, every ticket that stays still reads on its own, and only this file and `CLAUDE.md` changed.
 - **result (2026-11-12):** the marked content is out of this file, with no copy left here, and what stayed is reworded so every ticket still reads on its own. §0's adding work has the rule for confidential work, and the tracking link and `CLAUDE.md` have the same exception. only this file and `CLAUDE.md` changed.
 
+<a id="eo5"></a>
 #### EO5 · `canvas/snake2.html` to LF · S
 
 - **why:** `.gitattributes` asks for LF, but `snake2.html` is still CRLF in the index (§1.1), so `git add --renormalize .` stages it. the ecosystem's conventions say to commit that normalization on its own, apart from any other change.
 - **do:** run `git add --renormalize .`, check that it stages this one file, and commit it alone.
 - **done when:** `git ls-files --eol` shows no `i/crlf` file, the sketch runs as before, and `python dev.py check` passes. only the sketch's `bytes` in the gallery data changes.
 
+<a id="eo6"></a>
 #### EO6 · install notes for the sketches, per platform · S
 
 - **why:** `requirements.txt` names the sketches' dependencies in a comment, and nothing says how to install them. this is what pip found on 2026-11-12, for Python 3.11, without installing anything:
@@ -950,6 +964,7 @@ the repo's place in the eigenomar ecosystem, a set of independent repos coordina
   - find out whether a Windows render reproduces the committed PNG byte for byte. `pycairo`'s Windows wheel brings its own cairo while Linux uses the system's, and the measurement that the cosmos scripts re-render byte-identical (§4.2.1), which SL2 relies on, was made in WSL. two of those seven scripts import `noise`.
 - **done when:** the README takes a fresh Windows clone to a rendered pycairo script and pygame script, and says whether renders match across platforms.
 
+<a id="eo7"></a>
 #### EO7 · retire the WSL notes · S
 
 - **why:** development moved to the Windows clone on 2026-11-11, and the ecosystem dropped WSL the same day. `CLAUDE.md` ("the same on Windows and WSL"), the README's "Windows and WSL" section with its `wsl.localhost` address, and §1.1's platforms and local tools rows still describe two clones.
@@ -967,6 +982,7 @@ the repo's place in the eigenomar ecosystem, a set of independent repos coordina
   - issues here are public, so the owner sees each one's exact text before it is written.
 - **needs:** EO4, so no issue repeats what moves out, plus the Project and the owner's approval. EO4 is done and the Project exists (2026-11-13). the ecosystem's conventions for linking an issue to its ticket, and for its blockers, are still being written, and the issues follow them.
 - **done when:** every open ticket has exactly one issue in the Project, and a done ticket's issue is closed.
+- **result (2026-11-13):** 22 issues, #1–#22, one for each open ticket but EO8 itself, each titled with its ID and linking its section by a stable anchor, `<a id>` above each open ticket's heading, with one per ticket above a shared heading. all are in the ecosystem's Project with status, priority (a lane's next tickets P1, the rest P2, as §0's queue says) and work type, and each need in §4's tables that isn't done is a blocked-by link. the SL issues that site work waits on block the site's issues. EO7 waits on the owner's confirmation, which isn't a ticket, so its issue has no link.
 
 #### EO9 · the decisions shared with the site · S
 
@@ -975,6 +991,7 @@ the repo's place in the eigenomar ecosystem, a set of independent repos coordina
 - **needs:** EO4, and the shared records in `meta-eigenomar`.
 - **result (2026-11-13):** the records exist. §0's repos bullet and §7's parked shared engine package each state the outcome in one line and cite shared decision SD1, without a path, because a public plan can't usefully link a private record.
 
+<a id="eo10"></a>
 #### EO10 · `project.yaml` off the gallery · S
 
 - **why:** the gallery serves every file that `.assetsignore` doesn't list, so it has served `project.yaml` at `/project.yaml` since EO1 was pushed (it returned 200 on 2026-11-13). the file holds nothing private, so this is tidiness, not privacy: the owner chose to keep it off the site with the other config (open question 1).
@@ -1118,3 +1135,4 @@ the ticket column names a ticket, a lane for a note about a whole lane, or none.
 | 2026-11-12 | EO4 | the content the owner marked confidential is out of this file, with no copy left here, and what stayed is reworded so every ticket still reads on its own. confidential work never goes in this file: §0's adding work and tracking link, and `CLAUDE.md`, now say so, and the ecosystem's shared rules say where it goes. only this file and `CLAUDE.md` changed. nothing was built |
 | 2026-11-13 | SL0 | data from the briefs done: `seven_levels.json`, with 7 tracks, 49 levels and 2 diagrams, and `seven_levels_connections.json`, with 21 meta edges (10 of them strong), 49 atomic edges and 6 journeys of 27 steps, each with a reason, at the root. derived from the package with §4.2.3's corrections 1–3, 5 and 6, and 4 left to the owner before SL10. the taxonomy per track and the seven colors are proposals, for SL1 and SL3's review. checked by script against the package, the briefs and the build's vocabulary. `python dev.py check` passes, and the build is unchanged at 265 items. SL1 ∥ SL3 are next |
 | 2026-11-13 | EO | re-run by the ecosystem's onboarding, against version 1.5 of its contract, applying the owner's answers to §4.3's open questions. EO2 done: the shared rules' import is the first line of `CLAUDE.md`. EO3 done: the site's plan holds this series' site work with its gates, so §4.2 no longer links or numbers the retired document. EO9 done: §0's repos bullet and §7's parked shared engine package cite shared decision SD1. EO10 added, to keep `project.yaml` off the gallery, and EO7's need is met. the manifest validates against the ecosystem's schema, and `python dev.py check` passes from a `c:` and a `C:` drive letter, with 29 tests and 265 items, and changes nothing. only this file and `CLAUDE.md` changed. nothing was built |
+| 2026-11-13 | EO8 | an issue for every open ticket: 22, #1–#22, in the ecosystem's Project with status, priority and work type, and blocked-by links for §4's needs. each open ticket has a stable anchor that its issue links. §0, the table and the queue mark EO8 done |
