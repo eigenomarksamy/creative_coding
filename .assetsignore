@@ -13,6 +13,7 @@ __pycache__/
 wrangler.jsonc
 requirements.txt
 dev.py
+project.yaml
 
 # Planning notes and agent instructions stay in the repository but off the site.
 *dev_plan.md
