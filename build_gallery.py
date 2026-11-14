@@ -11,7 +11,8 @@ also works when index.html is opened straight from disk, without a server.
 
 Every piece is also classified by world, system and interaction, using the
 vocabulary below. An image series sets these fields once on its group in
-CATEGORIES. A live sketch, which is a canvas/<id>.html file, or an
+CATEGORIES, and the seven levels set them per track in their registry,
+seven_levels.json. A live sketch, which is a canvas/<id>.html file, or an
 engine, which is a canvas/<id>/index.html folder, sets them in its own
 page, in a <script type="application/json" id="meta"> block. The build fails on any
 value outside the vocabulary, and each item carries the result as
@@ -44,6 +45,23 @@ SKETCH_EXTENSIONS = {".html"}
 GALLERY_DIRECTORY = "gallery"
 THUMBNAIL_DIRECTORY = "thumbs"
 DATA_FILENAME = "gallery-data.js"
+
+# Where the gallery is published. A generated manifest gives full URLs,
+# because other sites read it.
+PUBLIC_BASE_URL = "https://gallery.eigenomar.com/"
+
+# The seven levels' registry lists every image before it exists, and the
+# build writes this manifest beside the images, with each one's status,
+# size and public URL (collect_registry_items).
+REGISTRY_MANIFEST_FILENAME = "manifest.json"
+
+# A level's file stem is <track>_<NN>_<color>_<form>, such as
+# time_03_orange_bloom, and a diagram's is connections_<label>
+# (dev_plan.md §4.2.1).
+LEVEL_STEM_PATTERN = re.compile(
+    r"^(?P<track>[a-z]+)_(?P<level>\d{2})_[a-z]+_[a-z]+$"
+)
+TRACK_ID_PATTERN = re.compile(r"^[a-z]+$")
 
 DEFAULT_THUMBNAIL_SIZE = 640
 THUMBNAIL_QUALITY = 80
@@ -187,10 +205,10 @@ PAGE_FIELDS = ("id", "title") + SERIES_FIELDS + LIVE_FIELDS
 # gallery/gallery.js).
 RESERVED_ROUTES = ("worlds", "pygame", "pycairo", "canvas")
 
-# The gallery's directories, by kind of work. Each group reads one directory
-# or manifest. A group may also declare sections, folders one level below it:
-# its pieces stay in the group's items, and each names its folder in
-# item["section"] (see collect_sections).
+# The gallery's directories, by kind of work. Each group reads one directory,
+# manifest or registry. A group may also declare sections, folders one level
+# below it: its pieces stay in the group's items, and each names its folder
+# in item["section"] (see collect_sections).
 CATEGORIES = [
     {
         "id": "engines",
@@ -320,15 +338,25 @@ CATEGORIES = [
                 "id": "7-levels",
                 "title": "7 levels",
                 "blurb": (
-                    "the art behind seven reading tracks, a folder for each. "
-                    "cosmos is the first."
+                    "the art behind seven reading tracks: a folder for each "
+                    "track, and two diagrams of how the tracks connect. a "
+                    "piece shows here once it's made."
                 ),
+                # Every level and diagram, made or not, in reading order.
+                # Each track sets its folder and classification there.
+                "registry": {
+                    "file": "seven_levels.json",
+                    "connections": "seven_levels_connections.json",
+                    "directory": "cc_pycairo/gen/seven_levels",
+                },
+                # The seven cosmos pieces under their first names, in the
+                # universe track's folder, until the universe migration
+                # (SL2) replaces them with the registry's files.
                 "manifest": "cosmos.txt",
                 "search": ["cc_pycairo/gen/cosmos"],
+                "manifest_track": "universe",
                 "kind": "image",
                 "source": "pycairo_sketch",
-                # The one folder this manifest fills.
-                "section": "cosmos",
                 "sections": [
                     {
                         "id": "cosmos",
@@ -338,8 +366,8 @@ CATEGORIES = [
                             "instead of Bézier strokes: spiral galaxies, "
                             "coupled oscillators, Platonic solids, curved "
                             "spacetime, field lines, drum modes and "
-                            "spherical harmonics. in the order set out in "
-                            "cosmos.txt."
+                            "spherical harmonics, one for each level of the "
+                            "universe track."
                         ),
                     },
                     {"id": "time", "title": "time"},
@@ -349,10 +377,6 @@ CATEGORIES = [
                     {"id": "communication", "title": "communication"},
                     {"id": "play", "title": "play"},
                 ],
-                "world": "cosmic",
-                "worlds": ["geometric", "mystic"],
-                "systems": ["oscillators", "procedural-geometry"],
-                "concept": "the universe as mathematical structure",
             },
         ],
     },
@@ -964,6 +988,469 @@ def series_taxonomy(category_id: str, group: dict) -> dict | None:
     return build_taxonomy(declared, where, live=False)
 
 
+def read_json_file(path: Path, where: str) -> object:
+    """Parse a hand-written JSON file, or fail the build saying where."""
+    try:
+        return json.loads(path.read_text(encoding="utf-8"))
+    except json.JSONDecodeError as error:
+        raise MetadataError(f"{where}: not valid JSON ({error})") from None
+
+
+def optional_text(value: object, field: str, where: str) -> str | None:
+    """A field that is null until it is written, then a line of text."""
+    if value is None:
+        return None
+
+    if not isinstance(value, str) or not value.strip():
+        raise MetadataError(f"{where}: {field} must be null or a line of text")
+
+    return value
+
+
+def required_list(container: dict, field: str, where: str) -> list:
+    value = container.get(field)
+
+    if not isinstance(value, list):
+        raise MetadataError(f"{where}: {field} must be a list")
+
+    return value
+
+
+def required_text(container: dict, field: str, where: str) -> str:
+    value = container.get(field)
+
+    if not isinstance(value, str) or not value.strip():
+        raise MetadataError(f"{where}: {field} must be a line of text")
+
+    return value
+
+
+def read_registry(repo_root: Path, group: dict) -> dict:
+    """
+    Read and check the seven levels' registry and its connections.
+
+    Returns {"tracks": {id: track}, "entries": [...]}, with one entry per
+    level, track by track in reading order, then one per diagram. An entry
+    carries its id, track, level, label, stem, alt, caption, and the folder
+    and classification its track sets. A diagram has no track, folder or
+    classification.
+
+    Fails the build on a duplicate or misnumbered id, a stem that breaks
+    the naming rule, a folder the group doesn't declare, a value outside the
+    vocabulary, or a connection to something the registry doesn't list.
+    """
+    registry = group["registry"]
+    where = registry["file"]
+    data = read_json_file(repo_root / registry["file"], where)
+
+    if not isinstance(data, dict):
+        raise MetadataError(f"{where}: must be a JSON object")
+
+    sections = {section["id"] for section in group.get("sections", [])}
+    tracks: dict[str, dict] = {}
+    entries: list[dict] = []
+
+    # Every stem carries its track and level, or its diagram's label, and
+    # those are unique, so unique ids give unique stems.
+    for position, track in enumerate(
+        required_list(data, "tracks", where), start=1
+    ):
+        if not isinstance(track, dict):
+            raise MetadataError(f"{where}: every track must be an object")
+
+        track_id = track.get("id")
+
+        if not isinstance(track_id, str) or not TRACK_ID_PATTERN.match(
+            track_id
+        ):
+            raise MetadataError(
+                f"{where}: track {position}'s id must be lowercase letters, "
+                f"not {track_id!r}"
+            )
+
+        track_where = f"{where} {track_id}"
+
+        if track_id in tracks:
+            raise MetadataError(
+                f"{where}: two tracks have the id {track_id!r}"
+            )
+
+        if track.get("position") != position:
+            raise MetadataError(
+                f"{track_where}: position is {track.get('position')!r}, "
+                f"but the track is listed {position}"
+            )
+
+        section = required_text(track, "gallery_label", track_where)
+
+        if section not in sections:
+            raise MetadataError(
+                f"{track_where}: gallery_label {section!r} isn't a folder "
+                f"of the group. known: {', '.join(sorted(sections))}"
+            )
+
+        taxonomy = build_taxonomy(
+            {field: track[field] for field in SERIES_FIELDS if field in track},
+            track_where,
+            live=False,
+        )
+
+        tracks[track_id] = {
+            "section": section,
+            "taxonomy": taxonomy,
+            "levels": set(),
+        }
+
+        for number, level in enumerate(
+            required_list(track, "levels", track_where), start=1
+        ):
+            if not isinstance(level, dict):
+                raise MetadataError(
+                    f"{track_where}: every level must be an object"
+                )
+
+            level_id = f"{track_id}.{number}"
+
+            if level.get("level") != number or level.get("id") != level_id:
+                raise MetadataError(
+                    f"{track_where}: level {number} must have level "
+                    f"{number} and id {level_id!r}, not "
+                    f"{level.get('level')!r} and {level.get('id')!r}"
+                )
+
+            level_where = f"{where} {level_id}"
+            stem = required_text(level, "stem", level_where)
+            match = LEVEL_STEM_PATTERN.match(stem)
+
+            if (
+                match is None
+                or match.group("track") != track_id
+                or int(match.group("level")) != number
+            ):
+                raise MetadataError(
+                    f"{level_where}: stem {stem!r} must be "
+                    f"{track_id}_{number:02d}_<color>_<form>, in lowercase "
+                    f"letters"
+                )
+
+            tracks[track_id]["levels"].add(level_id)
+
+            entries.append(
+                {
+                    "id": level_id,
+                    "track": track_id,
+                    "level": number,
+                    "label": required_text(level, "label", level_where),
+                    "stem": stem,
+                    "alt": optional_text(level.get("alt"), "alt", level_where),
+                    "caption": optional_text(
+                        level.get("caption"), "caption", level_where
+                    ),
+                    "section": section,
+                    "taxonomy": taxonomy,
+                }
+            )
+
+    diagram_ids: set[str] = set()
+
+    for diagram in required_list(data, "diagrams", where):
+        if not isinstance(diagram, dict):
+            raise MetadataError(f"{where}: every diagram must be an object")
+
+        label = diagram.get("label")
+
+        if not isinstance(label, str) or not TRACK_ID_PATTERN.match(label):
+            raise MetadataError(
+                f"{where}: a diagram's label must be lowercase letters, "
+                f"not {label!r}"
+            )
+
+        diagram_id = f"connections.{label}"
+        diagram_where = f"{where} {diagram_id}"
+        stem = f"connections_{label}"
+
+        if diagram.get("id") != diagram_id or diagram.get("stem") != stem:
+            raise MetadataError(
+                f"{where}: the diagram labeled {label!r} must have id "
+                f"{diagram_id!r} and stem {stem!r}"
+            )
+
+        if diagram_id in diagram_ids:
+            raise MetadataError(
+                f"{where}: two diagrams have the id {diagram_id!r}"
+            )
+
+        diagram_ids.add(diagram_id)
+
+        entries.append(
+            {
+                "id": diagram_id,
+                "track": None,
+                "level": None,
+                "label": label,
+                "stem": stem,
+                "alt": optional_text(diagram.get("alt"), "alt", diagram_where),
+                "caption": optional_text(
+                    diagram.get("caption"), "caption", diagram_where
+                ),
+                "section": None,
+                "taxonomy": None,
+            }
+        )
+
+    check_connections(repo_root, registry["connections"], tracks)
+
+    return {"tracks": tracks, "entries": entries}
+
+
+def check_connections(
+    repo_root: Path,
+    connections_file: str,
+    tracks: dict[str, dict],
+) -> None:
+    """
+    Fail the build when a connection names something the registry lacks.
+
+    The connections file keeps no list of tracks or levels of its own, so
+    its endpoints are checked against the registry: a meta edge joins two
+    tracks, an atomic edge or a journey step two levels, and each step of a
+    journey starts where the one before it ended.
+    """
+    where = connections_file
+    path = repo_root / connections_file
+
+    if not path.is_file():
+        raise MetadataError(f"{where}: not found")
+
+    data = read_json_file(path, where)
+
+    if not isinstance(data, dict):
+        raise MetadataError(f"{where}: must be a JSON object")
+
+    levels = set().union(*(track["levels"] for track in tracks.values()))
+
+    def check_edge(edge: object, known: set[str], edge_where: str) -> dict:
+        if not isinstance(edge, dict):
+            raise MetadataError(f"{edge_where}: must be an object")
+
+        for end in ("source", "target"):
+            if edge.get(end) not in known:
+                raise MetadataError(
+                    f"{edge_where}: {end} {edge.get(end)!r} isn't in the "
+                    f"registry"
+                )
+
+        if edge["source"] == edge["target"]:
+            raise MetadataError(
+                f"{edge_where}: joins {edge['source']!r} to itself"
+            )
+
+        return edge
+
+    for number, edge in enumerate(
+        required_list(data, "meta_edges", where), start=1
+    ):
+        check_edge(edge, set(tracks), f"{where} meta edge {number}")
+
+    for number, edge in enumerate(
+        required_list(data, "atomic_edges", where), start=1
+    ):
+        check_edge(edge, levels, f"{where} atomic edge {number}")
+
+    for number, journey in enumerate(
+        required_list(data, "journeys", where), start=1
+    ):
+        journey_where = f"{where} journey {number}"
+
+        if not isinstance(journey, dict):
+            raise MetadataError(f"{journey_where}: must be an object")
+
+        previous = None
+
+        for step_number, step in enumerate(
+            required_list(journey, "steps", journey_where), start=1
+        ):
+            step_where = f"{journey_where} step {step_number}"
+            check_edge(step, levels, step_where)
+
+            if previous is not None and step["source"] != previous["target"]:
+                raise MetadataError(
+                    f"{step_where}: starts at {step['source']!r}, but the "
+                    f"step before it ends at {previous['target']!r}"
+                )
+
+            previous = step
+
+
+def collect_registry_items(
+    repo_root: Path,
+    gallery_root: Path,
+    category_id: str,
+    group: dict,
+    context: dict,
+) -> list[dict]:
+    """
+    Build the items of a group read from a registry, and its manifest.
+
+    The registry lists every image, made or not, so its order is the
+    running order and is never sorted. An image that isn't on disk yet is
+    skipped, with one warning per track, and listed in the manifest as
+    planned. A group may also read a manifest of older files into one
+    track's folder, until they are migrated to the registry's names.
+
+    The manifest is queued in context["outputs"], and written only once the
+    whole build has passed its checks.
+    """
+    registry = group["registry"]
+
+    if not (repo_root / registry["file"]).is_file():
+        print(f"  skipped, registry not found: {registry['file']}")
+        return []
+
+    data = read_registry(repo_root, group)
+    items: list[dict] = []
+
+    if group.get("manifest"):
+        track = data["tracks"].get(group["manifest_track"])
+
+        if track is None:
+            raise MetadataError(
+                f"CATEGORIES {category_id}/{group['id']}: manifest_track "
+                f"{group['manifest_track']!r} isn't a track in "
+                f"{registry['file']}"
+            )
+
+        for item in collect_manifest_items(
+            repo_root=repo_root,
+            gallery_root=gallery_root,
+            category_id=category_id,
+            group=group,
+            context=context,
+        ):
+            item["section"] = track["section"]
+            item["taxonomy"] = copy.deepcopy(track["taxonomy"])
+            items.append(item)
+
+    directory = registry["directory"].rstrip("/")
+    public_base_url = f"{PUBLIC_BASE_URL}{directory}/"
+    assets: list[dict] = []
+    counts_by_track: dict[str, list[int]] = {}
+
+    for entry in data["entries"]:
+        path = resolve_manifest_stem(
+            repo_root=repo_root,
+            search_directories=[directory],
+            stem=entry["stem"],
+        )
+
+        asset = {
+            "id": entry["id"],
+            "track": entry["track"],
+            "level": entry["level"],
+            "label": entry["label"],
+            "filename": f"{entry['stem']}.png",
+            "path": f"{directory}/{entry['stem']}.png",
+            "status": "planned",
+            "width": None,
+            "height": None,
+            "public_url": None,
+        }
+        assets.append(asset)
+
+        # [not made yet, listed], per track.
+        counts = counts_by_track.setdefault(
+            entry["track"] or "diagrams", [0, 0]
+        )
+        counts[1] += 1
+
+        if path is None:
+            counts[0] += 1
+            continue
+
+        extra_meta = {"file": entry["stem"]}
+
+        if entry["track"]:
+            extra_meta = {
+                "track": entry["section"],
+                "level": str(entry["level"]),
+                **extra_meta,
+            }
+
+        item = build_image_item(
+            repo_root=repo_root,
+            gallery_root=gallery_root,
+            category_id=category_id,
+            group=group,
+            path=path,
+            context=context,
+            title=entry["label"],
+            extra_meta=extra_meta,
+        )
+
+        if entry["section"]:
+            item["section"] = entry["section"]
+
+        item["alt"] = entry["alt"]
+        item["caption"] = entry["caption"]
+        item["taxonomy"] = copy.deepcopy(entry["taxonomy"])
+
+        if entry["taxonomy"] is None:
+            print(f"  warning: {path.name} is unclassified")
+
+        asset.update(
+            {
+                "filename": path.name,
+                "path": f"{directory}/{path.name}",
+                "status": "generated",
+                "width": item["width"],
+                "height": item["height"],
+                "public_url": f"{public_base_url}{path.name}",
+            }
+        )
+        items.append(item)
+
+    for name, (absent, total) in counts_by_track.items():
+        if absent:
+            kind = "diagrams" if name == "diagrams" else f"{name} levels"
+            print(
+                f"  warning: {absent} of {total} {kind} in "
+                f"{registry['file']} not made yet, so skipped and planned"
+            )
+
+    context["outputs"].append(
+        (
+            f"{directory}/{REGISTRY_MANIFEST_FILENAME}",
+            {"public_base_url": public_base_url, "assets": assets},
+        )
+    )
+
+    return items
+
+
+def write_json_output(path: Path, payload: dict) -> bool:
+    """
+    Write a generated JSON file, and report whether it actually changed.
+
+    Left untouched when its content is the same, so a build that finds
+    nothing new changes nothing. Written as bytes, so its line endings are
+    LF on every platform.
+    """
+    if path.is_file():
+        try:
+            previous = json.loads(path.read_text(encoding="utf-8"))
+        except json.JSONDecodeError:
+            previous = None
+
+        if previous == payload:
+            return False
+
+    path.parent.mkdir(parents=True, exist_ok=True)
+    text = json.dumps(payload, indent=2, ensure_ascii=False) + "\n"
+    path.write_bytes(text.encode("utf-8"))
+
+    return True
+
+
 def read_page_metadata(text: str, where: str) -> dict | None:
     """Read the meta block of a live sketch page, or None if it has none."""
     blocks = [
@@ -1242,7 +1729,13 @@ def build_gallery_data(
     gallery_root: Path,
     max_size: int,
     force: bool,
-) -> dict:
+) -> tuple[dict, list[tuple[str, dict]]]:
+    """
+    Build the gallery data, and the other files the build generates.
+
+    Returns the data and a list of (repository path, payload) for each
+    generated JSON file, so nothing is written until every check passes.
+    """
     categories = []
 
     context = {
@@ -1250,6 +1743,7 @@ def build_gallery_data(
         "thumbnails": {},
         "max_size": max_size,
         "force": force,
+        "outputs": [],
     }
 
     # Checked before any thumbnail is built, so a typo fails fast.
@@ -1277,6 +1771,14 @@ def build_gallery_data(
                     repo_root=repo_root,
                     group=group,
                 )
+            elif group.get("registry"):
+                items = collect_registry_items(
+                    repo_root=repo_root,
+                    gallery_root=gallery_root,
+                    category_id=category["id"],
+                    group=group,
+                    context=context,
+                )
             elif group.get("manifest"):
                 items = collect_manifest_items(
                     repo_root=repo_root,
@@ -1302,7 +1804,10 @@ def build_gallery_data(
             if group["kind"] == "image":
                 taxonomy = series[(category["id"], group["id"])]
 
-                if taxonomy is None:
+                # A registry classifies its pieces itself, per track.
+                unresolved = [item for item in items if "taxonomy" not in item]
+
+                if taxonomy is None and unresolved:
                     print(
                         f"  warning: {group['id']} sets no world, "
                         f"so its pieces are unclassified"
@@ -1310,12 +1815,8 @@ def build_gallery_data(
 
                 # Resolved per piece, so the gallery reads one place and a
                 # series can later override single pieces.
-                for item in items:
+                for item in unresolved:
                     item["taxonomy"] = copy.deepcopy(taxonomy)
-
-            if group.get("section"):
-                for item in items:
-                    item["section"] = group["section"]
 
             groups.append(
                 {
@@ -1323,7 +1824,11 @@ def build_gallery_data(
                     "title": group["title"],
                     "blurb": group["blurb"],
                     "kind": group["kind"],
-                    "directory": group.get("directory") or group["manifest"],
+                    "directory": (
+                        group.get("directory")
+                        or group.get("registry", {}).get("file")
+                        or group["manifest"]
+                    ),
                     "facets": collect_facets(group, items),
                     "sections": collect_sections(
                         f"{category['id']}/{group['id']}", group, items
@@ -1358,11 +1863,13 @@ def build_gallery_data(
 
     check_unique_ids(categories)
 
-    return {
+    data = {
         "generated": datetime.now(timezone.utc).isoformat(timespec="seconds"),
         "vocabulary": vocabulary_payload(),
         "categories": categories,
     }
+
+    return data, context["outputs"]
 
 
 def prune_thumbnails(gallery_root: Path, data: dict) -> int:
@@ -1521,7 +2028,7 @@ def main() -> int:
 
     # Nothing is pruned or written when the metadata is invalid.
     try:
-        data = build_gallery_data(
+        data, outputs = build_gallery_data(
             repo_root=repo_root,
             gallery_root=gallery_root,
             max_size=args.thumb_size,
@@ -1553,6 +2060,17 @@ def main() -> int:
             f"{total} item(s) across "
             f"{len(data['categories'])} categories."
         )
+
+    for relative_path, payload in outputs:
+        made = sum(
+            asset["status"] == "generated" for asset in payload["assets"]
+        )
+        summary = f"{made} of {len(payload['assets'])} generated"
+
+        if write_json_output(repo_root / relative_path, payload):
+            print(f"Wrote {relative_path}, {summary}.")
+        else:
+            print(f"{relative_path} is already up to date, {summary}.")
 
     return 0
 

@@ -362,7 +362,7 @@
 
         var image = el("img", {
             src: item.thumb,
-            alt: item.title,
+            alt: item.alt || item.title,
             loading: "lazy",
             decoding: "async"
         });
@@ -1357,7 +1357,10 @@
         if (item.kind === "sketch") {
             preview = createSketchFrame(item);
         } else {
-            var image = el("img", { src: item.thumb, alt: item.title });
+            var image = el("img", {
+                src: item.thumb,
+                alt: item.alt || item.title
+            });
 
             if (item.width && item.height) {
                 image.style.aspectRatio = item.width + " / " + item.height;
@@ -1601,7 +1604,7 @@
         var item = visibleItems[index];
 
         lightboxImage.src = item.full;
-        lightboxImage.alt = item.title;
+        lightboxImage.alt = item.alt || item.title;
 
         clear(lightboxCaption);
         lightboxCaption.appendChild(el("strong", { text: item.title }));

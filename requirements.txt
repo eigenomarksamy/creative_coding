@@ -2,5 +2,6 @@
 #
 # The sketches themselves have their own dependencies, which are not
 # needed to build the gallery: pycairo and noise for cc_pycairo,
-# pygame for cc_pygame.
+# pygame for cc_pygame. The seven levels' scripts that simulate on a
+# grid also use numpy.
 Pillow>=10,<12

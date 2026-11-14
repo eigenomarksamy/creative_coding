@@ -121,8 +121,9 @@ python build_gallery.py          # incremental, skips unchanged thumbnails
 python build_gallery.py --force  # rebuild every thumbnail
 ```
 
-This writes `gallery/thumbs/` and `gallery/gallery-data.js`, both ignored
-by git. A rebuild that finds nothing new leaves them untouched.
+This writes `gallery/thumbs/`, `gallery/gallery-data.js` and
+`cc_pycairo/gen/seven_levels/manifest.json`, all ignored by git. A rebuild
+that finds nothing new leaves them untouched.
 
 ### opening it
 
@@ -213,14 +214,38 @@ Because of these routes, no category in `CATEGORIES` can use the id `worlds`,
   series at once.
 - **a section** is a folder inside a group, one level down, at
   `#/<category>/<group>/<section>`. A group lists its folders in `sections`,
-  each with an `id`, a `title` and an optional `blurb`, and `section` on the
-  group puts every piece it reads in one of them. The pieces stay in the
-  group's `items`, each with a `section` field. A section with no pieces
-  isn't shown, a piece with no section sits on the group's page below the
-  cards, and a group can't have both `sections` and `facets`.
+  each with an `id`, a `title` and an optional `blurb`, and each piece names
+  its folder in a `section` field. The pieces stay in the group's `items`. A
+  section with no pieces isn't shown, a piece with no section sits on the
+  group's page below the cards, and a group can't have both `sections` and
+  `facets`.
 - **a manifest** (`12.txt`, `cosmos.txt`) sets the order and titles of a
   series, one piece per line as `position: title: image_stem`. Position and
   title are optional, and `#` starts a comment.
+- **the seven levels** are read from a registry, `seven_levels.json`, which
+  lists all 49 levels, track by track in reading order, and the two
+  connection diagrams, whether or not their images exist yet. Each image is
+  `cc_pycairo/gen/seven_levels/<stem>.png`, made by `cc_pycairo/<stem>.py`.
+  A level's stem is `<track>_<NN>_<color>_<form>`, such as
+  `time_03_orange_bloom`, and a diagram's is `connections_<label>`.
+  - Each track sets its folder, `gallery_label`, and its classification,
+    `world`, `worlds`, `systems` and `concept`, for all seven of its levels.
+    A level's title is its `label`. Its `alt` and `caption` are `null` until
+    the image exists, and the gallery uses the title as alt text until then.
+  - An image that isn't on disk is skipped with a warning, so the registry can
+    list work that's still to come.
+  - The build checks the registry and `seven_levels_connections.json`, and
+    fails on a duplicate or misnumbered id, a stem that breaks the naming rule, a
+    value outside the vocabulary, or a connection to a track or level the
+    registry doesn't list.
+  - It writes `cc_pycairo/gen/seven_levels/manifest.json`, which is served
+    with the images. It lists all 51 images in registry order, each with its
+    `status`, `planned` or `generated`, its `width` and `height`, and its
+    `public_url`. Those three are `null` while it's `planned`. The site reads
+    this manifest, so a field it uses is renamed only together with the
+    site's build.
+  - Until the universe migration, the cosmos folder shows the seven pieces in
+    `cosmos.txt` under their first names, classified as the universe track.
 - **source links** are found from the literal output path a script passes to
   `write_to_png(...)` or `image.save(...)`. Scripts that build the path at
   runtime fall back to a script with the image's name, or `pnger_NN.py` for
