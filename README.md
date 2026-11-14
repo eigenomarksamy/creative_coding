@@ -14,8 +14,7 @@ Build them once after cloning, and again after adding new renders.
 
 ### commands
 
-`dev.py` runs the everyday commands the same way on Windows, WSL, Linux and
-macOS. It needs only Python, and nothing has to be activated first: the
+`dev.py` runs the everyday commands the same way on Windows, Linux and macOS. It needs only Python, and nothing has to be activated first: the
 build runs in `.venv` when there is one, and otherwise in the Python running
 `dev.py`.
 
@@ -33,15 +32,12 @@ Use `python3` where there's no `python` on the path, as on Ubuntu, and on
 Windows `py` works too. Each command prints what it runs, and the sections
 below give the same steps by hand.
 
-### Windows and WSL
+### Windows
 
-A clone on Windows and a clone in WSL work the same way side by side.
-`.gitattributes` keeps every text file LF in both, whatever Git's
-`core.autocrlf` says, so a Windows build writes the same gallery data as WSL
-and Cloudflare. Keep a `.venv` for each clone, because an environment made
-on one side doesn't run on the other, and `dev.py setup` says so if it finds
-one. A clone in WSL can also skip `.venv` and build with a Pillow installed
-for the whole system.
+The repository is developed from one clone on Windows. `.gitattributes`
+keeps every text file LF, whatever Git's `core.autocrlf` says, so a Windows
+build writes the same gallery data as Cloudflare's build, which is the
+build's run on Linux for every push to `main`.
 
 ### setup
 
@@ -80,6 +76,44 @@ python -m pip install -r requirements.txt
 Use `python3` instead of `python` if your system has no `python` on the
 path. Inside an activated environment `python` always works.
 
+### the sketches
+
+The sketches in `cc_pycairo/` and `cc_pygame/` aren't part of the gallery's
+build, and need their own packages: `pycairo` and `noise` for `cc_pycairo/`,
+`pygame` for `cc_pygame/`, and `numpy` for the seven levels' grid
+simulations. Install them into an environment of their own, or into `.venv`
+beside Pillow:
+
+```bash
+python -m pip install pycairo noise pygame numpy
+```
+
+What each platform needs first:
+
+- **Windows:** `pycairo`, `pygame` and `numpy` install from wheels. `noise`
+  has no wheel and compiles, so it needs the Microsoft C++ Build Tools, with
+  the "Desktop development with C++" workload. With them installed, the
+  command above takes about half a minute.
+- **Linux:** `pygame` and `numpy` install from wheels. `pycairo` builds
+  against the system's cairo, so it needs cairo's headers and `pkg-config`
+  (on Ubuntu, `sudo apt install libcairo2-dev pkg-config python3-dev`), or
+  use the distribution's own `python3-cairo`. `noise` compiles too, with a C
+  compiler and Python's headers (`build-essential` and `python3-dev`).
+
+Each script writes its image under its folder's `gen/`, by a path relative
+to the repository root, so run it from there:
+`python cc_pycairo/cosmos_origin.py`. A pygame script opens a window while
+it draws.
+
+Renders don't reproduce byte for byte across platforms. On 2026-11-14, a
+Windows render of the seven cosmos scripts matched four of their committed
+PNGs, which were made on Linux, exactly. One differed in 0.001% of its
+pixels by at most 2 levels, from the cairo that the Windows wheel bundles,
+and the two that use `noise` differed visibly in about 1.2% of their pixels,
+from `noise` built by another compiler. So a check that compares a re-render
+with a committed PNG uses a tolerance: the same size, and under 2% of its
+pixels differing.
+
 ### building
 
 ```bash
@@ -93,21 +127,13 @@ by git. A rebuild that finds nothing new leaves them untouched.
 ### opening it
 
 No server is needed, the gallery data is a plain `.js` file.
-`python dev.py open` opens it in the default browser, and from WSL in the
-Windows one. By hand, open `gallery/index.html` in a browser, or from the
+`python dev.py open` opens it in the default browser. By hand, open `gallery/index.html` in a browser, or from the
 repository root:
 
 ```bash
 xdg-open gallery/index.html   # Linux
 open gallery/index.html       # macOS
 start gallery\index.html      # Windows
-```
-
-With the repo in WSL and the browser on Windows, open this address
-instead, substituting your distribution name and path:
-
-```
-file://wsl.localhost/Ubuntu/home/eigenomar/dev_ws/creative_coding/gallery/index.html
 ```
 
 ### serving it

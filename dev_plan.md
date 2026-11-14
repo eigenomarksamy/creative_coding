@@ -18,7 +18,7 @@ the work runs in lanes. each lane has its own ticket prefix, ticket table and or
 |---|---|---|---|---|---|
 | worlds and engines | CC | interactive generative engines, and world-based discovery in the gallery | §4.1 | CC11a ∥ CC6 (step 4), whose one need, CC5, is done | CC1, CC2, CC3, CC12 (2026-11-03), CC4, CC14 (2026-11-05), CC5, CC13 (2026-11-07) |
 | seven levels | SL | static pycairo art for the seven reading tracks | §4.2 | SL1 ∥ SL3, whose one need, SL0, is done. no script, image or gallery change exists for this work yet | SL0 (2026-11-13) |
-| ecosystem onboarding | EO | the repo's place in the eigenomar ecosystem: a manifest, the shared Claude rules, issues in the ecosystem's Project, and the portability gaps | §4.3 | EO5 ∥ EO6 ∥ EO7 ∥ EO10, which need nothing more | EO1, EO4 (2026-11-12), EO2, EO3, EO9, EO8 (2026-11-13) |
+| ecosystem onboarding | EO | the repo's place in the eigenomar ecosystem: a manifest, the shared Claude rules, issues in the ecosystem's Project, and the portability gaps | §4.3 | EO10's deployed check, once its push deploys | EO1, EO4 (2026-11-12), EO2, EO3, EO9, EO8 (2026-11-13), EO5, EO6, EO7 (2026-11-14) |
 
 - **milestone 1** (worlds and engines): CC5, CC7 and CC10 are published, giving three engines in three worlds (dynamical, organic, mystic), built on the CC2–CC3 taxonomy.
 - **scope of this repo:** CC1–CC14 (the owner approved CC12 on 2026-11-03 and asked for CC13 and CC14 on 2026-11-04) and SL0–SL11.
@@ -85,8 +85,8 @@ flowchart TD
 
   classDef done fill:#e5f4e4,stroke:#2e7d32,color:#1b3a1d
   classDef next fill:#e7f1fb,stroke:#1565c0,stroke-width:2px,color:#0d2b4e
-  class CC12,CC2,CC3,CC4,CC14,CC5,SL0,EO1,EO4,EO2,EO3,EO9,EO8 done
-  class CC11a,CC6,SL1,SL3,EO5,EO6,EO7,EO10 next
+  class CC12,CC2,CC3,CC4,CC14,CC5,SL0,EO1,EO4,EO2,EO3,EO9,EO8,EO5,EO6,EO7 done
+  class CC11a,CC6,SL1,SL3,EO10 next
 ```
 
 green is done, and blue is the next ticket in each lane.
@@ -119,7 +119,7 @@ the queue changes the original order in two ways. CC11 is split, so share links 
 
 #### ecosystem onboarding (EO)
 
-**any time:** no EO ticket touches the gallery's code, so each one fits between any two steps of the other lanes, as CC13 did. EO5, EO6, EO7 and EO10 need nothing more. EO8 needs EO4, which is done, and its other needs are outside this repo, as §4.3 says.
+**any time:** no EO ticket touches the gallery's code, so each one fits between any two steps of the other lanes, as CC13 did. EO5, EO6 and EO7 are done (2026-11-14), and EO10 is applied and waits only on its deployed check. EO8 needs EO4, which is done, and its other needs are outside this repo, as §4.3 says.
 
 ### adding work
 
@@ -138,8 +138,8 @@ first observed on 2026-11-03 while restructuring this plan, then confirmed, corr
 
 | area | fact | what it means for the plan |
 |---|---|---|
-| stack | static site with no package.json, bundler, test runner or type checker. the only build step is `python build_gallery.py`, which needs Pillow. locally that is Python 3.10 with Pillow 10.3 and node v20.5 in WSL, and Python 3.11 with Pillow 11.3 and node v24 on Windows. `dev.py` (since 2026-11-11, stdlib only) wraps setup, build, tests, serving and opening the same way on both, and the Cloudflare build doesn't use it | in §5, "tests, type checks and build pass" means the build runs clean and any tests a ticket adds pass |
-| platforms | developed in WSL (Ubuntu), and since 2026-11-11 also on Windows, in a separate clone. `.gitattributes` keeps text files LF in every checkout, overriding Git for Windows' `core.autocrlf=true`, and the two builds wrote identical gallery data on 2026-11-11. `canvas/snake2.html` is the one file committed with CRLF, and `text=auto` leaves it so. each clone has its own `.venv`, if any: the WSL clone builds with a Pillow installed for the whole system | a clean build on either platform counts for §5. a CRLF checkout would change each sketch's `bytes` in the data and break `build_gallery.py`'s shebang under WSL |
+| stack | static site with no package.json, bundler, test runner or type checker. the only build step is `python build_gallery.py`, which needs Pillow. locally that is Python 3.11 with Pillow 11.3 and node v24 on Windows. `dev.py` (since 2026-11-11, stdlib only) wraps setup, build, tests, serving and opening, and the Cloudflare build doesn't use it | in §5, "tests, type checks and build pass" means the build runs clean and any tests a ticket adds pass |
+| platforms | developed from one clone on Windows since 2026-11-11, and Cloudflare's build is the build's run on Linux, for every push to `main`. `.gitattributes` keeps text files LF in every checkout, overriding Git for Windows' `core.autocrlf=true`, and since EO5 (2026-11-14) every tracked text file is LF in the index. the sketches install and render on Windows (EO6), but renders don't reproduce byte for byte across platforms, so a check against a committed render uses the README's tolerance | a clean build on Windows counts for §5. a CRLF checkout would change each sketch's `bytes` in the data |
 | repo contents | 431 tracked files: 54 pycairo scripts, 91 top-level pygame scripts with `shapes/` and `utils/` helpers, their committed renders (519 MB in `cc_pycairo/gen/` and 70 MB in `cc_pygame/gen/`), the 3 canvas sketches, the gallery (`gallery/index.html`, `gallery.js`, `gallery.css`), `build_gallery.py`, two manifests (`12.txt`, `cosmos.txt`) and the deploy config | renders are committed and served as they are. thumbnails are the only processed assets |
 | build pipeline | `CATEGORIES` → `build_gallery.py` → `gallery/gallery-data.js` (which sets `window.GALLERY_DATA`) and `gallery/thumbs/<category>/<stem>.jpg` (640 px, JPEG quality 80; a piece longer than 2:1 gets a bigger thumbnail, so the 2:1 window its tile crops to still gets 640 px, e.g. 320×2560 for the 375×3000 `jpger_77`). thumbnails rebuild only when the source is newer, unless `--force` is given. stale ones are pruned, and the data file is rewritten only when something besides the build time changed. metadata errors exit with code 1 before anything is pruned or written. today: 265 items in 4 categories and 7 groups, and a data file of 291 KB (14 KB gzipped) | every gallery change goes through this one script. keep the rule that a build which finds nothing new changes nothing |
 | build output | `gallery/gallery-data.js` and `gallery/thumbs/` are both gitignored | run the build before viewing or deploying |
@@ -161,7 +161,7 @@ first observed on 2026-11-03 while restructuring this plan, then confirmed, corr
 | theming | `gallery.css` is dark by design (`color-scheme: dark`), with no light/dark switch. since CC3, smooth scrolling and the card hover lift run only under `prefers-reduced-motion: no-preference`, and nothing else in the chrome moves | the §5 theme check doesn't apply yet |
 | accessibility | tiles are buttons with alt text and chips are links, so both work from the keyboard. the lightbox is a modal dialog with Escape and arrow keys that gives focus back when it closes, also after stepping since 2026-11-05, and since CC3 it keeps Tab inside itself. a chip used to filter gets focus back after the view reloads, and running a sketch moves focus into its iframe. the old sketches' canvases have no label or text alternative, and strange attractor's has one since CC4, and since CC5 an about panel with its concept, instructions and keys, closed by Escape | each engine's publish ticket checks its canvas label |
 | mobile | the gallery grids reflow with `minmax`, capped at the page width since CC3 (the image tiles are justified flex rows instead since 2026-11-03: every image in a row has the same height, around `clamp(130px, 18vw, 230px)`, and anything longer than 2:1 is cropped to 2:1 in its tile, with `TILE_MAX_ASPECT` kept equal in `gallery.js` and `build_gallery.py`), so nothing scrolls sideways at 320 px. the nav wraps, and the lightbox arrows move to the bottom under 640 px, with no swipe. the old sketches fill the window at CSS-pixel resolution (no `devicePixelRatio`) and have no touch input | engines scale their canvas to `devicePixelRatio` and handle touch themselves, as strange attractor does since CC4 |
-| local tools | node v20 is installed in WSL, and v24 on Windows. `node --test` finds `canvas/strange-attractor/sim.test.js` through its default patterns on both, so new engines need no setup. `python dev.py check` runs `node --test` and then the build | `node --test` is the test runner, with no dependencies (Q4). `python dev.py check` is the check before pushing |
+| local tools | node v24 is installed on Windows. `node --test` finds `canvas/strange-attractor/sim.test.js` through its default patterns, so new engines need no setup. `python dev.py check` runs `node --test` and then the build | `node --test` is the test runner, with no dependencies (Q4). `python dev.py check` is the check before pushing |
 
 ### 1.2 existing work
 
@@ -653,7 +653,7 @@ the seven levels package, the briefs and example data that SL0 works from, said 
 | taxonomy | not covered | set once per series (Q1) | per track in the registry, because seven tracks span several worlds. this amends Q1 |
 | alt text | semantic | the lightbox uses `item.title` | items get an `alt` field, kept out of `meta`, which is printed on tiles |
 
-**measured on 2026-11-04:** all 7 cosmos scripts re-render byte-identical to their committed PNGs, which makes the universe migration safe. six of them took 0.7 to 7.9 seconds each in pure Python, so a full render at full size is fast enough to iterate on, and no preview mode is needed.
+**measured on 2026-11-04,** in WSL: all 7 cosmos scripts re-render byte-identical to their committed PNGs, which makes the universe migration safe. six of them took 0.7 to 7.9 seconds each in pure Python, so a full render at full size is fast enough to iterate on, and no preview mode is needed.
 
 **size:** at the cosmos average of 2.1 MB, the 44 new images and the 7 copies add about 105 MB to the 519 MB in `cc_pycairo/gen/`. every file stays far under Workers' 25 MiB limit.
 
@@ -828,7 +828,7 @@ checked by script on 2026-11-04. the good news first: tracks, nodes, 21 meta pai
 
 - **do:**
   - add a second literal `write_to_png` to each of the 7 cosmos scripts, writing the new name from the table below, which replaces the one in brief 09. the scripts keep their names and URLs, and the build maps both outputs to the same script.
-  - render them, and confirm each new file is byte-identical to its `gen/cosmos/` original.
+  - render them, and confirm each new file matches its `gen/cosmos/` original within the README's tolerance: the same size, and under 2% of its pixels differing. a Windows render isn't byte-identical to the Linux originals (EO6, 2026-11-14).
   - fill in `alt` and `caption` for the seven.
   - replace the seven old items in the cosmos folder with the new files, so each piece appears once. add aliases so `#/worlds/cosmos_<name>` opens the new id, and update the README's example. CC14 already redirects `#/pycairo/cosmos`.
   - keep `cc_pycairo/gen/cosmos/` and `cosmos.txt` in place until the site's universe article points at the new files.
@@ -892,9 +892,9 @@ the repo's place in the eigenomar ecosystem, a set of independent repos coordina
 | EO2 | the shared Claude rules in `CLAUDE.md` | S | the shared rules file in `meta-eigenomar` | done |
 | EO3 | drop the retired site document from §4.2 | S | the site's plan holding this series' site work | done |
 | EO4 | move the confidential planning content out | M | the owner's go-ahead | done |
-| EO5 | `canvas/snake2.html` to LF | S | none | todo |
-| EO6 | install notes for the sketches, per platform | S | none | todo |
-| EO7 | retire the WSL notes | S | the owner confirms no WSL clone is left | todo |
+| EO5 | `canvas/snake2.html` to LF | S | none | done |
+| EO6 | install notes for the sketches, per platform | S | none | done |
+| EO7 | retire the WSL notes | S | the owner confirms no WSL clone is left | done |
 | EO8 | an issue for every open ticket | M | EO4, the ecosystem's GitHub Project and its linking conventions, the owner's approval | done |
 | EO9 | the decisions shared with the site | S | EO4, the shared decision records in `meta-eigenomar` | done |
 | EO10 | `project.yaml` off the gallery | S | none | todo |
@@ -945,6 +945,7 @@ the repo's place in the eigenomar ecosystem, a set of independent repos coordina
 - **why:** `.gitattributes` asks for LF, but `snake2.html` is still CRLF in the index (§1.1), so `git add --renormalize .` stages it. the ecosystem's conventions say to commit that normalization on its own, apart from any other change.
 - **do:** run `git add --renormalize .`, check that it stages this one file, and commit it alone.
 - **done when:** `git ls-files --eol` shows no `i/crlf` file, the sketch runs as before, and `python dev.py check` passes. only the sketch's `bytes` in the gallery data changes.
+- **result (2026-11-14):** `git add --renormalize .` staged `canvas/snake2.html` alone, for a commit of its own, and `git ls-files --eol` shows no `i/crlf` file. `python dev.py check` passes, and the gallery data's only change is the sketch's `bytes`, 5936 to 5764, one byte fewer per line. the page differs only in its line endings, so it runs as before.
 
 <a id="eo6"></a>
 #### EO6 · install notes for the sketches, per platform · S
@@ -963,12 +964,14 @@ the repo's place in the eigenomar ecosystem, a set of independent repos coordina
   - on Windows, install them into a fresh environment, render one script that uses `noise` and one pygame script, and record what it took.
   - find out whether a Windows render reproduces the committed PNG byte for byte. `pycairo`'s Windows wheel brings its own cairo while Linux uses the system's, and the measurement that the cosmos scripts re-render byte-identical (§4.2.1), which SL2 relies on, was made in WSL. two of those seven scripts import `noise`.
 - **done when:** the README takes a fresh Windows clone to a rendered pycairo script and pygame script, and says whether renders match across platforms.
+- **result (2026-11-14):** the README's "the sketches" section says what to install on each platform, in one command, so no second requirements file is needed. in a fresh environment on Windows, `pycairo` 1.29.2, `pygame` 2.6.1 and `numpy` 2.4.6 came from wheels, and `noise` 1.2.2 compiled with the installed C++ Build Tools, in 27 seconds. from a copy of the repository, all seven cosmos scripts rendered, in 1 to 10 seconds each, and `cc_pygame/pnger_72.py` rendered headless. renders don't reproduce byte for byte across platforms: four cosmos renders matched their committed PNGs exactly, `cosmos_forces` differed in 0.001% of its pixels by at most 2 levels, and `cosmos_geometry` and `cosmos_origin`, the two that use `noise`, differed visibly in about 1.2%. the owner chose a tolerance (2026-11-14): a check against a committed render passes when the size matches and under 2% of its pixels differ, which SL2 now uses. the Linux install notes aren't checked here.
 
 <a id="eo7"></a>
 #### EO7 · retire the WSL notes · S
 
 - **why:** development moved to the Windows clone on 2026-11-11, and the ecosystem dropped WSL the same day. `CLAUDE.md` ("the same on Windows and WSL"), the README's "Windows and WSL" section with its `wsl.localhost` address, and §1.1's platforms and local tools rows still describe two clones.
 - **do:** describe one Windows clone, with the Cloudflare build as the build's Linux run. `dev.py`'s WSL handling can stay, since it costs nothing.
+- **result (2026-11-14):** `CLAUDE.md`, the README's commands, "Windows" and opening sections, and §1.1's stack, platforms and local tools rows describe one Windows clone, with Cloudflare's build as the build's run on Linux. the `wsl.localhost` address is gone, and `dev.py`'s WSL handling stays.
 - **needs:** the owner confirms no WSL clone is left. met on 2026-11-13: no one works in a WSL clone any more. the old one is still there under a new name, clean, at a commit from before the move, and holds nothing that isn't on GitHub, so deleting it is the owner's step and doesn't hold this ticket up.
 
 #### EO8 · an issue for every open ticket · M
@@ -998,6 +1001,7 @@ the repo's place in the eigenomar ecosystem, a set of independent repos coordina
 - **do:** add `project.yaml` to `.assetsignore`, beside `wrangler.jsonc` and `requirements.txt`, under the same heading.
 - **needs:** nothing. it changes what the deployment serves, which an onboarding run doesn't do, so it is a ticket of its own.
 - **done when:** once deployed, `/project.yaml` returns 404 while `/README.md` still returns 200, and the ecosystem's validator still passes, since it reads the repo, not the site.
+- **applied (2026-11-14):** `project.yaml` is in `.assetsignore`, beside `wrangler.jsonc`, `requirements.txt` and `dev.py`, and the validator still passes. it is done once the push deploys and `/project.yaml` returns 404.
 
 **open questions for the owner,** answered on 2026-11-12:
 
@@ -1136,3 +1140,4 @@ the ticket column names a ticket, a lane for a note about a whole lane, or none.
 | 2026-11-13 | SL0 | data from the briefs done: `seven_levels.json`, with 7 tracks, 49 levels and 2 diagrams, and `seven_levels_connections.json`, with 21 meta edges (10 of them strong), 49 atomic edges and 6 journeys of 27 steps, each with a reason, at the root. derived from the package with §4.2.3's corrections 1–3, 5 and 6, and 4 left to the owner before SL10. the taxonomy per track and the seven colors are proposals, for SL1 and SL3's review. checked by script against the package, the briefs and the build's vocabulary. `python dev.py check` passes, and the build is unchanged at 265 items. SL1 ∥ SL3 are next |
 | 2026-11-13 | EO | re-run by the ecosystem's onboarding, against version 1.5 of its contract, applying the owner's answers to §4.3's open questions. EO2 done: the shared rules' import is the first line of `CLAUDE.md`. EO3 done: the site's plan holds this series' site work with its gates, so §4.2 no longer links or numbers the retired document. EO9 done: §0's repos bullet and §7's parked shared engine package cite shared decision SD1. EO10 added, to keep `project.yaml` off the gallery, and EO7's need is met. the manifest validates against the ecosystem's schema, and `python dev.py check` passes from a `c:` and a `C:` drive letter, with 29 tests and 265 items, and changes nothing. only this file and `CLAUDE.md` changed. nothing was built |
 | 2026-11-13 | EO8 | an issue for every open ticket: 22, #1–#22, in the ecosystem's Project with status, priority and work type, and blocked-by links for §4's needs. each open ticket has a stable anchor that its issue links. §0, the table and the queue mark EO8 done |
+| 2026-11-14 | EO | EO5: `canvas/snake2.html` is LF, in a commit of its own, and only its `bytes` in the gallery data changed. EO6: the README says how to install the sketches' packages on each platform; on Windows they install with the C++ Build Tools, every cosmos script and a pygame script render, and renders don't reproduce byte for byte across platforms, so checks against a committed render, SL2's among them, use a tolerance the owner chose. EO7: the WSL notes are gone from `CLAUDE.md`, the README and §1.1. EO10: `project.yaml` is off the gallery once deployed. from a session in `meta-eigenomar` |
