@@ -18,7 +18,7 @@ the work runs in lanes. each lane has its own ticket prefix, ticket table and or
 |---|---|---|---|---|---|
 | worlds and engines | CC | interactive generative engines, and world-based discovery in the gallery | §4.1 | CC11a ∥ CC6 (step 4), whose one need, CC5, is done | CC1, CC2, CC3, CC12 (2026-11-03), CC4, CC14 (2026-11-05), CC5, CC13 (2026-11-07) |
 | seven levels | SL | static pycairo art for the seven reading tracks | §4.2 | SL2 ∥ SL3, whose needs, SL1 and SL0, are done. the gallery reads the registry, and no script or image exists for this work yet | SL0 (2026-11-13), SL1 (2026-11-14) |
-| ecosystem onboarding | EO | the repo's place in the eigenomar ecosystem: a manifest, the shared Claude rules, issues in the ecosystem's Project, and the portability gaps | §4.3 | EO10's deployed check, once its push deploys | EO1, EO4 (2026-11-12), EO2, EO3, EO9, EO8 (2026-11-13), EO5, EO6, EO7 (2026-11-14) |
+| ecosystem onboarding | EO | the repo's place in the eigenomar ecosystem: a manifest, the shared Claude rules, issues in the ecosystem's Project, and the portability gaps | §4.3 | EO10's deployed check, once its push deploys. EO11 and EO12 wait on the ecosystem's standards in `meta-eigenomar` | EO1, EO4 (2026-11-12), EO2, EO3, EO9, EO8 (2026-11-13), EO5, EO6, EO7 (2026-11-14) |
 
 - **milestone 1** (worlds and engines): CC5, CC7 and CC10 are published, giving three engines in three worlds (dynamical, organic, mystic), built on the CC2–CC3 taxonomy.
 - **scope of this repo:** CC1–CC14 (the owner approved CC12 on 2026-11-03 and asked for CC13 and CC14 on 2026-11-04) and SL0–SL11.
@@ -80,6 +80,8 @@ flowchart TD
     EO6["EO6 sketch install notes"]
     EO7["EO7 WSL notes"]
     EO10["EO10 project.yaml off the gallery"]
+    EO11["EO11 the product's documents"]
+    EO12["EO12 the SCM strategy"]
   end
   CC14 --> SL1
 
@@ -119,7 +121,7 @@ the queue changes the original order in two ways. CC11 is split, so share links 
 
 #### ecosystem onboarding (EO)
 
-**any time:** no EO ticket touches the gallery's code, so each one fits between any two steps of the other lanes, as CC13 did. EO5, EO6 and EO7 are done (2026-11-14), and EO10 is applied and waits only on its deployed check. EO8 needs EO4, which is done, and its other needs are outside this repo, as §4.3 says.
+**any time:** no EO ticket touches the gallery's code, so each one fits between any two steps of the other lanes, as CC13 did. EO5, EO6 and EO7 are done (2026-11-14), and EO10 is applied and waits only on its deployed check. EO8 needs EO4, which is done, and its other needs are outside this repo, as §4.3 says. EO11 and EO12 each wait on a standard in `meta-eigenomar`, and touch no gallery code until EO12's workflow, if the strategy adds one.
 
 ### adding work
 
@@ -905,10 +907,14 @@ the repo's place in the eigenomar ecosystem, a set of independent repos coordina
 | EO8 | an issue for every open ticket | M | EO4, the ecosystem's GitHub Project and its linking conventions, the owner's approval | done |
 | EO9 | the decisions shared with the site | S | EO4, the shared decision records in `meta-eigenomar` | done |
 | EO10 | `project.yaml` off the gallery | S | none | todo |
+| EO11 | the product's documents | M | the ecosystem's document standard (`meta-eigenomar` ST1) | todo |
+| EO12 | the ecosystem's SCM strategy | S | the ecosystem's SCM strategy (`meta-eigenomar` ST2) | todo |
 
 **checked on Windows on 2026-11-12, and again on 2026-11-13,** without installing anything: `python dev.py check` passes whether the drive letter is `c:`, as VS Code opens the folder, or `C:`, with 29 tests and 265 items, and changes nothing. so the gallery installs and runs on Windows, and the sketches are EO6's: their dependencies weren't installed, and one of them always compiles. no `.bat`, `.ps1` or `.sh` script exists, `.gitattributes` asks for LF, and no tracked code holds an absolute path.
 
 **Linux:** there is no CI (§0, question 3), so nothing runs the tests on Linux. the owner accepts that gap (2026-11-12): the tests cover a pure JavaScript simulation, and Cloudflare's build runs `build_gallery.py` on Linux on every push.
+
+**revisited on 2026-11-18,** at the owner's request: the ecosystem's contract is adding two standards every repo adopts, the documents each one keeps and how each one manages its source and delivers it. EO11 and EO12 adopt them here, each once its standard is designed, and may change what "stays as it is" above says about documents, CI, branches and releases.
 
 **commits:** every commit so far is the owner's, made on `main`, so sessions here don't commit, and `CLAUDE.md` grants no standing approval for it. it couldn't for `main` anyway, because every push to `main` deploys.
 
@@ -1009,6 +1015,22 @@ the repo's place in the eigenomar ecosystem, a set of independent repos coordina
 - **needs:** nothing. it changes what the deployment serves, which an onboarding run doesn't do, so it is a ticket of its own.
 - **done when:** once deployed, `/project.yaml` returns 404 while `/README.md` still returns 200, and the ecosystem's validator still passes, since it reads the repo, not the site.
 - **applied (2026-11-14):** `project.yaml` is in `.assetsignore`, beside `wrangler.jsonc`, `requirements.txt` and `dev.py`, and the validator still passes. it is done once the push deploys and `/project.yaml` returns 404.
+
+<a id="eo11"></a>
+#### EO11 · the product's documents · M
+
+- **why:** the ecosystem's document standard defines five documents every repo keeps: product vision, architecture, design, testing strategy, and verification and validation (V&V).
+- **do:** write or gather them in the standard's shape. where a file or section already covers one, name it rather than copy it. today §0's long-term direction and milestone 1 are the nearest thing to a vision, §1.1 and the README's "adding work" the architecture, §3 the vocabulary and composition model, §5 the definition of done, and `node --test` and `python dev.py check` the tests.
+- **needs:** the ecosystem's document standard (`meta-eigenomar` ST1). until it is designed, this ticket's issue stays in the backlog.
+- **done when:** each of the five documents exists, or names the file or section that holds it, and follows the standard's outline. `project.yaml` names them under the standard's keys, the ecosystem's validator passes, and nothing confidential is in them, since this repo is public. a new file the gallery shouldn't serve is in `.assetsignore`.
+
+<a id="eo12"></a>
+#### EO12 · the ecosystem's SCM strategy · S
+
+- **why:** the ecosystem's SCM strategy sets CI, branching, protection of `main`, versioning and releases, a health report and dependency updates for every repo.
+- **do:** adopt it through its adoption checklist. today there is no CI, the owner chose to keep tests local (§0, question 3), work goes straight to `main`, every push deploys the gallery, and there are no tags, releases or changelog, so the log is the record. where the checklist changes one of these, the owner decides here first, since each was the owner's choice.
+- **needs:** the ecosystem's SCM strategy (`meta-eigenomar` ST2). until it is designed, this ticket's issue stays in the backlog.
+- **done when:** every item on the checklist is applied here, or recorded here as an exception the strategy allows, with its reason. `project.yaml`'s `delivery` and `CLAUDE.md` say what runs, any workflow passes on `main`, and the ecosystem's validator passes.
 
 **open questions for the owner,** answered on 2026-11-12:
 
@@ -1149,3 +1171,4 @@ the ticket column names a ticket, a lane for a note about a whole lane, or none.
 | 2026-11-13 | EO8 | an issue for every open ticket: 22, #1–#22, in the ecosystem's Project with status, priority and work type, and blocked-by links for §4's needs. each open ticket has a stable anchor that its issue links. §0, the table and the queue mark EO8 done |
 | 2026-11-14 | EO | EO5: `canvas/snake2.html` is LF, in a commit of its own, and only its `bytes` in the gallery data changed. EO6: the README says how to install the sketches' packages on each platform; on Windows they install with the C++ Build Tools, every cosmos script and a pygame script render, and renders don't reproduce byte for byte across platforms, so checks against a committed render, SL2's among them, use a tolerance the owner chose. EO7: the WSL notes are gone from `CLAUDE.md`, the README and §1.1. EO10: `project.yaml` is off the gallery once deployed. from a session in `meta-eigenomar` |
 | 2026-11-14 | SL1 | gallery pipeline done: the `7-levels` group reads `seven_levels.json` and checks it, with the connections, before anything is written. it writes `cc_pycairo/gen/seven_levels/manifest.json`, 51 images, `planned` until made, with size and public URL once `generated`. each track sets its folder and classification, amending Q1. `cosmos.txt` still fills the cosmos folder until SL2. `gallery.js` uses `alt`. the build is unchanged at 265 items apart from two blurbs and a subtitle, and `python dev.py check` passes. SL2 ∥ SL3 are next. from a session in `meta-eigenomar` |
+| 2026-11-18 | EO | EO11 and EO12 added at the owner's request: this repo's adoption of the ecosystem's document standard and SCM strategy, which are designed in `meta-eigenomar`. each needs its standard, so its issue waits in the backlog |
