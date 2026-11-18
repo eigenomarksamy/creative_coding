@@ -197,6 +197,23 @@ A live sketch or engine also has its own page outside the gallery, such as
 engine's `index.html` itself rather than its folder, because a folder
 opened from disk shows a file listing.
 
+An engine's page takes a seed and its settings in the hash, which give the
+same start of the run in every browser:
+
+```text
+canvas/strange-attractor/index.html#seed=59&rho=22&sigma=10&beta=2.6666666666666665&spread=0.05&tracers=24&speed=480
+canvas/strange-attractor/index.html#seed=7
+canvas/strange-attractor/index.html#preset=settling&seed=3
+```
+
+A seed is a whole number from 0 to 4294967295, in decimal digits. A setting
+the link leaves out takes its default, or the named preset's value. One
+that isn't a plain number takes its default, and one out of range is held
+to it, and the page says so. A link holds the start of a run, never what
+happened during it, such as a tap. The engine's copy link writes every
+setting, and once a visitor changes one, the page keeps its own address up
+to date. Save image downloads the canvas as `<id>-<seed>.png`.
+
 Addresses from when the gallery was grouped by toolkit (`#/pygame`,
 `#/pycairo/...`, `#/canvas`) redirect to where those pieces live now, and
 keep their filters. `MOVED_ROUTES` in `gallery/gallery.js` lists them.

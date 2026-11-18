@@ -113,6 +113,77 @@
         return params;
     }
 
+    // Share links hold a run's initial configuration: the seed and every
+    // parameter, which give the same start in every browser. Never what a
+    // visitor did during the run, such as a tap, which parameters can't
+    // rebuild. The text is a URL hash, read with URLSearchParams:
+    //
+    //   seed=59&rho=22&sigma=10&beta=2.6666666666666665&spread=0.05&tracers=24&speed=480
+    //
+    // A seed is a whole number from 0 to 4294967295, in decimal digits.
+    // Every other value is a decimal number, written as String writes it,
+    // so it reads back to the same bits. A link lists every parameter, so
+    // it keeps its run if a default or a preset changes later.
+    const LINK_KEYS = ['seed', 'rho', 'sigma', 'beta', 'spread', 'tracers', 'speed'];
+    const LINK_NUMBER = /^[+-]?(\d+\.?\d*|\.\d+)(e[+-]?\d+)?$/i;
+
+    function encodeLink(input) {
+        const params = clampParams(input);
+        const query = new URLSearchParams();
+        for (const key of LINK_KEYS) {
+            query.set(key, String(params[key]));
+        }
+        return query.toString();
+    }
+
+    // A preset whose every value the parameters keep, or null
+    function matchPreset(params) {
+        return PRESETS.find((preset) =>
+            Object.keys(preset.params).every((key) => params[key] === preset.params[key])) || null;
+    }
+
+    // Any text, from a link or typed by hand, to a complete, valid parameter
+    // set. A link may also name a preset (preset=settling) for the values it
+    // leaves out. A value that isn't a plain decimal number takes its default,
+    // one outside its range is held to it, and unknown keys are ignored.
+    // problems lists every key that couldn't be used as it was written.
+    function decodeLink(text) {
+        const query = new URLSearchParams(String(text || '').replace(/^[#?]+/, ''));
+        const problems = [];
+
+        let named = null;
+        if (query.has('preset')) {
+            named = PRESETS.find(({ id }) => id === query.get('preset')) || null;
+            if (!named) {
+                problems.push('preset');
+            }
+        }
+
+        const given = {};
+        for (const key of Object.keys(PARAMS)) {
+            if (!query.has(key)) {
+                continue;
+            }
+            const raw = query.get(key).trim();
+            const value = Number(raw);
+            if (!LINK_NUMBER.test(raw) || !Number.isFinite(value)) {
+                problems.push(key);
+                continue;
+            }
+            given[key] = value;
+        }
+
+        const params = clampParams({ ...(named ? named.params : {}), ...given });
+        for (const key of Object.keys(given)) {
+            if (params[key] !== given[key]) {
+                problems.push(key);
+            }
+        }
+
+        const preset = matchPreset(params);
+        return { params, preset: preset ? preset.id : null, problems };
+    }
+
     // One classical Runge-Kutta step of the point at positions[i..i+2]
     function rk4Step(positions, i, sigma, rho, beta, dt) {
         const x = positions[i];
@@ -331,8 +402,11 @@
         advance,
         clampParams,
         createState,
+        decodeLink,
         defaults,
+        encodeLink,
         fastest,
+        matchPreset,
         mulberry32,
         palette,
         probeOrbit,

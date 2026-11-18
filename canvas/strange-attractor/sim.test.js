@@ -9,8 +9,11 @@ const {
     advance,
     clampParams,
     createState,
+    decodeLink,
     defaults,
+    encodeLink,
     fastest,
+    matchPreset,
     mulberry32,
     palette,
     probeOrbit,
@@ -464,4 +467,94 @@ test('colors repeat for a seed, and never touch the trajectories', () => {
     const before = createState(params);
     palette(params.seed, 64);
     assert.deepEqual(createState(params), before);
+});
+
+test('a link lists the seed and every parameter, in a fixed order', () => {
+    const text = encodeLink(presetParams('fading-chaos'));
+    assert.equal(text,
+        'seed=59&rho=22&sigma=10&beta=2.6666666666666665&spread=0.05&tracers=24&speed=480');
+    assert.deepEqual([...new URLSearchParams(text).keys()].sort(), Object.keys(PARAMS).sort());
+});
+
+test('a link reads back to the same bits, and so to the same run', () => {
+    const random = mulberry32(2026);
+    for (let round = 0; round < 200; round++) {
+        const input = {};
+        for (const [key, spec] of Object.entries(PARAMS)) {
+            input[key] = spec.min + (spec.max - spec.min) * random();
+        }
+        const params = clampParams(input);
+        const { params: back, problems } = decodeLink(`#${encodeLink(params)}`);
+        assert.deepEqual(back, params);
+        assert.deepEqual(problems, []);
+    }
+
+    const params = presetParams('butterfly', { seed: 4294967295, tracers: 5 });
+    const one = createState(params);
+    const two = createState(decodeLink(encodeLink(params)).params);
+    advance(one, params, 2000);
+    advance(two, params, 2000);
+    assert.deepEqual(two, one);
+});
+
+test('a link restores its preset when it keeps every value the preset sets', () => {
+    assert.equal(decodeLink(encodeLink(presetParams('closed-loops'))).preset, 'closed-loops');
+    assert.equal(decodeLink(encodeLink(presetParams('settling', { seed: 7 }))).preset, 'settling');
+    assert.equal(decodeLink(encodeLink(presetParams('closed-loops', { rho: 99 }))).preset, null);
+
+    // fading chaos keeps its promise on its own seed only
+    assert.equal(decodeLink(encodeLink(presetParams('fading-chaos', { seed: 60 }))).preset, null);
+
+    for (const preset of PRESETS) {
+        assert.equal(matchPreset(presetParams(preset.id)).id, preset.id);
+    }
+});
+
+test('a short link takes defaults, or a named preset, for what it leaves out', () => {
+    assert.deepEqual(decodeLink(''), { params: defaults(), preset: 'butterfly', problems: [] });
+    assert.deepEqual(decodeLink('#seed=7').params, clampParams({ seed: 7 }));
+    assert.deepEqual(decodeLink('?seed=7').params, clampParams({ seed: 7 }));
+
+    const settling = decodeLink('preset=settling&seed=3');
+    assert.deepEqual(settling.params, presetParams('settling', { seed: 3 }));
+    assert.equal(settling.preset, 'settling');
+
+    const changed = decodeLink('preset=settling&rho=16');
+    assert.equal(changed.params.rho, 16);
+    assert.equal(changed.params.spread, 1);
+    assert.equal(changed.preset, null);
+});
+
+test('malformed values take their default and are reported', () => {
+    for (const bad of ['', 'abc', '0x10', 'Infinity', 'NaN', '1e999', '12abc', '1,5', '--3']) {
+        const { params, problems } = decodeLink(`seed=${encodeURIComponent(bad)}&rho=30`);
+        assert.equal(params.seed, PARAMS.seed.default, bad);
+        assert.equal(params.rho, 30, bad);
+        assert.deepEqual(problems, ['seed'], bad);
+    }
+    assert.deepEqual(decodeLink('preset=nope&seed=4').problems, ['preset']);
+    assert.deepEqual(decodeLink('preset=nope&seed=4').params, clampParams({ seed: 4 }));
+});
+
+test('values outside their range are held to it and reported', () => {
+    const { params, problems } = decodeLink(
+        'seed=-5&rho=1e6&sigma=0&spread=0.0000001&tracers=2.5&speed=960');
+    assert.equal(params.seed, 0);
+    assert.equal(params.rho, 200);
+    assert.equal(params.sigma, 0.1);
+    assert.equal(params.spread, 0.000001);
+    assert.equal(params.tracers, 3);
+    assert.equal(params.speed, 960);
+    assert.deepEqual(problems.sort(), ['rho', 'seed', 'sigma', 'spread', 'tracers']);
+    assert.equal(decodeLink('seed=99999999999').params.seed, 4294967295);
+});
+
+test('unknown keys and stray text are ignored', () => {
+    const { params, problems } = decodeLink('#seed=8&utm_source=x&&=&rho');
+    assert.deepEqual(params, clampParams({ seed: 8 }));
+    assert.deepEqual(problems, ['rho']);
+    assert.deepEqual(decodeLink('#about').params, defaults());
+    assert.deepEqual(decodeLink(null).params, defaults());
+    assert.deepEqual(decodeLink(' seed = 9 ').params, defaults());
+    assert.deepEqual(decodeLink('seed=%209%20').params, clampParams({ seed: 9 }));
 });

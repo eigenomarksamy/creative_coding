@@ -114,7 +114,8 @@
         button,
         select,
         summary,
-        input[type="number"] {
+        input[type="number"],
+        input[type="text"] {
             min-height: 32px;
             padding: 4px 10px;
             border: 1px solid var(--border);
@@ -204,6 +205,33 @@
         .seed input {
             flex: 1;
             min-width: 0;
+        }
+
+        /* Sharing: a link to the run's start, and the picture as it is */
+        .share {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-top: 8px;
+        }
+
+        .share button {
+            flex: 1 1 auto;
+        }
+
+        #link {
+            width: 100%;
+            margin-top: 6px;
+            color: var(--muted);
+        }
+
+        #share-status {
+            margin: 6px 0 0;
+            color: var(--muted);
+        }
+
+        #share-status:empty {
+            margin: 0;
         }
 
         .keys {
@@ -296,11 +324,15 @@
                     <li>in controls, ρ, σ and β change the rules while the
                         paths move. the starting gap, the number of paths and
                         the seed start them again.</li>
-                    <li>the same seed and settings always give the same run.</li>
+                    <li>the same seed and settings always give the same run.
+                        copy link, in controls, keeps them, so the link starts
+                        this run again from the beginning, anywhere. it can't
+                        keep what happened along the way, such as your taps.
+                        save image keeps the picture as it is now.</li>
                 </ul>
                 <p class="keys">keys: space pause · r reset · n next seed,
                     which starts the paths from a new place · 1–4 presets ·
-                    esc closes a panel</p>
+                    c copy link · s save image · esc closes a panel</p>
             </div>
         </details>
         <details id="controls">
@@ -312,6 +344,12 @@
                     <input id="seed" type="number" inputmode="numeric">
                     <button id="next-seed" type="button">next</button>
                 </div>
+                <div class="share">
+                    <button id="copy-link" type="button">copy link</button>
+                    <button id="save-image" type="button">save image</button>
+                </div>
+                <input id="link" type="text" readonly hidden aria-label="link to this run">
+                <p id="share-status" role="status"></p>
             </div>
         </details>
     </div>
@@ -321,8 +359,9 @@
         (() => {
             'use strict';
 
-            const { PARAMS, PRESETS, advance, clampParams, createState, fastest,
-                palette, probeOrbit, release, separation, DT } = window.StrangeAttractor;
+            const { PARAMS, PRESETS, advance, clampParams, createState, decodeLink,
+                encodeLink, fastest, palette, probeOrbit, release, separation,
+                DT } = window.StrangeAttractor;
 
             // Every path keeps this many points, one for every TRAIL_STRIDE
             // steps, so trails look the same at any frame rate
@@ -351,6 +390,12 @@
             const TRAIL_STEPS = TRAIL_POINTS * TRAIL_STRIDE;
             const REST_HINT = 'every path is at rest. tap anywhere to release them again';
 
+            // The address follows the settings, but not on every step of a
+            // slider: browsers throttle a page that rewrites its URL too often
+            const LINK_DELAY_MS = 250;
+            const LINK_PROBLEM_NOTE = 'part of this link couldn’t be used, so those settings are at their defaults or limits';
+            const NAME = 'strange-attractor';
+
             // Sliders in panel order. The first group changes how the paths
             // move on from where they are. The second group decides the initial
             // state, so a change to it starts them again.
@@ -366,6 +411,8 @@
             const pauseButton = document.getElementById('pause');
             const presetSelect = document.getElementById('preset');
             const seedInput = document.getElementById('seed');
+            const linkInput = document.getElementById('link');
+            const shareStatus = document.getElementById('share-status');
             const headerEl = document.querySelector('.header');
             const barEl = document.querySelector('.bar');
             const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
@@ -411,9 +458,19 @@
             let restSince = null;
             let tapped = false;
 
+            // Whether the run has gone where its settings alone can't take
+            // it: a tap, or a change to the rules while the paths moved
+            let strayed = false;
+
+            // The hash this page last read or wrote, and a pending write.
+            // Nothing is written until the visitor changes a setting.
+            let linkShown = location.hash.replace(/^#/, '');
+            let linkTimer = null;
+
             // Starting again from the seed: the same parameters and seed
             // always give this same state
             function restart() {
+                strayed = false;
                 state = createState(params);
                 trail = new Float32Array(state.count * TRAIL_POINTS * 2);
                 head = 0;
@@ -760,9 +817,14 @@
                         if (RESTART_KEYS.includes(key)) {
                             restart();
                         } else if (key !== 'speed') {
+                            // A link starts from the seed under the new
+                            // rules, so it can't rebuild a run that changed
+                            // them on the way
+                            strayed = strayed || state.steps > 0;
                             refreshOrbit();
                         }
                         refresh();
+                        settingsChanged();
                     });
 
                     row.append(label, output, input);
@@ -786,6 +848,7 @@
                 syncControls();
                 restart();
                 refresh();
+                settingsChanged();
             }
 
             function leavePreset() {
@@ -804,12 +867,138 @@
                 }
                 restart();
                 refresh();
+                settingsChanged();
             }
 
             function resetRun() {
                 restart();
                 refresh();
             }
+
+            // Share links: the hash holds the run's initial configuration,
+            // in the format sim.js describes
+
+            function linkUrl() {
+                return `${location.href.split('#')[0]}#${encodeLink(params)}`;
+            }
+
+            function writeLink() {
+                clearTimeout(linkTimer);
+                linkTimer = null;
+                const text = encodeLink(params);
+                if (text === linkShown) {
+                    return;
+                }
+                linkShown = text;
+                try {
+                    history.replaceState(history.state, '', `#${text}`);
+                } catch (error) {
+                    // Changing only the hash doesn't reload the page
+                    location.replace(`#${text}`);
+                }
+            }
+
+            function settingsChanged() {
+                shareStatus.textContent = '';
+                linkInput.hidden = true;
+                clearTimeout(linkTimer);
+                linkTimer = setTimeout(writeLink, LINK_DELAY_MS);
+            }
+
+            // Settings from a link: on load, or when a link is pasted into
+            // the open page, which changes the hash without a reload
+            function applyLink(text) {
+                const link = decodeLink(text);
+                shareStatus.textContent = '';
+                linkInput.hidden = true;
+                params = link.params;
+                if (link.preset) {
+                    presetSelect.value = link.preset;
+                    noteEl.textContent = PRESETS.find(({ id }) => id === link.preset).note;
+                } else {
+                    leavePreset();
+                }
+                if (link.problems.length > 0) {
+                    noteEl.textContent = LINK_PROBLEM_NOTE;
+                }
+                syncControls();
+            }
+
+            window.addEventListener('hashchange', () => {
+                const text = location.hash.replace(/^#/, '');
+                if (text === linkShown) {
+                    return;
+                }
+                clearTimeout(linkTimer);
+                linkTimer = null;
+                linkShown = text;
+                applyLink(text);
+                restart();
+                refresh();
+            });
+
+            // The answer shows in the controls panel, which a key may have
+            // left closed. It is cleared first, so the same words are
+            // announced again.
+            const controlsPanel = document.getElementById('controls');
+
+            function setStatus(text) {
+                controlsPanel.open = true;
+                shareStatus.textContent = '';
+                setTimeout(() => {
+                    shareStatus.textContent = text;
+                }, 50);
+            }
+
+            async function copyLink() {
+                writeLink();
+                const url = linkUrl();
+                let copied = false;
+                try {
+                    await navigator.clipboard.writeText(url);
+                    copied = true;
+                } catch (error) {
+                    // No clipboard here, as in some frames: the field below
+                    // holds the link, selected, to copy by hand
+                }
+
+                linkInput.value = url;
+                linkInput.hidden = false;
+                controlsPanel.open = true;
+                if (!copied) {
+                    linkInput.focus();
+                    linkInput.select();
+                    setStatus('couldn’t copy here: the link above is selected, ready to copy');
+                } else if (strayed) {
+                    setStatus('link copied. it starts this run again from the seed, without your taps or the changes made along the way');
+                } else {
+                    setStatus('link copied. it starts this run again from the beginning');
+                }
+            }
+
+            // The picture as it is now, at the canvas's own resolution
+            function saveImage() {
+                const name = `${NAME}-${params.seed}.png`;
+                draw();
+                canvas.toBlob((blob) => {
+                    if (!blob) {
+                        setStatus('couldn’t save the image here');
+                        return;
+                    }
+                    const url = URL.createObjectURL(blob);
+                    const anchor = document.createElement('a');
+                    anchor.href = url;
+                    anchor.download = name;
+                    document.body.append(anchor);
+                    anchor.click();
+                    anchor.remove();
+                    setTimeout(() => URL.revokeObjectURL(url), 10000);
+                    setStatus(`image saved as ${name}`);
+                }, 'image/png');
+            }
+
+            document.getElementById('copy-link').addEventListener('click', copyLink);
+            document.getElementById('save-image').addEventListener('click', saveImage);
 
             for (const preset of PRESETS) {
                 presetSelect.add(new Option(preset.label, preset.id));
@@ -844,6 +1033,7 @@
                 release(state, params, x, x, z);
                 record(false);
                 tapped = true;
+                strayed = true;
                 hintEl.hidden = true;
                 refresh();
             });
@@ -883,7 +1073,7 @@
                     return;
                 }
 
-                if (target.closest('input[type="number"], select')) {
+                if (target.closest('input[type="number"], input[type="text"], select')) {
                     return;
                 }
 
@@ -898,6 +1088,10 @@
                     resetRun();
                 } else if (event.key.toLowerCase() === 'n') {
                     nextSeed();
+                } else if (event.key.toLowerCase() === 'c') {
+                    copyLink();
+                } else if (event.key.toLowerCase() === 's') {
+                    saveImage();
                 } else if (PRESETS[Number(event.key) - 1]) {
                     applyPreset(PRESETS[Number(event.key) - 1]);
                 }
@@ -967,6 +1161,9 @@
             syncControls();
             presetSelect.value = PRESETS[0].id;
             noteEl.textContent = PRESETS[0].note;
+            if (linkShown !== '') {
+                applyLink(linkShown);
+            }
             measure();
             restart();
             updateReadout();
