@@ -17,7 +17,7 @@ the work runs in lanes. each lane has its own ticket prefix, ticket table and or
 | lane | prefix | what it builds | tickets | next | done |
 |---|---|---|---|---|---|
 | worlds and engines | CC | interactive generative engines, and world-based discovery in the gallery | §4.1 | CC6 (step 4), whose one need, CC5, is done. CC11b waits on CC7 | CC1, CC2, CC3, CC12 (2026-11-03), CC4, CC14 (2026-11-05), CC5, CC13 (2026-11-07), CC11a (2026-11-18) |
-| seven levels | SL | static pycairo art for the seven reading tracks | §4.2 | SL3, whose need, SL0, is done. SL4 needs it and SL2. the universe track's seven images are in the registry's folder, and no other track has an image yet | SL0 (2026-11-13), SL1 (2026-11-14), SL2 (2026-11-19) |
+| seven levels | SL | static pycairo art for the seven reading tracks | §4.2 | SL4 (chaos), whose needs, SL2 and SL3, are done. the universe track's seven images are in the registry's folder, with SL3's three pilots: chaos.3 and chaos.6, and information.3 | SL0 (2026-11-13), SL1 (2026-11-14), SL2, SL3 (2026-11-19) |
 | ecosystem onboarding | EO | the repo's place in the eigenomar ecosystem: a manifest, the shared Claude rules, issues in the ecosystem's Project, and the portability gaps | §4.3 | EO10's deployed check, once its push deploys. EO11 and EO12 wait on the ecosystem's standards in `meta-eigenomar` | EO1, EO4 (2026-11-12), EO2, EO3, EO9, EO8 (2026-11-13), EO5, EO6, EO7 (2026-11-14) |
 
 - **milestone 1** (worlds and engines): CC5, CC7 and CC10 are published, giving three engines in three worlds (dynamical, organic, mystic), built on the CC2–CC3 taxonomy.
@@ -87,8 +87,8 @@ flowchart TD
 
   classDef done fill:#e5f4e4,stroke:#2e7d32,color:#1b3a1d
   classDef next fill:#e7f1fb,stroke:#1565c0,stroke-width:2px,color:#0d2b4e
-  class CC12,CC2,CC3,CC4,CC14,CC5,CC11a,SL0,SL1,SL2,EO1,EO4,EO2,EO3,EO9,EO8,EO5,EO6,EO7 done
-  class CC6,SL3,EO10 next
+  class CC12,CC2,CC3,CC4,CC14,CC5,CC11a,SL0,SL1,SL2,SL3,EO1,EO4,EO2,EO3,EO9,EO8,EO5,EO6,EO7 done
+  class CC6,SL4,EO10 next
 ```
 
 green is done, and blue is the next ticket in each lane.
@@ -143,7 +143,7 @@ first observed on 2026-11-03 while restructuring this plan, then confirmed, corr
 | stack | static site with no package.json, bundler, test runner or type checker. the only build step is `python build_gallery.py`, which needs Pillow. locally that is Python 3.11 with Pillow 11.3 and node v24 on Windows. `dev.py` (since 2026-11-11, stdlib only) wraps setup, build, tests, serving and opening, and the Cloudflare build doesn't use it | in §5, "tests, type checks and build pass" means the build runs clean and any tests a ticket adds pass |
 | platforms | developed from one clone on Windows since 2026-11-11, and Cloudflare's build is the build's run on Linux, for every push to `main`. `.gitattributes` keeps text files LF in every checkout, overriding Git for Windows' `core.autocrlf=true`, and since EO5 (2026-11-14) every tracked text file is LF in the index. the sketches install and render on Windows (EO6), but renders don't reproduce byte for byte across platforms, so a check against a committed render uses the README's tolerance | a clean build on Windows counts for §5. a CRLF checkout would change each sketch's `bytes` in the data |
 | repo contents | 431 tracked files: 54 pycairo scripts, 91 top-level pygame scripts with `shapes/` and `utils/` helpers, their committed renders (519 MB in `cc_pycairo/gen/` and 70 MB in `cc_pygame/gen/`), the 3 canvas sketches, the gallery (`gallery/index.html`, `gallery.js`, `gallery.css`), `build_gallery.py`, two manifests (`12.txt`, `cosmos.txt`) and the deploy config | renders are committed and served as they are. thumbnails are the only processed assets |
-| build pipeline | `CATEGORIES` → `build_gallery.py` → `gallery/gallery-data.js` (which sets `window.GALLERY_DATA`) and `gallery/thumbs/<category>/<stem>.jpg` (640 px, JPEG quality 80; a piece longer than 2:1 gets a bigger thumbnail, so the 2:1 window its tile crops to still gets 640 px, e.g. 320×2560 for the 375×3000 `jpger_77`). thumbnails rebuild only when the source is newer, unless `--force` is given. stale ones are pruned, and the data file is rewritten only when something besides the build time changed. metadata errors exit with code 1 before anything is pruned or written. since SL1, the build also checks the seven levels' registry and connections, and derives `cc_pycairo/gen/seven_levels/manifest.json` from them, rewriting it only when its content changes. today: 265 items in 4 categories and 7 groups, and a data file of 291 KB (14 KB gzipped) | every gallery change goes through this one script. keep the rule that a build which finds nothing new changes nothing |
+| build pipeline | `CATEGORIES` → `build_gallery.py` → `gallery/gallery-data.js` (which sets `window.GALLERY_DATA`) and `gallery/thumbs/<category>/<stem>.jpg` (640 px, JPEG quality 80; a piece longer than 2:1 gets a bigger thumbnail, so the 2:1 window its tile crops to still gets 640 px, e.g. 320×2560 for the 375×3000 `jpger_77`). thumbnails rebuild only when the source is newer, unless `--force` is given. stale ones are pruned, and the data file is rewritten only when something besides the build time changed. metadata errors exit with code 1 before anything is pruned or written. since SL1, the build also checks the seven levels' registry and connections, and derives `cc_pycairo/gen/seven_levels/manifest.json` from them, rewriting it only when its content changes. today: 268 items in 4 categories and 7 groups, and a data file of 291 KB (14 KB gzipped) | every gallery change goes through this one script. keep the rule that a build which finds nothing new changes nothing |
 | build output | `gallery/gallery-data.js`, `gallery/thumbs/` and, since SL1, `cc_pycairo/gen/seven_levels/manifest.json` are gitignored | run the build before viewing or deploying. the site reads the seven levels' manifest, so its fields change only together with the site's build |
 | deploy | Cloudflare Workers static assets (`wrangler.jsonc`). the whole repo is served at `gallery.eigenomar.com`, and `_redirects` sends `/` to `/gallery/`. the Cloudflare build command runs `pip install` and `build_gallery.py` and nothing else, and every push to `main` redeploys | this repo is the gallery. tests don't run on deploy, by the owner's choice (§0), so run `node --test` before pushing |
 | what is published | every file not listed in `.assetsignore`. that includes `README.md`, `build_gallery.py`, the scripts and manifests (the lightbox links to the scripts). this plan is excluded by `*dev_plan.md`, tests by `*.test.js`, and `CLAUDE.md`, `.claude/`, `dev.py` and `.gitattributes` by name. the largest file is 18.8 MiB, under Workers' 25 MiB limit per file | anything merged to `main` is public at once. an engine core can be reached at its URL before its publish ticket adds it to the gallery |
@@ -636,7 +636,7 @@ sizes and the "needs" column work as in §4.
 | SL0 | data from the briefs into the repo | S | none | done |
 | SL1 | gallery pipeline | M | SL0, CC14 | done |
 | SL2 | universe migration | S | SL1 | done |
-| SL3 | kit and style pilot | M | SL0 | todo |
+| SL3 | kit and style pilot | M | SL0 | done |
 | SL4 | chaos | M | SL2, SL3 | todo |
 | SL5 | sound | M | SL3, after SL4 | todo |
 | SL6 | time | M | SL3, after SL5 | todo |
@@ -664,6 +664,17 @@ the seven levels package, the briefs and example data that SL0 works from, said 
 | alt text | semantic | the lightbox uses `item.title` | items get an `alt` field, kept out of `meta`, which is printed on tiles |
 
 **measured on 2026-11-04,** in WSL: all 7 cosmos scripts re-render byte-identical to their committed PNGs, which makes the universe migration safe. six of them took 0.7 to 7.9 seconds each in pure Python, so a full render at full size is fast enough to iterate on, and no preview mode is needed.
+
+**the style, agreed at SL3's review (2026-11-19).** `cc_pycairo/seven_levels_kit.py` holds the shared drawing: `mix`, `glow`, `polyline`, `luminous`, `contour`, `background` and `vignette`. each takes the cairo context first and leaves its operator as it found it. the kit is additive from here (SL3).
+
+| topic | agreed |
+|---|---|
+| background | `background`: near-black tinted by the level's accent, 10% of it at the centre falling to 1.5% at the corners, with a dust of faint specks. the picture is drawn over it under `OPERATOR_ADD` |
+| glow | `glow`, the cosmos glow unchanged: the full alpha at the centre, 30% at a quarter of the radius, none at the radius |
+| line weights | structure 0.9–1.0 px. main lines 1.2–1.6 px through `luminous`, which adds halos 6 and 2.5 times as wide at 8% and 25% of the alpha. the most important outlines up to 2.0 px. `polyline` strokes many paths as one, so lines that meet don't brighten under `OPERATOR_ADD` |
+| margins | everything that matters stays inside x 160–1440 and y 200–1820, so the subject survives a centred 1:1 crop (y 200–1800). `vignette` darkens the corners to 60% black |
+| accent | the level's accent sets every color in its image: the accent itself, a pale and a deep variant, and a near-white for hot points. the track's color is never drawn in an image: it belongs to the gallery and the site |
+| track colors | the seven in `seven_levels.json` are confirmed as SL0 chose them (§4.2.3, 5) |
 
 **size:** at the cosmos average of 2.1 MB, the 44 new images and the 7 copies add about 105 MB to the 519 MB in `cc_pycairo/gen/`. every file stays far under Workers' 25 MiB limit.
 
@@ -876,6 +887,12 @@ checked by script on 2026-11-04. the good news first: tracks, nodes, 21 meta pai
   - **owner review:** agree the background, glow strength, line weights, margins and how an accent is used. record the result in §4.2.1.
   - **from SL0:** confirm the seven track colors in `seven_levels.json` at the same review (§4.2.3, 5).
 - **done when:** the owner signs off the three images. from then on the kit is additive: a helper may be added, but changing one changes every image that uses it, so that needs a re-render and a review of all of them.
+- **result (2026-11-19):** the owner signed off the three images and the style, now recorded in §4.2.1, and merged them to `main` (ae3ff68), so the gallery shows chaos.3 and chaos.6 in the chaos folder and information.3 in the information folder ahead of their tracks.
+  - **the kit,** `cc_pycairo/seven_levels_kit.py`, holds only what the cosmos scripts repeat. `contour` returns segments instead of drawing them, so a script picks the line style. randomness comes from the script's seeded `random`, so an image depends only on its `SEED`.
+  - **chaos.3** (`chaos_03_red_butterfly`, seed 503): two Lorenz runs (σ 10, ρ 28, β 8/3), 10⁻⁶ apart, integrated by RK4 at dt 0.004 for 21 time units. they share one dim line for about 15 loops and split at t ≈ 11.4, when they are a pixel apart, and the tails brighten with time. a chart below plots their separation on a log scale beside the exponential law at λ ≈ 0.906, up to a peak of 47, the attractor's size. renders in about a second.
+  - **chaos.6** (`chaos_06_violet_reef`, seed 506): Gray-Scott in the coral regime (F 0.0545, k 0.062, Du 0.70, Dv 0.35) on a 400×500 numpy grid, with a 9-point Laplacian and closed edges, run for 6400 steps. twelve irregular Pearson drops (U ½, V ¼) land at staggered times, so clusters of different ages sit side by side. drawn as a faint grayscale density of V, contours of V at 0.12, 0.25 and 0.38 and of U at 0.80, and lights on the cells that crossed 0.25 in the last 300 steps. renders in about 30 seconds. for the field family: the 5-point stencil is unstable at these rates with dt 1, and a drop of V = 1 into U = 1 overshoots, so keep both choices.
+  - **information.3** (`information_03_violet_bitgrid`, seed 403): the word "encoding" as 16 nibbles and their Hamming(7,4) codewords, with the parity-check matrix as three rails, one received bit flipped (position 6), the two broken checks, the syndrome 110, and the code's Venn diagram with the two failing circles meeting at the bad bit. the script asserts that every sent codeword has a zero syndrome and that the syndrome finds the flip.
+  - each image renders byte-identical a second time on Windows, and all three have `alt` and `caption` in the registry. `python dev.py check` passes with 268 items and 10 of 51 `generated`.
 
 <a id="sl4"></a><a id="sl5"></a><a id="sl6"></a><a id="sl7"></a><a id="sl8"></a><a id="sl9"></a>
 #### SL4–SL9 · one track each · M
@@ -1190,3 +1207,4 @@ the ticket column names a ticket, a lane for a note about a whole lane, or none.
 | 2026-11-19 | SL2 | universe migration applied: each cosmos script also writes its image under its seven levels name, and `cc_pycairo/gen/seven_levels/` holds the seven, byte copies of the originals after the Windows renders matched within the README's tolerance. the registry has their `alt` and `caption`, the cosmos folder shows them in place of the `cosmos.txt` items, and `#/worlds/cosmos_<name>` opens the new id (`MOVED_PIECES`). `cosmos.txt` and `gen/cosmos/` stay. `python dev.py check` passes with 36 tests and 265 items, 7 of 51 `generated`, and a second build changes nothing. done once deployed and the 14 URLs return PNGs |
 | 2026-11-19 | SL2 | done: deployed from 16e47ba. the 7 new URLs and the 7 old ones return PNGs, each the same size as its original, the deployed manifest lists 7 of 51 as `generated`, and the owner tested the deployed gallery. `eigenomar` R7 is unblocked, and SL3 is the lane's next ticket, which SL4 also needs |
 | 2026-11-19 | SL2 | `eigenomar` R7 deployed: the site's universe article points at the seven new files, and no page of eigenomar.com links `gen/cosmos/`. SL2's hold on `cosmos.txt` and the old files is met, and whether they stay is this repo's call. only this file changed. from a session in `meta-eigenomar` |
+| 2026-11-19 | SL3 | done: the kit, `cc_pycairo/seven_levels_kit.py`, and the three pilot images, chaos.3 (Lorenz, RK4), chaos.6 (Gray-Scott, numpy) and information.3 (Hamming(7,4)), at 1600×2000, signed off by the owner and merged in ae3ff68 with their `alt` and `caption`. the agreed style is in §4.2.1, and the seven track colors are confirmed. `python dev.py check` passes with 268 items and 10 of 51 `generated`, and each image re-renders byte-identical. SL4 is the lane's next ticket. from a session in `meta-eigenomar` |
