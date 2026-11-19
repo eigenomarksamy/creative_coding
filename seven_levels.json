@@ -259,8 +259,8 @@
           "label": "encoding",
           "accent": "violet",
           "stem": "information_03_violet_bitgrid",
-          "alt": null,
-          "caption": null
+          "alt": "rows of small violet squares at the top drop thin lines into a grid of sixteen columns of seven squares, some lit and some dark, with three bands paler than the rest; one square in the grid is ringed, and a line runs from it through three small squares to three overlapping circles below, two of them bright, where the same square is ringed in the overlap of the bright circles",
+          "caption": "the word encoding split into 4-bit symbols and sent as Hamming(7,4) codewords: three parity bits per codeword, at positions 1, 2 and 4, each making even the positions it checks. one received bit is flipped, the two checks it breaks spell its position in binary, and the code's Venn diagram finds it where the failing circles meet"
         },
         {
           "id": "information.4",
@@ -334,8 +334,8 @@
           "label": "instability",
           "accent": "electric red",
           "stem": "chaos_03_red_butterfly",
-          "alt": null,
-          "caption": null
+          "alt": "a red butterfly of looping lines in two wings: a single dim line winds through both, then splits into a red line and a pale line that take different loops, ending far apart; below, a faint chart shows a wavering line climbing steadily from left to right",
+          "caption": "two runs of the Lorenz system that start a millionth apart, integrated step by step. they trace one path for about fifteen loops, then part, and their distance, charted below on a log scale, grows at a steady exponential rate until it is as large as the attractor. the Lorenz system is one chaotic example: not every nonlinear system behaves this way"
         },
         {
           "id": "chaos.4",
@@ -361,8 +361,8 @@
           "label": "complexity",
           "accent": "violet",
           "stem": "chaos_06_violet_reef",
-          "alt": null,
-          "caption": null
+          "alt": "violet outlines of branching, maze-like clusters on a dark ground, from small rings to large coral-like masses that touch and merge, with tiny lights scattered along their outer edges",
+          "caption": "the Gray-Scott reaction-diffusion model, solved on a grid: two chemicals that react and spread at different rates grow branching clusters from drops placed at different times, so young rings sit beside old masses. the lights mark where the pattern grew most recently. the shapes look organic, but they come from the model, not from any living thing"
         },
         {
           "id": "chaos.7",
