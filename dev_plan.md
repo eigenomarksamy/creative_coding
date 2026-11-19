@@ -17,7 +17,7 @@ the work runs in lanes. each lane has its own ticket prefix, ticket table and or
 | lane | prefix | what it builds | tickets | next | done |
 |---|---|---|---|---|---|
 | worlds and engines | CC | interactive generative engines, and world-based discovery in the gallery | §4.1 | CC6 (step 4), whose one need, CC5, is done. CC11b waits on CC7 | CC1, CC2, CC3, CC12 (2026-11-03), CC4, CC14 (2026-11-05), CC5, CC13 (2026-11-07), CC11a (2026-11-18) |
-| seven levels | SL | static pycairo art for the seven reading tracks | §4.2 | SL3, whose need, SL0, is done. SL2 is applied and waits only on its deployed check. SL4 needs both. the universe track's seven images are in the registry's folder, and no other track has an image yet | SL0 (2026-11-13), SL1 (2026-11-14) |
+| seven levels | SL | static pycairo art for the seven reading tracks | §4.2 | SL3, whose need, SL0, is done. SL4 needs it and SL2. the universe track's seven images are in the registry's folder, and no other track has an image yet | SL0 (2026-11-13), SL1 (2026-11-14), SL2 (2026-11-19) |
 | ecosystem onboarding | EO | the repo's place in the eigenomar ecosystem: a manifest, the shared Claude rules, issues in the ecosystem's Project, and the portability gaps | §4.3 | EO10's deployed check, once its push deploys. EO11 and EO12 wait on the ecosystem's standards in `meta-eigenomar` | EO1, EO4 (2026-11-12), EO2, EO3, EO9, EO8 (2026-11-13), EO5, EO6, EO7 (2026-11-14) |
 
 - **milestone 1** (worlds and engines): CC5, CC7 and CC10 are published, giving three engines in three worlds (dynamical, organic, mystic), built on the CC2–CC3 taxonomy.
@@ -87,8 +87,8 @@ flowchart TD
 
   classDef done fill:#e5f4e4,stroke:#2e7d32,color:#1b3a1d
   classDef next fill:#e7f1fb,stroke:#1565c0,stroke-width:2px,color:#0d2b4e
-  class CC12,CC2,CC3,CC4,CC14,CC5,CC11a,SL0,SL1,EO1,EO4,EO2,EO3,EO9,EO8,EO5,EO6,EO7 done
-  class CC6,SL2,SL3,EO10 next
+  class CC12,CC2,CC3,CC4,CC14,CC5,CC11a,SL0,SL1,SL2,EO1,EO4,EO2,EO3,EO9,EO8,EO5,EO6,EO7 done
+  class CC6,SL3,EO10 next
 ```
 
 green is done, and blue is the next ticket in each lane.
@@ -635,7 +635,7 @@ sizes and the "needs" column work as in §4.
 |---|---|---|---|---|
 | SL0 | data from the briefs into the repo | S | none | done |
 | SL1 | gallery pipeline | M | SL0, CC14 | done |
-| SL2 | universe migration | S | SL1 | todo |
+| SL2 | universe migration | S | SL1 | done |
 | SL3 | kit and style pilot | M | SL0 | todo |
 | SL4 | chaos | M | SL2, SL3 | todo |
 | SL5 | sound | M | SL3, after SL4 | todo |
@@ -850,7 +850,7 @@ checked by script on 2026-11-04. the good news first: tracks, nodes, 21 meta pai
   - keep `cc_pycairo/gen/cosmos/` and `cosmos.txt` in place until the site's universe article points at the new files.
 - **from SL1:** the `7-levels` group reads `cosmos.txt` beside the registry, through its `manifest`, `search` and `manifest_track` fields. once the seven new files are in `cc_pycairo/gen/seven_levels/`, drop those three fields, so the old items leave the cosmos folder as the new ones arrive. the file stays, as above. the registry's `alt` and `caption` for the seven become the new items' alt text and caption.
 - **done when:** the migration leaves the gallery's item count unchanged (7 out, 7 in), the 7 new URLs and the 7 old ones all return PNGs when deployed, and the old hash routes land on the right pieces.
-- **applied (2026-11-19):** each cosmos script ends with a second literal `write_to_png` to its new name, so the build links both files to it. it is done once the push deploys and the 14 URLs return PNGs.
+- **result (2026-11-19):** each cosmos script ends with a second literal `write_to_png` to its new name, so the build links both files to it. deployed from 16e47ba: the 7 new URLs and the 7 old ones return PNGs, each the same size as its original, the deployed manifest lists 7 of 51 as `generated`, and the owner tested the deployed gallery.
   - **the renders:** on Windows, the seven matched their originals within the README's tolerance, as EO6 measured: resonance, spacetime, mandala and oneness byte for byte, forces in 0.001% of its pixels by at most 2 levels, and origin and geometry, the two that use `noise`, in 1.16% and 1.21%. the committed files in `cc_pycairo/gen/seven_levels/` are byte copies of the originals, not the Windows renders. that keeps "no new art" exact, so the site's universe images don't change when it switches URLs, and it is what the scripts render on Linux (§4.2.1, measured). the run's overwritten cosmos files were restored, so `gen/cosmos/` is unchanged.
   - **the registry:** the seven have `alt`, saying what each image shows, and `caption`, its model in a line. 3, 4, 5, 6 and 7 also say what the picture doesn't claim, as the briefs' interpretation notes ask, and 6 and 7 call themselves symbolic or a metaphor.
   - **the gallery:** the group's `manifest`, `search` and `manifest_track` are gone, and so is the code path only they used, so the cosmos folder holds the seven registry items in level order, titled by their labels (existence to oneness). the build stays at 265 items, no item id starts with `cosmos_`, and the manifest lists 7 of 51 as `generated`. `MOVED_PIECES` in `gallery.js` sends `#/worlds/cosmos_<name>` to the new id with `location.replace`, unless a piece has that id again. in headless Chrome from `file://`, three old piece routes, one with a query, opened the right pieces, `#/pycairo/cosmos` still reached the folder, and an unknown id still showed not found.
@@ -1187,3 +1187,4 @@ the ticket column names a ticket, a lane for a note about a whole lane, or none.
 | 2026-11-18 | EO | EO11 and EO12 added at the owner's request: this repo's adoption of the ecosystem's document standard and SCM strategy, which are designed in `meta-eigenomar`. each needs its standard, so its issue waits in the backlog |
 | 2026-11-18 | CC11a | share links and image export in strange attractor. the hash holds the seed, a whole number from 0 to 4294967295 in decimal, and every parameter (`#seed=59&rho=22&…`), written by `encodeLink` and read by `decodeLink` in `sim.js`. malformed values take their default, out-of-range ones are held to it, and the page says so. the address follows the settings once the visitor changes one, without history entries. copy link and save image (`strange-attractor-<seed>.png`) are in the controls panel and on `c` and `s`, and copy link says when taps or mid-run changes aren't in the link. the README documents the link. 36 tests pass, 47 checks pass in headless Chrome from `file://`, also inside the gallery's frame, the same run over http passes, and the build is clean with 265 items. not tried on a real phone. from a session in `meta-eigenomar` |
 | 2026-11-19 | SL2 | universe migration applied: each cosmos script also writes its image under its seven levels name, and `cc_pycairo/gen/seven_levels/` holds the seven, byte copies of the originals after the Windows renders matched within the README's tolerance. the registry has their `alt` and `caption`, the cosmos folder shows them in place of the `cosmos.txt` items, and `#/worlds/cosmos_<name>` opens the new id (`MOVED_PIECES`). `cosmos.txt` and `gen/cosmos/` stay. `python dev.py check` passes with 36 tests and 265 items, 7 of 51 `generated`, and a second build changes nothing. done once deployed and the 14 URLs return PNGs |
+| 2026-11-19 | SL2 | done: deployed from 16e47ba. the 7 new URLs and the 7 old ones return PNGs, each the same size as its original, the deployed manifest lists 7 of 51 as `generated`, and the owner tested the deployed gallery. `eigenomar` R7 is unblocked, and SL3 is the lane's next ticket, which SL4 also needs |
