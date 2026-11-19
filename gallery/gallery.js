@@ -12,7 +12,7 @@
  *   #/worlds                            every piece in the gallery
  *   #/worlds?world=cosmic&system=oscillators
  *                                       every piece, filtered
- *   #/worlds/cosmos_origin              one piece and its related pieces
+ *   #/worlds/universe_01_blue_horizon   one piece and its related pieces
  */
 
 (function () {
@@ -45,6 +45,19 @@
         "pycairo/cosmos": ["illustrations", "7-levels", "cosmos"],
         "canvas": ["animated", "canvas"],
         "canvas/sketches": ["animated", "canvas"]
+    };
+
+    // Piece pages from before a piece was renamed, each with its new id.
+    // The seven cosmos images became the universe track's levels (SL2).
+    // An old id that names a piece again opens that piece instead.
+    var MOVED_PIECES = {
+        "cosmos_origin": "universe_01_blue_horizon",
+        "cosmos_resonance": "universe_02_turquoise_fireflies",
+        "cosmos_geometry": "universe_03_violet_polyhedron",
+        "cosmos_spacetime": "universe_04_indigo_mesh",
+        "cosmos_forces": "universe_05_amber_orbits",
+        "cosmos_mandala": "universe_06_magenta_mandala",
+        "cosmos_oneness": "universe_07_gold_sphere"
     };
 
     // Facet keys that read item.taxonomy instead of item.meta. A world
@@ -243,6 +256,15 @@
             return Object.prototype.hasOwnProperty.call(MOVED_ROUTES, key)
                 ? MOVED_ROUTES[key]
                 : null;
+        }
+
+        if (
+            segments[0] === WORLDS_ROUTE &&
+            segments.length === 2 &&
+            !PIECE_BY_ID[segments[1]] &&
+            Object.prototype.hasOwnProperty.call(MOVED_PIECES, segments[1])
+        ) {
+            return [WORLDS_ROUTE, MOVED_PIECES[segments[1]]];
         }
 
         return target(segments.slice(0, 2).join("/")) || target(segments[0]);

@@ -349,12 +349,6 @@ CATEGORIES = [
                     "connections": "seven_levels_connections.json",
                     "directory": "cc_pycairo/gen/seven_levels",
                 },
-                # The seven cosmos pieces under their first names, in the
-                # universe track's folder, until the universe migration
-                # (SL2) replaces them with the registry's files.
-                "manifest": "cosmos.txt",
-                "search": ["cc_pycairo/gen/cosmos"],
-                "manifest_track": "universe",
                 "kind": "image",
                 "source": "pycairo_sketch",
                 "sections": [
@@ -1295,8 +1289,7 @@ def collect_registry_items(
     The registry lists every image, made or not, so its order is the
     running order and is never sorted. An image that isn't on disk yet is
     skipped, with one warning per track, and listed in the manifest as
-    planned. A group may also read a manifest of older files into one
-    track's folder, until they are migrated to the registry's names.
+    planned.
 
     The manifest is queued in context["outputs"], and written only once the
     whole build has passed its checks.
@@ -1309,28 +1302,6 @@ def collect_registry_items(
 
     data = read_registry(repo_root, group)
     items: list[dict] = []
-
-    if group.get("manifest"):
-        track = data["tracks"].get(group["manifest_track"])
-
-        if track is None:
-            raise MetadataError(
-                f"CATEGORIES {category_id}/{group['id']}: manifest_track "
-                f"{group['manifest_track']!r} isn't a track in "
-                f"{registry['file']}"
-            )
-
-        for item in collect_manifest_items(
-            repo_root=repo_root,
-            gallery_root=gallery_root,
-            category_id=category_id,
-            group=group,
-            context=context,
-        ):
-            item["section"] = track["section"]
-            item["taxonomy"] = copy.deepcopy(track["taxonomy"])
-            items.append(item)
-
     directory = registry["directory"].rstrip("/")
     public_base_url = f"{PUBLIC_BASE_URL}{directory}/"
     assets: list[dict] = []

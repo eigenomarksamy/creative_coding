@@ -16,8 +16,8 @@
           "label": "existence",
           "accent": "deep blue",
           "stem": "universe_01_blue_horizon",
-          "alt": null,
-          "caption": null
+          "alt": "a lone human figure stands on the curved night side of the Earth, its city lights glowing, under a deep blue sky of stars, the Milky Way and three spiral galaxies, with the sun about to rise at the horizon on the left",
+          "caption": "stars colored by their temperature, spiral galaxies on logarithmic arms and a Milky Way grown from noise, above the Earth's lit rim. the galaxies are stylized, not a map of the sky"
         },
         {
           "id": "universe.2",
@@ -25,8 +25,8 @@
           "label": "rhythm",
           "accent": "turquoise",
           "stem": "universe_02_turquoise_fireflies",
-          "alt": null,
-          "caption": null
+          "alt": "turquoise points of light on a dark teal ground: a wave of pendulum bobs runs across the top, and below a wavy line, scattered flashes gather from left to right into neat vertical columns, over faint rings of interfering waves",
+          "caption": "coupled oscillators: a pendulum wave, two interfering wave sources, and fireflies flashing as Kuramoto oscillators that fall into step as their coupling grows. the synchrony is drawn qualitatively, not measured from real fireflies"
         },
         {
           "id": "universe.3",
@@ -34,8 +34,8 @@
           "label": "mathematics",
           "accent": "violet",
           "stem": "universe_03_violet_polyhedron",
-          "alt": null,
-          "caption": null
+          "alt": "a violet wireframe dodecahedron with a cube nested inside it, its edges dissolving into points toward a golden-angle spiral of dots at the upper right, with small polyhedra in bubbles and faint equations scattered over a grid",
+          "caption": "Platonic solids nested as Kepler nested them, a phyllotaxis spiral and the equations of physics, breaking from crisp lines into points. that mathematics is what reality is made of is an interpretation, not an established result"
         },
         {
           "id": "universe.4",
@@ -43,8 +43,8 @@
           "label": "fabric",
           "accent": "indigo",
           "stem": "universe_04_indigo_mesh",
-          "alt": null,
-          "caption": null
+          "alt": "two indigo wireframe sheets, one below and one overhead, dip into glowing wells around bright masses, while glowing strings stretch between them in two rows toward a tangled, glowing knot at the vanishing point",
+          "caption": "spacetime as a mesh curved by gravitational wells and rippled by an orbiting pair, with strings vibrating in standing waves between two sheets and a Calabi-Yau cross section at the horizon. illustrative geometry, not a solution of general relativity or evidence for string theory"
         },
         {
           "id": "universe.5",
@@ -52,8 +52,8 @@
           "label": "forces",
           "accent": "amber",
           "stem": "universe_05_amber_orbits",
-          "alt": null,
-          "caption": null
+          "alt": "golden lines burst from a bright central point: looping orbits around a star at the upper left, field lines running to a charge at the upper right, a cluster of glowing spheres forming a nucleus at the lower left, and dotted spiral tracks curling at the lower right",
+          "caption": "the four forces from one point: gravity's precessing orbits, electric field lines and their equipotentials, a strong-force flux tube ending in a nucleus, and weak decays traced as bubble-chamber spirals. each follows its own law, since the forces don't share one equation"
         },
         {
           "id": "universe.6",
@@ -61,8 +61,8 @@
           "label": "interconnection",
           "accent": "magenta",
           "stem": "universe_06_magenta_mandala",
-          "alt": null,
-          "caption": null
+          "alt": "a magenta mandala in a circular frame: wavy rings of glowing sand around a petaled core of soft light, with fine lotus curves and stardust spreading beyond the rim",
+          "caption": "Chladni sand settled on the still lines of a vibrating drum, around the electron density of a hydrogen orbital, framed as a lotus. the parallel it draws between physics and spiritual symbols is symbolic, not a scientific equivalence"
         },
         {
           "id": "universe.7",
@@ -70,8 +70,8 @@
           "label": "oneness",
           "accent": "gold",
           "stem": "universe_07_gold_sphere",
-          "alt": null,
-          "caption": null
+          "alt": "a glowing gold sphere at the center, its dotted surface rippling, wrapped in a coiled halo and surrounded by looping field lines, faint wavefronts and drifting gold dust",
+          "caption": "a sphere vibrating with a spherical harmonic, inside dipole field lines, spreading wavefronts and a torus-knot halo. a visual metaphor for a metaphysical idea of unity, not accepted cosmology"
         }
       ]
     },

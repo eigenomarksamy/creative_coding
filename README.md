@@ -183,14 +183,16 @@ gallery/index.html#/illustrations/7-levels/cosmos
 gallery/index.html#/engines/render-engine?scene=fault line&palette=ember cobalt
 gallery/index.html#/worlds
 gallery/index.html#/worlds?world=cosmic&system=oscillators
-gallery/index.html#/worlds/cosmos_origin
+gallery/index.html#/worlds/universe_01_blue_horizon
 gallery/index.html#/worlds/strange-attractor
 ```
 
 `#/worlds` gathers every piece in the gallery and filters it by world,
 system and interaction. A world filter matches a piece's primary world or
 any of its secondary ones. `#/worlds/<id>` is one piece, with its
-classification and related pieces.
+classification and related pieces. A piece page from before a piece was
+renamed, such as `#/worlds/cosmos_origin`, opens the piece under its new id
+(`MOVED_PIECES` in `gallery.js`).
 
 A live sketch or engine also has its own page outside the gallery, such as
 `canvas/gol.html` or `canvas/strange-attractor/index.html`. Link to an
@@ -236,7 +238,7 @@ Because of these routes, no category in `CATEGORIES` can use the id `worlds`,
   section with no pieces isn't shown, a piece with no section sits on the
   group's page below the cards, and a group can't have both `sections` and
   `facets`.
-- **a manifest** (`12.txt`, `cosmos.txt`) sets the order and titles of a
+- **a manifest** (`12.txt`) sets the order and titles of a
   series, one piece per line as `position: title: image_stem`. Position and
   title are optional, and `#` starts a comment.
 - **the seven levels** are read from a registry, `seven_levels.json`, which
@@ -261,8 +263,11 @@ Because of these routes, no category in `CATEGORIES` can use the id `worlds`,
     `public_url`. Those three are `null` while it's `planned`. The site reads
     this manifest, so a field it uses is renamed only together with the
     site's build.
-  - Until the universe migration, the cosmos folder shows the seven pieces in
-    `cosmos.txt` under their first names, classified as the universe track.
+  - The universe track's seven levels are the cosmos pieces under new names.
+    Each `cc_pycairo/cosmos_<name>.py` writes its image twice, to
+    `cc_pycairo/gen/cosmos/` and to `cc_pycairo/gen/seven_levels/`, and the
+    gallery shows only the second. The first copies and `cosmos.txt` stay
+    until no page links to them.
 - **source links** are found from the literal output path a script passes to
   `write_to_png(...)` or `image.save(...)`. Scripts that build the path at
   runtime fall back to a script with the image's name, or `pnger_NN.py` for

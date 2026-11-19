@@ -376,3 +376,8 @@ ctx.fill()
 
 surface.write_to_png("cc_pycairo/gen/cosmos/cosmos_geometry.png")
 print("Saved cosmos_geometry.png")
+
+# The same image under its seven levels name (SL2). The cosmos file
+# stays until the site's universe article points at this one.
+surface.write_to_png("cc_pycairo/gen/seven_levels/universe_03_violet_polyhedron.png")
+print("Saved universe_03_violet_polyhedron.png")
