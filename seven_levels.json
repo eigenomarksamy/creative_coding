@@ -316,8 +316,8 @@
           "label": "order",
           "accent": "deep blue",
           "stem": "chaos_01_blue_vortex",
-          "alt": null,
-          "caption": null
+          "alt": "a deep blue vortex: about a hundred and fifty faint points scattered over a dark plane, each trailing a line that winds inward in a tightening oval spiral to one bright point at the centre, over a faint grid of short strokes that show the flow",
+          "caption": "a damped Duffing oscillator, a stiff spring with friction, drawn in its phase plane of position and velocity. a hundred and fifty starting states, scattered at random, are each integrated step by step, and friction drains every one of them into the same resting point, a stable attractor. the short strokes are the vector field that steers them. a stable fixed point is one kind of order, not the only one a dynamical system can have"
         },
         {
           "id": "chaos.2",
@@ -325,8 +325,8 @@
           "label": "motion",
           "accent": "blue gray",
           "stem": "chaos_02_steel_ellipses",
-          "alt": null,
-          "caption": null
+          "alt": "a blue-gray eye of nested rings on a dark ground: small ellipses at the centre grow into pointed eye outlines, with dots strung along every ring and faint lines through them that run straight out from the centre and curl near the edge; wavy lines pass above and below the eye",
+          "caption": "the phase portrait of a frictionless pendulum, angle across and momentum up: each closed curve is one swing, and near the bottom they are the ellipses of a harmonic oscillator. every swing starts at its widest point at the same moment, and the dots mark where each one is at equal steps of time. small swings keep pace, so the lines through equal times are straight, while larger swings take longer and fall behind, so the lines curl. outside the eye, the pendulum goes over the top. this motion is fully predictable, but a deterministic law alone does not make every system so"
         },
         {
           "id": "chaos.3",
@@ -343,8 +343,8 @@
           "label": "nonlinearity",
           "accent": "orange",
           "stem": "chaos_04_orange_cascade",
-          "alt": null,
-          "caption": null
+          "alt": "an orange cascade on a dark ground: a single thin line falls from the top and splits into an arch, then into four and eight lines, and then into a broad spray of fine curved strands crossed by dark bands; a thin wavering trace runs down a narrow column on the right",
+          "caption": "the bifurcation diagram of the logistic map, x to r x (1 - x), with r growing downward. for each r, many starting values are iterated, the early steps are dropped and the rest are counted, so the brightness shows where the map keeps returning. the cycle doubles again and again, then turns chaotic, with windows of order inside the chaos. the trace on the right is the Lyapunov exponent: right of its line, nearby starts drift apart. the logistic map is a mathematical example, not a map of every real system"
         },
         {
           "id": "chaos.5",
@@ -352,8 +352,8 @@
           "label": "emergence",
           "accent": "turquoise",
           "stem": "chaos_05_turquoise_flock",
-          "alt": null,
-          "caption": null
+          "alt": "three turquoise panels, one above the other, of small agents drawn as short trails with bright heads: at the top they are scattered and point every way, in the middle they move in several small groups, each with its own heading, and at the bottom nearly all of them move together as one flock beside a small group",
+          "caption": "Reynolds boids: each of 120 agents sees only its near neighbours, and steers to match their heading, to move toward them and to keep from crowding them. nothing steers the whole, yet from random starts they form groups, and the groups one flock, shown at three moments. the world wraps at its edges, so each panel is centred on its largest group. flocking is one form of emergence, and the model does not explain every complex social system"
         },
         {
           "id": "chaos.6",
@@ -370,8 +370,8 @@
           "label": "uncertainty",
           "accent": "muted gold",
           "stem": "chaos_07_gold_fan",
-          "alt": null,
-          "caption": null
+          "alt": "a gold line zigzags up from a bright point at the bottom, then frays near the top into a fan of many fainter strands that spread across the whole width, crossed by faint horizontal rules and a dashed one",
+          "caption": "an ensemble forecast of the Lorenz system, the model of chaos.3: 240 runs start within a thousandth of one present state, and time rises upward. each faint rule marks the moment the runs' spread has grown tenfold again, and the dashed one the forecast horizon, where the spread is as wide as the attractor and the forecast says no more than the system's range. every run follows the same law: the spread comes from sensitivity to a small uncertainty in the start, not from any absence of cause"
         }
       ]
     },
