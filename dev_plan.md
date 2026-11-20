@@ -21,7 +21,7 @@ the work runs in lanes. each lane has its own ticket prefix, ticket table and or
 | ecosystem onboarding | EO | the repo's place in the eigenomar ecosystem: a manifest, the shared Claude rules, issues in the ecosystem's Project, and the portability gaps | §4.3 | none ready: EO11 and EO12 wait on the ecosystem's standards in `meta-eigenomar` | EO1, EO4 (2026-11-12), EO2, EO3, EO9, EO8 (2026-11-13), EO5, EO6, EO7, EO10 (2026-11-14) |
 
 - **milestone 1** (worlds and engines): CC5, CC7 and CC10 are published, giving three engines in three worlds (dynamical, organic, mystic), built on the CC2–CC3 taxonomy.
-- **scope of this repo:** CC1–CC14 (the owner approved CC12 on 2026-11-03 and asked for CC13 and CC14 on 2026-11-04) and SL0–SL11.
+- **scope of this repo:** CC1–CC15 (the owner approved CC12 on 2026-11-03, asked for CC13 and CC14 on 2026-11-04, and for CC15 on 2026-11-20) and SL0–SL11.
 - **repos:** this repo is the home of every engine, algorithm, renderer, control and gallery page, served at `gallery.eigenomar.com` (§1), and `eigenomar.com` presents it under art and links to it, never copying its code (shared decision SD1).
 - **tracking link:** [this file on GitHub](https://github.com/eigenomarksamy/creative_coding/blob/main/dev_plan.md) is the one link for following this work from other repos. it shows what is pushed to `main`. keep no copy of this plan anywhere else, because a copy can drift. confidential work is the exception: it never goes in this file, and the ecosystem's shared rules say where it goes (adding work, below).
 - **between the lanes:** SL1 needs CC14, which is done, and no CC ticket needs an SL ticket. the open tickets of both lanes meet in `build_gallery.py` (SL1's registry, and CC7 or CC10 only if they need new vocabulary, since CC5's scan lists a new engine folder by itself), the README and this file.
@@ -54,6 +54,7 @@ flowchart TD
     CC8 --> CC9["CC9 sigil lab: core"]
     CC9 --> CC10["CC10 sigil lab: publish"]
     CC14["CC14 gallery directories"]
+    CC15["CC15 tab icon"]
   end
   subgraph SLL["seven levels (SL)"]
     SL0["SL0 data from the briefs"] --> SL1["SL1 gallery pipeline"]
@@ -110,6 +111,8 @@ green is done, and blue is the next ticket in each lane.
 the queue changes the original order in two ways. CC11 is split, so share links reach each engine right after it ships instead of being added to both later (Q6, amended). CC12 is new and optional. every hard dependency in §4 still holds.
 
 **any time:** CC13 touched only the gallery footer and needed nothing, so it fitted between any two steps. done on 2026-11-07, after CC5. it stays out of the steps and the diagram above.
+
+**any time:** CC15 touches only the root's new `favicon.svg` and one line in each page's head, and needs nothing, so it fits between any two steps, as CC13 did.
 
 **CC14:** done on 2026-11-05, ahead of CC5. it stays out of the steps, and the diagram shows it only because SL1 needs it, so SL1 now waits only on SL0.
 
@@ -343,6 +346,7 @@ world-based discovery in the gallery, and the interactive generative engines.
 | CC12 | flicker and lifecycle fixes for the three old sketches | xs | CC1 | done |
 | CC13 | footer button to eigenomar.com | xs | none | done |
 | CC14 | gallery directories | m | none | done |
+| CC15 | the ecosystem's tab icon | xs | none | todo |
 
 **order:** the queue in §0 sets the order. CC4 needs only CC1, so it runs alongside CC2–CC3. CC11a and CC11b both come before CC8, so that share links and export exist in two engines before anything is extracted (Q6).
 
@@ -624,6 +628,19 @@ every piece that exists today moves like this, and all 264 are accounted for:
 - **done when:** every route in the table works in its old and new form, also from `file://`, with filters kept. item ids are unchanged, so every `#/worlds/<id>` still opens, the build is clean with 264 items, and nothing scrolls sideways at 320 px.
 - **not here:** changes to the worlds view. its filters, chips and piece pages stay as they are, though its piece order follows `CATEGORIES`, so the new order shows there. also not here: the seven levels images and registry (SL1, SL2).
 - **result (2026-11-05):** `CATEGORIES` is now engines, raw, illustrations and animated with new blurbs, and all 264 pieces moved as the table says, each identical to before apart from its thumbnail path and, for the seven in 7 levels, the new `section` field. a group may declare `sections`, and `collect_sections` emits the ones with pieces, in order. all seven folders are declared, and `section` on the group puts every piece from `cosmos.txt` in the cosmos folder until SL1 sets it per piece. the build fails on an unknown section, two sections with one id, and a group with both sections and facets, and it reserves the old category ids, which a new category would otherwise lose to the redirects. `MOVED_ROUTES` in `gallery.js` redirects the nine old routes with `location.replace`, so the back button skips the old address, and an unknown group under an old category lands where its category went. the section grid uses `auto-fill`, because `auto-fit` stretched the lone cosmos card across the page, and the card markup, now used three times, became `createCard`. the home page's worlds card and the worlds view both said "every piece from every toolkit", which no longer matches the navigation, so both now say "every piece in the gallery". that is the one change to the worlds view beyond the new labels and order. 161 checks pass in headless Chrome from `file://`: every old and new route, fresh and in-page, with filters, the back button, all 264 `#/worlds/<id>` pages, a crawl of 400 views for links that dead-end or redirect, the lightbox and chips by keyboard, no sideways scroll at 320, 768 and 1440 px, and injected data for pieces outside any section and for a sectioned group alone in its category. the build is clean with 264 items in 4 categories, a second build changes nothing, and `node --test` passes. the crawl's cap of 400 means not every filter combination was visited.
+
+<a id="cc15"></a>
+
+#### CC15 · the ecosystem's tab icon · xs
+
+- **status:** asked for by the owner on 2026-11-20.
+- **why:** every app under `eigenomar.com` shows the same tab icon, `eigenomar.com`'s lambda with its two colors swapped, a light-blue tile and a near-black lambda (shared decision SD5). the gallery has no icon at all, so its tabs show the browser's blank page, and a request for `/favicon.ico` answers 404.
+- **do:**
+  - add the icon as `favicon.svg` at the repository's root, so it is served at `/favicon.svg`. `.assetsignore` doesn't exclude it.
+  - link it from every page: `gallery/index.html`, the three sketches in `canvas/` and `canvas/strange-attractor/index.html`, with `<link rel="icon" type="image/svg+xml" href="…">`. the path is relative, `../favicon.svg` or `../../favicon.svg`, so the pages keep opening from `file://`.
+  - the README's "adding work" says that a new engine's page links it the same way, so CC7 and CC10 pick it up.
+- **done when:** every gallery view, the three sketches and the strange attractor show the icon in their tab, on `gallery.eigenomar.com` and from `file://`. the build is clean and `node --test` passes.
+- **not here:** a `/favicon.ico`. the pages link the SVG, which every current browser reads.
 
 ### 4.2 seven levels (SL)
 
@@ -1210,3 +1227,4 @@ the ticket column names a ticket, a lane for a note about a whole lane, or none.
 | 2026-11-19 | SL2 | `eigenomar` R7 deployed: the site's universe article points at the seven new files, and no page of eigenomar.com links `gen/cosmos/`. SL2's hold on `cosmos.txt` and the old files is met, and whether they stay is this repo's call. only this file changed. from a session in `meta-eigenomar` |
 | 2026-11-19 | SL3 | done: the kit, `cc_pycairo/seven_levels_kit.py`, and the three pilot images, chaos.3 (Lorenz, RK4), chaos.6 (Gray-Scott, numpy) and information.3 (Hamming(7,4)), at 1600×2000, signed off by the owner and merged in ae3ff68 with their `alt` and `caption`. the agreed style is in §4.2.1, and the seven track colors are confirmed. `python dev.py check` passes with 268 items and 10 of 51 `generated`, and each image re-renders byte-identical. SL4 is the lane's next ticket. from a session in `meta-eigenomar` |
 | 2026-11-20 | EO10 | marked done, as of 2026-11-14: its deployed check passed and its issue closed that day, but this file still had it waiting on the check. checked again today: `/project.yaml` answers 404 and `/README.md` 200. §0, the table and the queue mark it done, and the EO lane has no ready ticket until EO11's or EO12's standard is designed. only this file changed |
+| 2026-11-20 | CC15 | added: the owner asked for every app under `eigenomar.com` to share one tab icon, `eigenomar.com`'s lambda with its colors swapped (shared decision SD5). the gallery has none, so CC15 adds it at the root and links it from every page, relatively, so `file://` keeps working |
