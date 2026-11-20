@@ -18,7 +18,7 @@ the work runs in lanes. each lane has its own ticket prefix, ticket table and or
 |---|---|---|---|---|---|
 | worlds and engines | CC | interactive generative engines, and world-based discovery in the gallery | §4.1 | CC6 (step 4), whose one need, CC5, is done. CC11b waits on CC7 | CC1, CC2, CC3, CC12 (2026-11-03), CC4, CC14 (2026-11-05), CC5, CC13 (2026-11-07), CC11a (2026-11-18) |
 | seven levels | SL | static pycairo art for the seven reading tracks | §4.2 | SL4 (chaos), whose needs, SL2 and SL3, are done. the universe track's seven images are in the registry's folder, with SL3's three pilots: chaos.3 and chaos.6, and information.3 | SL0 (2026-11-13), SL1 (2026-11-14), SL2, SL3 (2026-11-19) |
-| ecosystem onboarding | EO | the repo's place in the eigenomar ecosystem: a manifest, the shared Claude rules, issues in the ecosystem's Project, and the portability gaps | §4.3 | EO10's deployed check, once its push deploys. EO11 and EO12 wait on the ecosystem's standards in `meta-eigenomar` | EO1, EO4 (2026-11-12), EO2, EO3, EO9, EO8 (2026-11-13), EO5, EO6, EO7 (2026-11-14) |
+| ecosystem onboarding | EO | the repo's place in the eigenomar ecosystem: a manifest, the shared Claude rules, issues in the ecosystem's Project, and the portability gaps | §4.3 | none ready: EO11 and EO12 wait on the ecosystem's standards in `meta-eigenomar` | EO1, EO4 (2026-11-12), EO2, EO3, EO9, EO8 (2026-11-13), EO5, EO6, EO7, EO10 (2026-11-14) |
 
 - **milestone 1** (worlds and engines): CC5, CC7 and CC10 are published, giving three engines in three worlds (dynamical, organic, mystic), built on the CC2–CC3 taxonomy.
 - **scope of this repo:** CC1–CC14 (the owner approved CC12 on 2026-11-03 and asked for CC13 and CC14 on 2026-11-04) and SL0–SL11.
@@ -87,8 +87,8 @@ flowchart TD
 
   classDef done fill:#e5f4e4,stroke:#2e7d32,color:#1b3a1d
   classDef next fill:#e7f1fb,stroke:#1565c0,stroke-width:2px,color:#0d2b4e
-  class CC12,CC2,CC3,CC4,CC14,CC5,CC11a,SL0,SL1,SL2,SL3,EO1,EO4,EO2,EO3,EO9,EO8,EO5,EO6,EO7 done
-  class CC6,SL4,EO10 next
+  class CC12,CC2,CC3,CC4,CC14,CC5,CC11a,SL0,SL1,SL2,SL3,EO1,EO4,EO2,EO3,EO9,EO8,EO5,EO6,EO7,EO10 done
+  class CC6,SL4 next
 ```
 
 green is done, and blue is the next ticket in each lane.
@@ -121,7 +121,7 @@ the queue changes the original order in two ways. CC11 is split, so share links 
 
 #### ecosystem onboarding (EO)
 
-**any time:** no EO ticket touches the gallery's code, so each one fits between any two steps of the other lanes, as CC13 did. EO5, EO6 and EO7 are done (2026-11-14), and EO10 is applied and waits only on its deployed check. EO8 needs EO4, which is done, and its other needs are outside this repo, as §4.3 says. EO11 and EO12 each wait on a standard in `meta-eigenomar`, and touch no gallery code until EO12's workflow, if the strategy adds one.
+**any time:** no EO ticket touches the gallery's code, so each one fits between any two steps of the other lanes, as CC13 did. EO5, EO6, EO7 and EO10 are done (2026-11-14). EO8 needs EO4, which is done, and its other needs are outside this repo, as §4.3 says. EO11 and EO12 each wait on a standard in `meta-eigenomar`, and touch no gallery code until EO12's workflow, if the strategy adds one.
 
 ### adding work
 
@@ -937,7 +937,7 @@ the repo's place in the eigenomar ecosystem, a set of independent repos coordina
 | EO7 | retire the WSL notes | xs | the owner confirms no WSL clone is left | done |
 | EO8 | an issue for every open ticket | m | EO4, the ecosystem's GitHub Project and its linking conventions, the owner's approval | done |
 | EO9 | the decisions shared with the site | xs | EO4, the shared decision records in `meta-eigenomar` | done |
-| EO10 | `project.yaml` off the gallery | xxs | none | todo |
+| EO10 | `project.yaml` off the gallery | xxs | none | done |
 | EO11 | the product's documents | tbd | the ecosystem's document standard (`meta-eigenomar` ST1) | todo |
 | EO12 | the ecosystem's SCM strategy | tbd | the ecosystem's SCM strategy (`meta-eigenomar` ST2) | todo |
 
@@ -1046,6 +1046,7 @@ the repo's place in the eigenomar ecosystem, a set of independent repos coordina
 - **needs:** nothing. it changes what the deployment serves, which an onboarding run doesn't do, so it is a ticket of its own.
 - **done when:** once deployed, `/project.yaml` returns 404 while `/README.md` still returns 200, and the ecosystem's validator still passes, since it reads the repo, not the site.
 - **applied (2026-11-14):** `project.yaml` is in `.assetsignore`, beside `wrangler.jsonc`, `requirements.txt` and `dev.py`, and the validator still passes. it is done once the push deploys and `/project.yaml` returns 404.
+- **result (2026-11-14):** done once the push deployed: `/project.yaml` answered 404 and `/README.md` 200, and its issue, #22, closed. checked again on 2026-11-20, with the same answers, and the validator passes.
 
 <a id="eo11"></a>
 #### EO11 · the product's documents · tbd
@@ -1208,3 +1209,4 @@ the ticket column names a ticket, a lane for a note about a whole lane, or none.
 | 2026-11-19 | SL2 | done: deployed from 16e47ba. the 7 new URLs and the 7 old ones return PNGs, each the same size as its original, the deployed manifest lists 7 of 51 as `generated`, and the owner tested the deployed gallery. `eigenomar` R7 is unblocked, and SL3 is the lane's next ticket, which SL4 also needs |
 | 2026-11-19 | SL2 | `eigenomar` R7 deployed: the site's universe article points at the seven new files, and no page of eigenomar.com links `gen/cosmos/`. SL2's hold on `cosmos.txt` and the old files is met, and whether they stay is this repo's call. only this file changed. from a session in `meta-eigenomar` |
 | 2026-11-19 | SL3 | done: the kit, `cc_pycairo/seven_levels_kit.py`, and the three pilot images, chaos.3 (Lorenz, RK4), chaos.6 (Gray-Scott, numpy) and information.3 (Hamming(7,4)), at 1600×2000, signed off by the owner and merged in ae3ff68 with their `alt` and `caption`. the agreed style is in §4.2.1, and the seven track colors are confirmed. `python dev.py check` passes with 268 items and 10 of 51 `generated`, and each image re-renders byte-identical. SL4 is the lane's next ticket. from a session in `meta-eigenomar` |
+| 2026-11-20 | EO10 | marked done, as of 2026-11-14: its deployed check passed and its issue closed that day, but this file still had it waiting on the check. checked again today: `/project.yaml` answers 404 and `/README.md` 200. §0, the table and the queue mark it done, and the EO lane has no ready ticket until EO11's or EO12's standard is designed. only this file changed |
