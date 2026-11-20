@@ -17,7 +17,7 @@ the work runs in lanes. each lane has its own ticket prefix, ticket table and or
 | lane | prefix | what it builds | tickets | next | done |
 |---|---|---|---|---|---|
 | worlds and engines | CC | interactive generative engines, and world-based discovery in the gallery | §4.1 | CC6 (step 4), whose one need, CC5, is done. CC11b waits on CC7 | CC1, CC2, CC3, CC12 (2026-11-03), CC4, CC14 (2026-11-05), CC5, CC13 (2026-11-07), CC11a (2026-11-18) |
-| seven levels | SL | static pycairo art for the seven reading tracks | §4.2 | SL4 (chaos), whose needs, SL2 and SL3, are done. the universe track's seven images are in the registry's folder, with SL3's three pilots: chaos.3 and chaos.6, and information.3 | SL0 (2026-11-13), SL1 (2026-11-14), SL2, SL3 (2026-11-19) |
+| seven levels | SL | static pycairo art for the seven reading tracks | §4.2 | SL5 (sound), whose need, SL3, is done, and which comes after SL4, done. the universe and chaos tracks' fourteen images are in the registry's folder, with information.3 from SL3's pilot | SL0 (2026-11-13), SL1 (2026-11-14), SL2, SL3 (2026-11-19), SL4 (2026-11-20) |
 | ecosystem onboarding | EO | the repo's place in the eigenomar ecosystem: a manifest, the shared Claude rules, issues in the ecosystem's Project, and the portability gaps | §4.3 | none ready: EO11 and EO12 wait on the ecosystem's standards in `meta-eigenomar` | EO1, EO4 (2026-11-12), EO2, EO3, EO9, EO8 (2026-11-13), EO5, EO6, EO7, EO10 (2026-11-14) |
 
 - **milestone 1** (worlds and engines): CC5, CC7 and CC10 are published, giving three engines in three worlds (dynamical, organic, mystic), built on the CC2–CC3 taxonomy.
@@ -88,8 +88,8 @@ flowchart TD
 
   classDef done fill:#e5f4e4,stroke:#2e7d32,color:#1b3a1d
   classDef next fill:#e7f1fb,stroke:#1565c0,stroke-width:2px,color:#0d2b4e
-  class CC12,CC2,CC3,CC4,CC14,CC5,CC11a,SL0,SL1,SL2,SL3,EO1,EO4,EO2,EO3,EO9,EO8,EO5,EO6,EO7,EO10 done
-  class CC6,SL4 next
+  class CC12,CC2,CC3,CC4,CC14,CC5,CC11a,SL0,SL1,SL2,SL3,SL4,EO1,EO4,EO2,EO3,EO9,EO8,EO5,EO6,EO7,EO10 done
+  class CC6,SL5 next
 ```
 
 green is done, and blue is the next ticket in each lane.
@@ -654,7 +654,7 @@ sizes and the "needs" column work as in §4.
 | SL1 | gallery pipeline | m | SL0, CC14 | done |
 | SL2 | universe migration | xs | SL1 | done |
 | SL3 | kit and style pilot | m | SL0 | done |
-| SL4 | chaos | m | SL2, SL3 | todo |
+| SL4 | chaos | m | SL2, SL3 | done |
 | SL5 | sound | l | SL3, after SL4 | todo |
 | SL6 | time | l | SL3, after SL5 | todo |
 | SL7 | information | m | SL3, after SL6 | todo |
@@ -682,7 +682,7 @@ the seven levels package, the briefs and example data that SL0 works from, said 
 
 **measured on 2026-11-04,** in WSL: all 7 cosmos scripts re-render byte-identical to their committed PNGs, which makes the universe migration safe. six of them took 0.7 to 7.9 seconds each in pure Python, so a full render at full size is fast enough to iterate on, and no preview mode is needed.
 
-**the style, agreed at SL3's review (2026-11-19).** `cc_pycairo/seven_levels_kit.py` holds the shared drawing: `mix`, `glow`, `polyline`, `luminous`, `contour`, `background` and `vignette`. each takes the cairo context first and leaves its operator as it found it. the kit is additive from here (SL3).
+**the style, agreed at SL3's review (2026-11-19).** `cc_pycairo/seven_levels_kit.py` holds the shared drawing: `mix`, `glow`, `polyline`, `luminous`, `contour`, `background` and `vignette`. each takes the cairo context first and leaves its operator as it found it. the kit is additive from here (SL3). SL4 added four helpers at their second use, none of which changes a shipped image: `rk4`, one fixed step for any state that adds like a vector, such as a whole ensemble in a numpy array, `axes`, a phase-plane frame, `blur`, a gaussian blur by FFT, and `raster`, which paints a computed numpy image. cairo rounds a very faint stroke to nothing, even on a float surface, so a picture made of hundreds of faint marks, such as a density, is summed in numpy and painted once with `raster`.
 
 | topic | agreed |
 |---|---|
@@ -917,6 +917,13 @@ checked by script on 2026-11-04. the good news first: tracks, nodes, 21 meta pai
 - **do:** work through the track's rows in §4.2.2, in order, using the loop in §4.2.1. move a helper into the kit at its second use. work on a branch per track and merge only when all seven images are reviewed, because anything on `main` is public at once.
 - **done when:** the track's seven PNGs are in the folder, the deployed manifest shows them as `generated`, and the track's folder shows seven pieces in level order.
 - **not here:** changing a shipped image to suit a later one, unless the owner asks.
+- **SL4 result (2026-11-20):** the chaos track's five remaining images, reviewed by the owner, merged to `main` (cceb487, merged in f7210c3) and deployed. the deployed manifest lists all seven chaos levels as `generated` at 1600×2000, 15 of 51 in all, and each of the seven URLs returns a PNG the same size as its committed file. chaos.3 and chaos.6 are SL3's, unchanged.
+  - **chaos.7** (`chaos_07_gold_fan`, seed 507): 240 runs of chaos.3's Lorenz system, a cloud 10⁻³ wide around one present state, integrated together by RK4 at dt 0.004 for 12 time units, drawn as a plume of x rising with time. its brightness is the log of how many runs pass through each pixel, summed in numpy, so the trunk stays gold instead of clipping to white. rules mark each tenfold growth of the spread (t 1.3, 4.2, 5.9 and 8.9, unevenly, as the stretching is), and a dashed one the horizon, where the spread reaches 8 (t 6.1). renders in about 15 seconds.
+  - **chaos.2** (`chaos_02_steel_ellipses`, seed 502): the frictionless pendulum, whose small swings are the harmonic oscillator's ellipses, chosen so the picture also shows where harmonic motion ends. 12 swings, amplitudes 0.26 to 2.95, the separatrix and three orbits over the top. every swing starts at its turning point together, with 24 markers per small period, and the lines through equal times are straight near the centre and curl outward. the script asserts each orbit's energy holds to 10⁻⁹. renders in about 2 seconds.
+  - **chaos.1** (`chaos_01_blue_vortex`, seed 501): a damped Duffing oscillator, dv/dt = -x - x³ - 0.25 v, with one stable fixed point. 150 seeded starts below energy 4.5, so no path leaves the frame, each integrated for 18 time units over the vector field's strokes, on chaos.2's frame. renders in about 2 seconds.
+  - **chaos.5** (`chaos_05_turquoise_flock`, seed 505): 120 boids on a 24×9 world that wraps, with sight 1.4, room 0.5 and a little seeded wander, at steps 24, 160 and 900, 24 steps of trail each. polarization 0.26, 0.89 and 0.99, and the largest group 53, 60 and 106 agents. a wrapped world has no edge, so each band is centred on its largest group, as the caption says. renders in about 5 seconds.
+  - **chaos.4** (`chaos_04_orange_cascade`, seed 504): the logistic map for r 2.9 to 4.0, one row per r, 1200 starts per row, 800 steps dropped and 300 counted, on a log scale, with faint rules at the first doublings, Feigenbaum's point and the period-3 window. the column on the right is the Lyapunov exponent, averaged over every start, positive on 567 of 1620 rows. renders in about 35 seconds.
+  - each image renders byte-identical a second time on Windows, the three pilots re-render unchanged with the new kit, and all five have `alt` and `caption` in the registry. `python dev.py check` passes with 273 items and 15 of 51 `generated`, and in headless Chrome from `file://` the chaos folder shows seven pieces in level order.
 
 <a id="sl10"></a>
 #### SL10 · connections · m
@@ -1228,3 +1235,4 @@ the ticket column names a ticket, a lane for a note about a whole lane, or none.
 | 2026-11-19 | SL3 | done: the kit, `cc_pycairo/seven_levels_kit.py`, and the three pilot images, chaos.3 (Lorenz, RK4), chaos.6 (Gray-Scott, numpy) and information.3 (Hamming(7,4)), at 1600×2000, signed off by the owner and merged in ae3ff68 with their `alt` and `caption`. the agreed style is in §4.2.1, and the seven track colors are confirmed. `python dev.py check` passes with 268 items and 10 of 51 `generated`, and each image re-renders byte-identical. SL4 is the lane's next ticket. from a session in `meta-eigenomar` |
 | 2026-11-20 | EO10 | marked done, as of 2026-11-14: its deployed check passed and its issue closed that day, but this file still had it waiting on the check. checked again today: `/project.yaml` answers 404 and `/README.md` 200. §0, the table and the queue mark it done, and the EO lane has no ready ticket until EO11's or EO12's standard is designed. only this file changed |
 | 2026-11-20 | CC15 | added: the owner asked for every app under `eigenomar.com` to share one tab icon, `eigenomar.com`'s lambda with its colors swapped (shared decision SD5). the gallery has none, so CC15 adds it at the root and links it from every page, relatively, so `file://` keeps working |
+| 2026-11-20 | SL4 | done: the chaos track's five remaining images, chaos.1 (damped Duffing), chaos.2 (pendulum phase portrait), chaos.4 (logistic map density), chaos.5 (boids) and chaos.7 (Lorenz ensemble), with their `alt` and `caption`, merged in f7210c3 and deployed. the deployed manifest lists all seven chaos levels as `generated`, 15 of 51 in all, and the seven URLs return PNGs the size of their committed files. the kit gained `rk4`, `axes`, `blur` and `raster` (§4.2.1), and the pilots re-render unchanged. `eigenomar` R8a is unblocked, and SL5 is the lane's next ticket |
