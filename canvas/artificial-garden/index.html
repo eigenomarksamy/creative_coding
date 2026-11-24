@@ -281,7 +281,7 @@
         <h1 id="title">artificial garden</h1>
         <p id="note"></p>
         <p id="readout"></p>
-        <p id="hint"></p>
+        <p id="hint" aria-live="polite"></p>
     </div>
 
     <div class="bar">
@@ -299,16 +299,24 @@
                     toward its food. where food pulls one part two ways at
                     once, it may split. nothing in the rules says where a
                     branch goes, only what it grows toward.</p>
-                <p>when nothing it can reach is left, the garden rests.</p>
+                <p>a faint thread joins each piece of food to the part it
+                    pulls. food with no thread is out of reach, and waits.
+                    when nothing it can reach is left, the garden rests.</p>
                 <ul>
                     <li>with food in hand, tap or click to drop some. the
                         garden grows toward it if any part is close enough to
                         feel it, so food out of reach waits for the garden to
-                        come nearer.</li>
+                        come nearer, and a trail of it leads the garden on.</li>
                     <li>with stones in hand, tap to place a stone, and
                         branches grow around it. tap a stone to lift it.</li>
-                    <li>the presets show other soils and habits, from fine lace
-                        to a few long runners.</li>
+                    <li>without a pointer, the arrow keys move a ring over the
+                        plot, and enter drops food or places a stone there.</li>
+                    <li>the presets show other soils and habits: islands of
+                        food out of reach, fine lace, a few long runners, and a
+                        six-fold mandala. the mandala keeps its own seed, because
+                        on about half of all seeds two parts are so nearly the
+                        same distance from a piece of food that rounding settles
+                        it differently in different arms, and they grow apart.</li>
                     <li>in controls, reach, growth, branching and wander
                         change the rules while it grows. the food in the soil,
                         its symmetry and the seed plant a new garden.</li>
@@ -316,7 +324,9 @@
                         garden, until you feed it or place a stone.</li>
                 </ul>
                 <p class="keys">keys: space pause · r reset · n next seed ·
-                    t food or stones · 1–4 presets · esc closes a panel</p>
+                    t food or stones · arrows move the ring, with shift
+                    faster · enter places at the ring · 1–5 presets · esc
+                    closes a panel or hides the ring</p>
             </div>
         </details>
         <details id="controls">
@@ -338,9 +348,10 @@
         (() => {
             'use strict';
 
-            const { FEED_RADIUS, MAX_STONES, PARAMS, PRESETS, SOIL_RADIUS, advance, atRest,
-                clampParams, createState, feed, palette, placeStone, removeStone,
-                stoneAt, tips } = window.ArtificialGarden;
+            const { FEED_RADIUS, FIELD_RADIUS, MAX_FOOD, MAX_STONES, PARAMS, PRESETS,
+                SOIL_RADIUS, STONE_RADIUS, advance, atRest, clampParams, createState,
+                feed, palette, placeStone, pullTargets, removeStone, stoneAt,
+                tips } = window.ArtificialGarden;
 
             // Never more than this much simulation in one frame, so a stall
             // can't turn into a burst
@@ -365,6 +376,14 @@
                 stone: 'the garden is at rest. lift a stone, or switch to food to grow it again',
             };
             const TOOL_LABELS = { food: 'food', stone: 'stones' };
+            const RING_HINT = {
+                food: 'arrows move the ring, shift for longer steps. enter drops food there',
+                stone: 'arrows move the ring, shift for longer steps. enter places or lifts a stone there',
+            };
+
+            // The ring the arrow keys move, in plot units per press
+            const RING_STEP = 0.03;
+            const RING_FAST = 5;
 
             // Sliders in panel order. The first group changes how the garden
             // grows on from where it is. The second group decides the initial
@@ -390,6 +409,13 @@
             let colors = null;
             let tool = 'food';
             let hintOverride = '';
+
+            // What each piece of food pulls on, refreshed for every frame
+            const targets = new Int32Array(MAX_FOOD);
+
+            // The ring the arrow keys move, which places like a tap. It
+            // starts at the root, and keeps its place while it's hidden.
+            const ring = { x: 0, y: 0, shown: false };
 
             let width = 0;
             let height = 0;
@@ -469,24 +495,67 @@
                 drawFood();
                 drawStones();
                 drawBranches();
+                if (ring.shown) {
+                    drawRing();
+                }
             }
 
+            // Food in reach is bright, with a thread to the part it pulls,
+            // and food out of reach is dim: it waits for the garden to come
+            // nearer. That is the rule itself, drawn.
             function drawFood() {
+                pullTargets(state, params, targets);
+                const { foodCount, foodX, foodY, foodKind, nodeX, nodeY } = state;
+
+                ctx.beginPath();
+                for (let i = 0; i < foodCount; i++) {
+                    const n = targets[i];
+                    if (n < 0) {
+                        continue;
+                    }
+                    const [fx, fy] = toScreen(foodX[i], foodY[i]);
+                    const [nx, ny] = toScreen(nodeX[n], nodeY[n]);
+                    ctx.moveTo(fx, fy);
+                    ctx.lineTo(nx, ny);
+                }
+                ctx.strokeStyle = 'rgba(232, 230, 227, 0.09)';
+                ctx.lineWidth = 1;
+                ctx.stroke();
+
                 const size = Math.max(1.2, view.scale / 160);
                 for (const kind of [0, 1]) {
-                    ctx.beginPath();
-                    for (let i = 0; i < state.foodCount; i++) {
-                        if (!state.foodAlive[i] || state.foodKind[i] !== kind) {
-                            continue;
+                    for (const pulling of [false, true]) {
+                        ctx.beginPath();
+                        for (let i = 0; i < foodCount; i++) {
+                            if (targets[i] === -2 || foodKind[i] !== kind || (targets[i] >= 0) !== pulling) {
+                                continue;
+                            }
+                            const [x, y] = toScreen(foodX[i], foodY[i]);
+                            const r = kind === 1 ? size * 1.3 : size;
+                            ctx.moveTo(x + r, y);
+                            ctx.arc(x, y, r, 0, Math.PI * 2);
                         }
-                        const [x, y] = toScreen(state.foodX[i], state.foodY[i]);
-                        const r = kind === 1 ? size * 1.3 : size;
-                        ctx.moveTo(x + r, y);
-                        ctx.arc(x, y, r, 0, Math.PI * 2);
+                        const color = kind === 1 ? colors.fed : colors.soil;
+                        ctx.fillStyle = hsl(color, kind === 1 ? (pulling ? 1 : 0.5) : (pulling ? 0.75 : 0.38));
+                        ctx.fill();
                     }
-                    ctx.fillStyle = kind === 1 ? hsl(colors.fed, 0.9) : hsl(colors.soil, 0.5);
-                    ctx.fill();
                 }
+            }
+
+            // The ring is as wide as what enter would place: a patch of food
+            // or a stone
+            function drawRing() {
+                const [x, y] = toScreen(ring.x, ring.y);
+                const r = (tool === 'food' ? FEED_RADIUS : STONE_RADIUS) * view.scale;
+                ctx.beginPath();
+                ctx.arc(x, y, Math.max(r, 6), 0, Math.PI * 2);
+                ctx.strokeStyle = 'rgba(232, 230, 227, 0.85)';
+                ctx.lineWidth = 1.5;
+                ctx.stroke();
+                ctx.beginPath();
+                ctx.arc(x, y, 1.5, 0, Math.PI * 2);
+                ctx.fillStyle = 'rgba(232, 230, 227, 0.85)';
+                ctx.fill();
             }
 
             function drawStones() {
@@ -550,9 +619,13 @@
                 readoutEl.textContent = `step ${state.steps} · ${tips(state)} tips · ${food} food left`;
             }
 
+            // The answer to the visitor's last action comes first, then the
+            // ring's keys while it shows, then what to do next
             function updateHint() {
                 if (hintOverride) {
                     hintEl.textContent = hintOverride;
+                } else if (ring.shown) {
+                    hintEl.textContent = RING_HINT[tool];
                 } else {
                     hintEl.textContent = resting ? REST_HINT[tool] : HINTS[tool];
                 }
@@ -579,7 +652,6 @@
                     return;
                 }
                 resting = true;
-                hintOverride = '';
                 draw();
                 updateReadout();
                 updateHint();
@@ -747,6 +819,12 @@
             function setSeed(value) {
                 params = clampParams({ ...params, seed: value });
                 seedInput.value = params.seed;
+
+                // A preset with its own seed only keeps its promise on that seed
+                const preset = PRESETS.find(({ id }) => id === presetSelect.value);
+                if (preset && 'seed' in preset.params && preset.params.seed !== params.seed) {
+                    leavePreset();
+                }
                 restart();
                 refresh();
                 updateHint();
@@ -770,6 +848,9 @@
                 toolButton.style.setProperty('--tool-color', tool === 'food' ? hsl(colors.fed, 1) : '#8a8a96');
                 hintOverride = '';
                 updateHint();
+                if (ring.shown && state) {
+                    refresh();
+                }
             }
 
             for (const preset of PRESETS) {
@@ -793,30 +874,82 @@
             pauseButton.addEventListener('click', () => setPaused(!paused));
             toolButton.addEventListener('click', () => setTool(tool === 'food' ? 'stone' : 'food'));
 
-            // A tap drops food or places a stone where it lands. Neither is
-            // part of the seed, so a reset takes them away again.
-            canvas.addEventListener('click', (event) => {
-                const x = (event.offsetX - view.x) / view.scale;
-                const y = (view.y - event.offsetY) / view.scale;
+            // Food dropped, with how much of it the garden can feel. A drop
+            // adds its pieces at the end of the food, so they are the last.
+            function dropFood(x, y) {
+                const added = feed(state, x, y);
+                if (added === 0) {
+                    return 'no food fits there';
+                }
+                pullTargets(state, params, targets);
+                let felt = 0;
+                for (let i = state.foodCount - added; i < state.foodCount; i++) {
+                    felt += targets[i] >= 0 ? 1 : 0;
+                }
+                if (felt === 0) {
+                    return 'out of reach: the food waits until the garden grows nearer';
+                }
+                return felt === added
+                    ? 'food dropped, all of it within reach'
+                    : `food dropped: ${felt} of ${added} pieces within reach`;
+            }
 
+            // A tap, or enter at the ring, drops food or places or lifts a
+            // stone. Neither is part of the seed, so a reset takes them away.
+            function place(x, y) {
                 if (tool === 'food') {
                     if (x * x + y * y > (SOIL_RADIUS + FEED_RADIUS) ** 2) {
                         return;
                     }
-                    hintOverride = feed(state, x, y) > 0 ? '' : 'no food fits there';
+                    hintOverride = dropFood(x, y);
                 } else if (stoneAt(state, x, y) !== -1) {
                     removeStone(state, x, y);
-                    hintOverride = '';
+                    hintOverride = 'stone lifted';
                 } else if (state.stones.length >= MAX_STONES) {
-                    hintOverride = `${MAX_STONES} stones is all there are. tap one to lift it`;
-                } else if (x * x + y * y > 1) {
+                    hintOverride = `${MAX_STONES} stones is all there are. lift one first`;
+                } else if (x * x + y * y > FIELD_RADIUS * FIELD_RADIUS) {
                     return;
                 } else {
-                    hintOverride = placeStone(state, x, y) ? '' : 'a stone can’t cover the root';
+                    hintOverride = placeStone(state, x, y)
+                        ? 'stone placed: branches grow around it'
+                        : 'a stone can’t cover the root';
                 }
                 refresh();
                 updateHint();
+            }
+
+            canvas.addEventListener('click', (event) => {
+                if (ring.shown) {
+                    hideRing();
+                }
+                place((event.offsetX - view.x) / view.scale, (view.y - event.offsetY) / view.scale);
             });
+
+            // The arrow keys move the ring, which stays inside the plot
+            const ARROWS = { ArrowLeft: [-1, 0], ArrowRight: [1, 0], ArrowUp: [0, 1], ArrowDown: [0, -1] };
+
+            function moveRing(dx, dy, fast) {
+                const stepSize = RING_STEP * (fast ? RING_FAST : 1);
+                let x = ring.x + dx * stepSize;
+                let y = ring.y + dy * stepSize;
+                const out = Math.sqrt(x * x + y * y);
+                if (out > FIELD_RADIUS) {
+                    x *= FIELD_RADIUS / out;
+                    y *= FIELD_RADIUS / out;
+                }
+                ring.x = x;
+                ring.y = y;
+                ring.shown = true;
+                hintOverride = '';
+                refresh();
+                updateHint();
+            }
+
+            function hideRing() {
+                ring.shown = false;
+                refresh();
+                updateHint();
+            }
 
             // One panel at a time: they open in the same place
             const panels = [...document.querySelectorAll('.bar details')];
@@ -835,12 +968,27 @@
             // Keys reach the page only while it has focus, so every action
             // above also has a button
             document.addEventListener('keydown', (event) => {
-                // A held key must not restart the garden over and over
-                if (event.ctrlKey || event.metaKey || event.altKey || event.repeat) {
+                if (event.ctrlKey || event.metaKey || event.altKey) {
                     return;
                 }
 
                 const target = event.target;
+
+                // A held arrow keeps moving the ring. Sliders, menus and the
+                // seed box keep their own arrows.
+                if (ARROWS[event.key]) {
+                    if (target.closest('input, select')) {
+                        return;
+                    }
+                    event.preventDefault();
+                    moveRing(...ARROWS[event.key], event.shiftKey);
+                    return;
+                }
+
+                // Any other held key must not restart the garden over and over
+                if (event.repeat) {
+                    return;
+                }
 
                 // Escape closes an open panel, from anywhere inside it too,
                 // and leaves focus on its button
@@ -849,6 +997,8 @@
                     if (open) {
                         open.open = false;
                         open.querySelector('summary').focus();
+                    } else if (ring.shown) {
+                        hideRing();
                     }
                     return;
                 }
@@ -857,7 +1007,21 @@
                     return;
                 }
 
-                if (event.key === ' ') {
+                if (event.key === 'Enter') {
+                    // Enter already presses whatever button has focus. The
+                    // first enter shows the ring, and the next places there.
+                    if (target.closest('button, summary')) {
+                        return;
+                    }
+                    event.preventDefault();
+                    if (!ring.shown) {
+                        ring.shown = true;
+                        refresh();
+                        updateHint();
+                    } else {
+                        place(ring.x, ring.y);
+                    }
+                } else if (event.key === ' ') {
                     // Space already presses whatever button has focus
                     if (target.closest('button, summary')) {
                         return;

@@ -70,13 +70,21 @@
     };
 
     // Named parameter sets. A preset leaves out what it doesn't care about,
-    // so the visitor's seed survives a change of preset.
+    // so the visitor's seed survives a change of preset. Mandala keeps a
+    // seed of its own: on about half of all seeds a near tie, rounded
+    // differently in different arms, sets them apart, and on 3 it never does.
     const PRESETS = [
         {
             id: 'spreading',
             label: 'spreading',
             note: 'the garden spreads toward the richest soil, then rests',
             params: { food: 500, symmetry: 1, reach: 0.16, growth: 0.012, branching: 0.5, wander: 0.15 },
+        },
+        {
+            id: 'islands',
+            label: 'islands',
+            note: 'a short reach: the garden stops with food out of reach. lay a trail of food to lead it on',
+            params: { food: 300, symmetry: 1, reach: 0.07, growth: 0.01, branching: 0.5, wander: 0.1 },
         },
         {
             id: 'lace',
@@ -93,8 +101,8 @@
         {
             id: 'mandala',
             label: 'mandala',
-            note: 'six-fold soil and no wandering: six arms grow alike, and on some seeds a near tie sets them apart',
-            params: { food: 720, symmetry: 6, reach: 0.16, growth: 0.012, branching: 0.5, wander: 0 },
+            note: 'six-fold soil and no wandering: six arms grow alike',
+            params: { food: 720, symmetry: 6, reach: 0.16, growth: 0.012, branching: 0.5, wander: 0, seed: 3 },
         },
     ];
 
@@ -617,6 +625,27 @@
         return grown;
     }
 
+    // What each piece of food pulls on now, for the page to draw: into out,
+    // the nearest node within reach, -1 for food out of reach, which waits,
+    // and -2 for eaten food. Changes nothing but the grid, which is a cache.
+    // Returns how many pieces pull.
+    function pullTargets(state, params, out) {
+        ensureGrid(state, params.reach);
+        const reach2 = params.reach * params.reach;
+        let pulling = 0;
+        for (let i = 0; i < state.foodCount; i++) {
+            if (!state.foodAlive[i]) {
+                out[i] = -2;
+                continue;
+            }
+            out[i] = nearestNode(state, state.foodX[i], state.foodY[i], reach2);
+            if (out[i] !== -1) {
+                pulling++;
+            }
+        }
+        return pulling;
+    }
+
     // Several steps. The result depends only on the number of steps, never
     // on how they're batched into frames.
     function advance(state, params, steps) {
@@ -752,6 +781,7 @@
         nextRandom,
         palette,
         placeStone,
+        pullTargets,
         removeStone,
         step,
         stoneAt,

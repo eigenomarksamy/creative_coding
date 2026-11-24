@@ -31,6 +31,7 @@ const {
     nextRandom,
     palette,
     placeStone,
+    pullTargets,
     removeStone,
     step,
     stoneAt,
@@ -557,7 +558,16 @@ test('spreading grows toward the richest soil', () => {
     }
 });
 
-test('mandala grows six alike arms, exactly so on some seeds', () => {
+test('mandala, on its own seed, grows six arms exactly alike', () => {
+    const params = presetParams('mandala');
+    assert.equal(params.seed, 3);
+    assert.equal(twinShare(growToRest(createState(params), params), 6), 1);
+
+    // On another seed the preset no longer shows
+    assert.equal(matchPreset(presetParams('mandala', { seed: 4 })), null);
+});
+
+test('six-fold soil stays exactly six-fold on some seeds, and not on others', () => {
     // Seeds 2-5 stay exactly six-fold to rest. Seed 1 is one where a near
     // tie, rounded differently in different arms, sets them apart.
     for (const seed of [2, 3, 4, 5]) {
@@ -569,6 +579,80 @@ test('mandala grows six alike arms, exactly so on some seeds', () => {
     advance(early, params, 10);
     assert.equal(twinShare(early, 6), 1);
     assert.ok(twinShare(growToRest(early, params), 6) < 1);
+});
+
+test('islands stops with food out of reach, and a trail of food leads it there', () => {
+    for (let seed = 1; seed <= 12; seed++) {
+        const params = presetParams('islands', { seed });
+        const state = growToRest(createState(params), params);
+        const targets = new Int32Array(MAX_FOOD);
+        pullTargets(state, params, targets);
+
+        // Food is left, all of it out of reach
+        const stranded = [];
+        for (let i = 0; i < state.foodCount; i++) {
+            if (targets[i] === -1) {
+                stranded.push(i);
+            }
+            assert.ok(targets[i] < 0, `seed ${seed}: food ${i} still pulls at rest`);
+        }
+        assert.ok(stranded.length > 0, `seed ${seed}`);
+
+        // Lay a trail from the nearest node to the farthest stranded piece
+        let goal = stranded[0];
+        for (const i of stranded) {
+            if (Math.hypot(state.foodX[i], state.foodY[i]) > Math.hypot(state.foodX[goal], state.foodY[goal])) {
+                goal = i;
+            }
+        }
+        const gx = state.foodX[goal];
+        const gy = state.foodY[goal];
+        let from = 0;
+        for (let n = 0; n < state.nodeCount; n++) {
+            if (Math.hypot(state.nodeX[n] - gx, state.nodeY[n] - gy) < Math.hypot(state.nodeX[from] - gx, state.nodeY[from] - gy)) {
+                from = n;
+            }
+        }
+        const sx = state.nodeX[from];
+        const sy = state.nodeY[from];
+        const drops = Math.ceil(Math.hypot(gx - sx, gy - sy) / 0.06);
+        for (let k = 1; k <= drops; k++) {
+            feed(state, sx + ((gx - sx) * k) / drops, sy + ((gy - sy) * k) / drops);
+            growToRest(state, params, state.steps + 2000);
+        }
+        assert.equal(state.foodAlive[goal], 0, `seed ${seed}: the trail didn't reach the food`);
+    }
+});
+
+test('pullTargets tells which node each piece pulls, changing nothing', () => {
+    const params = clampParams({ seed: 6 });
+    const state = createState(params);
+    advance(state, params, 50);
+    const targets = new Int32Array(MAX_FOOD);
+    pullTargets(state, params, targets);
+    const before = structuredClone(state);
+    const pulling = pullTargets(state, params, targets);
+    assert.deepEqual(state, before);
+
+    let counted = 0;
+    for (let i = 0; i < state.foodCount; i++) {
+        if (!state.foodAlive[i]) {
+            assert.equal(targets[i], -2);
+            continue;
+        }
+        let nearest = -1;
+        let best = params.reach;
+        for (let n = 0; n < state.nodeCount; n++) {
+            const d = Math.hypot(state.nodeX[n] - state.foodX[i], state.nodeY[n] - state.foodY[i]);
+            if (d < best) {
+                best = d;
+                nearest = n;
+            }
+        }
+        assert.equal(targets[i], nearest, `food ${i}`);
+        counted += nearest === -1 ? 0 : 1;
+    }
+    assert.equal(pulling, counted);
 });
 
 test('the palette is reproducible and its colors valid', () => {
