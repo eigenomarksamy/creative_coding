@@ -23,7 +23,9 @@ const {
     atRest,
     clampParams,
     createState,
+    decodeLink,
     defaults,
+    encodeLink,
     feed,
     fertility,
     matchPreset,
@@ -665,4 +667,120 @@ test('the palette is reproducible and its colors valid', () => {
             assert.ok(l >= 0 && l <= 100);
         }
     }
+});
+
+test('a link lists the seed and every parameter, in a fixed order', () => {
+    const text = encodeLink(presetParams('mandala'));
+    assert.equal(text,
+        'seed=3&food=720&symmetry=6&reach=0.16&growth=0.012&branching=0.5&wander=0&speed=20');
+    assert.deepEqual([...new URLSearchParams(text).keys()].sort(), Object.keys(PARAMS).sort());
+});
+
+test('a link reads back to the same bits, and so to the same garden', () => {
+    const random = mulberry32(2026);
+    for (let round = 0; round < 200; round++) {
+        const input = {};
+        for (const [key, spec] of Object.entries(PARAMS)) {
+            input[key] = spec.min + (spec.max - spec.min) * random();
+        }
+        const params = clampParams(input);
+        const { params: back, problems } = decodeLink(`#${encodeLink(params)}`);
+        assert.deepEqual(back, params);
+        assert.deepEqual(problems, []);
+    }
+
+    const params = presetParams('lace', { seed: 4294967295, symmetry: 5, reach: 0.137 });
+    const one = createState(params);
+    const two = createState(decodeLink(encodeLink(params)).params);
+    advance(one, params, 300);
+    advance(two, params, 300);
+    assert.deepEqual(two, one);
+});
+
+test('a link restores its preset when it keeps every value the preset sets', () => {
+    assert.equal(decodeLink(encodeLink(presetParams('islands'))).preset, 'islands');
+    assert.equal(decodeLink(encodeLink(presetParams('runners', { seed: 7, speed: 60 }))).preset, 'runners');
+    assert.equal(decodeLink(encodeLink(presetParams('lace', { reach: 0.13 }))).preset, null);
+
+    // mandala keeps its promise on its own seed only
+    assert.equal(decodeLink(encodeLink(presetParams('mandala'))).preset, 'mandala');
+    assert.equal(decodeLink(encodeLink(presetParams('mandala', { seed: 4 }))).preset, null);
+
+    for (const preset of PRESETS) {
+        assert.equal(decodeLink(encodeLink(presetParams(preset.id))).preset, preset.id);
+    }
+});
+
+test('a short link takes defaults, or a named preset, for what it leaves out', () => {
+    assert.deepEqual(decodeLink(''), { params: defaults(), preset: 'spreading', problems: [] });
+    assert.deepEqual(decodeLink('#seed=7').params, clampParams({ seed: 7 }));
+    assert.deepEqual(decodeLink('?seed=7').params, clampParams({ seed: 7 }));
+
+    const islands = decodeLink('preset=islands&seed=12');
+    assert.deepEqual(islands.params, presetParams('islands', { seed: 12 }));
+    assert.equal(islands.preset, 'islands');
+
+    // a named preset's own seed counts as one of its values
+    const mandala = decodeLink('#preset=mandala');
+    assert.equal(mandala.params.seed, 3);
+    assert.equal(mandala.preset, 'mandala');
+    assert.equal(decodeLink('#preset=mandala&seed=9').preset, null);
+
+    const changed = decodeLink('preset=lace&reach=0.2');
+    assert.equal(changed.params.reach, 0.2);
+    assert.equal(changed.params.food, 1200);
+    assert.equal(changed.preset, null);
+});
+
+test('malformed values take their default and are reported', () => {
+    for (const bad of ['', 'abc', '0x10', 'Infinity', 'NaN', '1e999', '12abc', '1,5', '--3']) {
+        const { params, problems } = decodeLink(`seed=${encodeURIComponent(bad)}&food=40`);
+        assert.equal(params.seed, PARAMS.seed.default, bad);
+        assert.equal(params.food, 40, bad);
+        assert.deepEqual(problems, ['seed'], bad);
+    }
+    assert.deepEqual(decodeLink('preset=nope&seed=4').problems, ['preset']);
+    assert.deepEqual(decodeLink('preset=nope&seed=4').params, clampParams({ seed: 4 }));
+});
+
+test('values outside their range are held to it and reported', () => {
+    const { params, problems } = decodeLink(
+        'seed=-5&food=10.4&symmetry=7&reach=0.01&growth=1e3&branching=2&wander=-0.5&speed=120');
+    assert.equal(params.seed, 0);
+    assert.equal(params.food, 10);
+    assert.equal(params.symmetry, 6);
+    assert.equal(params.reach, 0.06);
+    assert.equal(params.growth, 0.025);
+    assert.equal(params.branching, 1);
+    assert.equal(params.wander, 0);
+    assert.equal(params.speed, 120);
+    assert.deepEqual(problems.sort(),
+        ['branching', 'food', 'growth', 'reach', 'seed', 'symmetry', 'wander']);
+    assert.equal(decodeLink('seed=99999999999').params.seed, 4294967295);
+    assert.equal(decodeLink('symmetry=2.5').params.symmetry, 3);
+});
+
+test('unknown keys and stray text are ignored', () => {
+    const { params, problems } = decodeLink('#seed=8&utm_source=x&&=&food');
+    assert.deepEqual(params, clampParams({ seed: 8 }));
+    assert.deepEqual(problems, ['food']);
+    assert.deepEqual(decodeLink('#about').params, defaults());
+    assert.deepEqual(decodeLink(null).params, defaults());
+    assert.deepEqual(decodeLink(' seed = 9 ').params, defaults());
+    assert.deepEqual(decodeLink('seed=%209%20').params, clampParams({ seed: 9 }));
+});
+
+test('a link plants the garden as it started, never what was placed in it', () => {
+    const params = presetParams('islands', { seed: 5 });
+    const grown = createState(params);
+    advance(grown, params, 120);
+    feed(grown, 0.5, 0.2);
+    placeStone(grown, -0.3, 0.4);
+    advance(grown, params, 60);
+
+    const planted = createState(decodeLink(encodeLink(params)).params);
+    assert.deepEqual(planted, createState(params));
+    assert.equal(planted.stones.length, 0);
+    assert.ok(Array.from(planted.foodKind.subarray(0, planted.foodCount)).every((kind) => kind === 0));
+    assert.notEqual(encodeLink(params), '');
 });

@@ -114,7 +114,8 @@
         button,
         select,
         summary,
-        input[type="number"] {
+        input[type="number"],
+        input[type="text"] {
             min-height: 32px;
             padding: 4px 10px;
             border: 1px solid var(--border);
@@ -221,6 +222,33 @@
             min-width: 0;
         }
 
+        /* Sharing: a link to the garden's start, and the picture as it is */
+        .share {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-top: 8px;
+        }
+
+        .share button {
+            flex: 1 1 auto;
+        }
+
+        #link {
+            width: 100%;
+            margin-top: 6px;
+            color: var(--muted);
+        }
+
+        #share-status {
+            margin: 6px 0 0;
+            color: var(--muted);
+        }
+
+        #share-status:empty {
+            margin: 0;
+        }
+
         .keys {
             margin: 8px 0 0;
             color: var(--muted);
@@ -321,12 +349,18 @@
                         change the rules while it grows. the food in the soil,
                         its symmetry and the seed plant a new garden.</li>
                     <li>the same seed and settings always grow the same
-                        garden, until you feed it or place a stone.</li>
+                        garden, until you feed it or place a stone. copy
+                        link, in controls, keeps them, so the link grows
+                        this garden again from the beginning, anywhere. it
+                        can't keep what you did while it grew: the food and
+                        stones you placed, or a rule you changed on the way.
+                        save image keeps the picture as it is now.</li>
                 </ul>
                 <p class="keys">keys: space pause · r reset · n next seed ·
                     t food or stones · arrows move the ring, with shift
-                    faster · enter places at the ring · 1–5 presets · esc
-                    closes a panel or hides the ring</p>
+                    faster · enter places at the ring · 1–5 presets · c copy
+                    link · s save image · esc closes a panel or hides the
+                    ring</p>
             </div>
         </details>
         <details id="controls">
@@ -339,6 +373,12 @@
                     <input id="seed" type="number" inputmode="numeric">
                     <button id="next-seed" type="button">next</button>
                 </div>
+                <div class="share">
+                    <button id="copy-link" type="button">copy link</button>
+                    <button id="save-image" type="button">save image</button>
+                </div>
+                <input id="link" type="text" readonly hidden aria-label="link to this garden">
+                <p id="share-status" role="status"></p>
             </div>
         </details>
     </div>
@@ -350,8 +390,8 @@
 
             const { FEED_RADIUS, FIELD_RADIUS, MAX_FOOD, MAX_STONES, PARAMS, PRESETS,
                 SOIL_RADIUS, STONE_RADIUS, advance, atRest, clampParams, createState,
-                feed, palette, placeStone, pullTargets, removeStone, stoneAt,
-                tips } = window.ArtificialGarden;
+                decodeLink, encodeLink, feed, palette, placeStone, pullTargets,
+                removeStone, stoneAt, tips } = window.ArtificialGarden;
 
             // Never more than this much simulation in one frame, so a stall
             // can't turn into a burst
@@ -385,6 +425,20 @@
             const RING_STEP = 0.03;
             const RING_FAST = 5;
 
+            // The address follows the settings, but not on every step of a
+            // slider: browsers throttle a page that rewrites its URL too often
+            const LINK_DELAY_MS = 250;
+            const LINK_PROBLEM_NOTE = 'part of this link couldn’t be used, so those settings are at their defaults or limits';
+            const NAME = 'artificial-garden';
+
+            // What copy link says, by what the link can't rebuild
+            const COPIED = {
+                fresh: 'link copied. it grows this garden again from the beginning',
+                placed: 'link copied. it grows this garden again from the seed, without the food and stones you placed',
+                rules: 'link copied. it grows this garden again from the seed, without the changes made while it grew',
+                both: 'link copied. it grows this garden again from the seed, without the food and stones you placed or the changes made while it grew',
+            };
+
             // Sliders in panel order. The first group changes how the garden
             // grows on from where it is. The second group decides the initial
             // state, so a change to it plants the garden again.
@@ -400,6 +454,8 @@
             const toolButton = document.getElementById('tool');
             const presetSelect = document.getElementById('preset');
             const seedInput = document.getElementById('seed');
+            const linkInput = document.getElementById('link');
+            const shareStatus = document.getElementById('share-status');
             const headerEl = document.querySelector('.header');
             const barEl = document.querySelector('.bar');
             const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
@@ -434,9 +490,21 @@
             let dirty = true;
             let resting = false;
 
+            // What the garden has been through that its settings alone can't
+            // rebuild: food or stones placed, and a rule changed while it grew
+            let placed = false;
+            let rulesChanged = false;
+
+            // The hash this page last read or wrote, and a pending write.
+            // Nothing is written until the visitor changes a setting.
+            let linkShown = location.hash.replace(/^#/, '');
+            let linkTimer = null;
+
             // Planting again from the seed: the same parameters and seed
             // always give this same garden
             function restart() {
+                placed = false;
+                rulesChanged = false;
                 state = createState(params);
                 colors = palette(params.seed);
                 budget = 0;
@@ -479,7 +547,11 @@
             }
 
             function draw() {
+                // A resize resets the context, so every frame sets its own
+                // line ends: the same garden is drawn the same, resized or not
                 ctx.globalCompositeOperation = 'source-over';
+                ctx.lineCap = 'round';
+                ctx.lineJoin = 'round';
                 ctx.fillStyle = BACKGROUND;
                 ctx.fillRect(0, 0, width, height);
 
@@ -577,8 +649,6 @@
                 const { nodeCount, nodeX, nodeY, parent, leaves } = state;
                 const unit = Math.max(0.6, view.scale / 400);
                 const most = Math.sqrt(Math.max(leaves[0], 1));
-                ctx.lineCap = 'round';
-                ctx.lineJoin = 'round';
 
                 let low = 0;
                 for (const high of WIDTH_BANDS) {
@@ -780,10 +850,16 @@
                             leavePreset();
                             if (RESTART_KEYS.includes(key)) {
                                 restart();
+                            } else if (key !== 'speed') {
+                                // A link grows from the seed under the new
+                                // rules, so it can't rebuild a garden that
+                                // changed them on the way
+                                rulesChanged = rulesChanged || state.steps > 0;
                             }
                             // A change to the rules may wake a garden at rest
                             state.idle = 0;
                             refresh();
+                            settingsChanged();
                         });
 
                         row.append(label, output, input);
@@ -809,6 +885,7 @@
                 restart();
                 refresh();
                 updateHint();
+                settingsChanged();
             }
 
             function leavePreset() {
@@ -828,6 +905,7 @@
                 restart();
                 refresh();
                 updateHint();
+                settingsChanged();
             }
 
             function nextSeed() {
@@ -852,6 +930,149 @@
                     refresh();
                 }
             }
+
+            // Share links: the hash holds the garden's initial configuration,
+            // in the format sim.js describes
+
+            function linkUrl() {
+                return `${location.href.split('#')[0]}#${encodeLink(params)}`;
+            }
+
+            function writeLink() {
+                clearTimeout(linkTimer);
+                linkTimer = null;
+                const text = encodeLink(params);
+                if (text === linkShown) {
+                    return;
+                }
+                linkShown = text;
+                try {
+                    history.replaceState(history.state, '', `#${text}`);
+                } catch (error) {
+                    // Changing only the hash doesn't reload the page
+                    location.replace(`#${text}`);
+                }
+            }
+
+            function settingsChanged() {
+                shareStatus.textContent = '';
+                linkInput.hidden = true;
+                clearTimeout(linkTimer);
+                linkTimer = setTimeout(writeLink, LINK_DELAY_MS);
+            }
+
+            // Settings from a link: on load, or when a link is pasted into
+            // the open page, which changes the hash without a reload
+            function applyLink(text) {
+                const link = decodeLink(text);
+                shareStatus.textContent = '';
+                linkInput.hidden = true;
+                params = link.params;
+                if (link.preset) {
+                    presetSelect.value = link.preset;
+                    noteEl.textContent = PRESETS.find(({ id }) => id === link.preset).note;
+                } else {
+                    leavePreset();
+                }
+                if (link.problems.length > 0) {
+                    noteEl.textContent = LINK_PROBLEM_NOTE;
+                }
+                syncControls();
+            }
+
+            window.addEventListener('hashchange', () => {
+                const text = location.hash.replace(/^#/, '');
+                if (text === linkShown) {
+                    return;
+                }
+                clearTimeout(linkTimer);
+                linkTimer = null;
+                linkShown = text;
+                applyLink(text);
+                restart();
+                refresh();
+                updateHint();
+            });
+
+            // The answer shows in the controls panel, which a key may have
+            // left closed. It is cleared first, so the same words are
+            // announced again.
+            const controlsPanel = document.getElementById('controls');
+            const controlsBody = controlsPanel.querySelector('.panel');
+
+            function setStatus(text) {
+                controlsPanel.open = true;
+                shareStatus.textContent = '';
+                setTimeout(() => {
+                    shareStatus.textContent = text;
+                    // In a small frame the panel scrolls, and the answer is
+                    // at its end, under the link
+                    controlsBody.scrollTop = controlsBody.scrollHeight;
+                }, 50);
+            }
+
+            async function copyLink() {
+                writeLink();
+                const url = linkUrl();
+                let copied = false;
+                try {
+                    await navigator.clipboard.writeText(url);
+                    copied = true;
+                } catch (error) {
+                    // No clipboard here, as in some frames: the field below
+                    // holds the link, selected, to copy by hand
+                }
+
+                linkInput.value = url;
+                linkInput.hidden = false;
+                controlsPanel.open = true;
+                if (!copied) {
+                    linkInput.focus();
+                    linkInput.select();
+                    setStatus('couldn’t copy here: the link above is selected, ready to copy');
+                } else if (placed && rulesChanged) {
+                    setStatus(COPIED.both);
+                } else if (placed) {
+                    setStatus(COPIED.placed);
+                } else if (rulesChanged) {
+                    setStatus(COPIED.rules);
+                } else {
+                    setStatus(COPIED.fresh);
+                }
+            }
+
+            // The picture as it is now, at the canvas's own resolution. The
+            // ring is drawn over the picture but isn't part of it, so the
+            // frame read here leaves it out. toBlob copies the canvas when
+            // it's called, so the ring can come back straight after.
+            function saveImage() {
+                const name = `${NAME}-${params.seed}.png`;
+                const ringShown = ring.shown;
+                ring.shown = false;
+                draw();
+                canvas.toBlob((blob) => {
+                    if (!blob) {
+                        setStatus('couldn’t save the image here');
+                        return;
+                    }
+                    const url = URL.createObjectURL(blob);
+                    const anchor = document.createElement('a');
+                    anchor.href = url;
+                    anchor.download = name;
+                    document.body.append(anchor);
+                    anchor.click();
+                    anchor.remove();
+                    setTimeout(() => URL.revokeObjectURL(url), 10000);
+                    setStatus(`image saved as ${name}`);
+                }, 'image/png');
+                ring.shown = ringShown;
+                if (ringShown) {
+                    draw();
+                }
+            }
+
+            document.getElementById('copy-link').addEventListener('click', copyLink);
+            document.getElementById('save-image').addEventListener('click', saveImage);
 
             for (const preset of PRESETS) {
                 presetSelect.add(new Option(preset.label, preset.id));
@@ -881,6 +1102,7 @@
                 if (added === 0) {
                     return 'no food fits there';
                 }
+                placed = true;
                 pullTargets(state, params, targets);
                 let felt = 0;
                 for (let i = state.foodCount - added; i < state.foodCount; i++) {
@@ -895,7 +1117,8 @@
             }
 
             // A tap, or enter at the ring, drops food or places or lifts a
-            // stone. Neither is part of the seed, so a reset takes them away.
+            // stone. Neither is part of the seed, so a reset takes them away,
+            // and a link can't hold them.
             function place(x, y) {
                 if (tool === 'food') {
                     if (x * x + y * y > (SOIL_RADIUS + FEED_RADIUS) ** 2) {
@@ -904,15 +1127,17 @@
                     hintOverride = dropFood(x, y);
                 } else if (stoneAt(state, x, y) !== -1) {
                     removeStone(state, x, y);
+                    placed = true;
                     hintOverride = 'stone lifted';
                 } else if (state.stones.length >= MAX_STONES) {
                     hintOverride = `${MAX_STONES} stones is all there are. lift one first`;
                 } else if (x * x + y * y > FIELD_RADIUS * FIELD_RADIUS) {
                     return;
+                } else if (placeStone(state, x, y)) {
+                    placed = true;
+                    hintOverride = 'stone placed: branches grow around it';
                 } else {
-                    hintOverride = placeStone(state, x, y)
-                        ? 'stone placed: branches grow around it'
-                        : 'a stone can’t cover the root';
+                    hintOverride = 'a stone can’t cover the root';
                 }
                 refresh();
                 updateHint();
@@ -1003,7 +1228,7 @@
                     return;
                 }
 
-                if (target.closest('input[type="number"], select')) {
+                if (target.closest('input[type="number"], input[type="text"], select')) {
                     return;
                 }
 
@@ -1034,6 +1259,10 @@
                     nextSeed();
                 } else if (event.key.toLowerCase() === 't') {
                     setTool(tool === 'food' ? 'stone' : 'food');
+                } else if (event.key.toLowerCase() === 'c') {
+                    copyLink();
+                } else if (event.key.toLowerCase() === 's') {
+                    saveImage();
                 } else if (PRESETS[Number(event.key) - 1]) {
                     applyPreset(PRESETS[Number(event.key) - 1]);
                 }
@@ -1103,6 +1332,9 @@
             syncControls();
             presetSelect.value = PRESETS[0].id;
             noteEl.textContent = PRESETS[0].note;
+            if (linkShown !== '') {
+                applyLink(linkShown);
+            }
             restart();
             setTool('food');
             measure();
