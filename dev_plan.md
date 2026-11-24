@@ -21,7 +21,7 @@ the work runs in lanes. each lane has its own ticket prefix, ticket table and or
 | ecosystem onboarding | EO | the repo's place in the eigenomar ecosystem: a manifest, the shared Claude rules, issues in the ecosystem's Project, and the portability gaps | §4.3 | none ready: EO11 and EO12 wait on the ecosystem's standards in `meta-eigenomar` | EO1, EO4 (2026-11-12), EO2, EO3, EO9, EO8 (2026-11-13), EO5, EO6, EO7, EO10 (2026-11-14) |
 
 - **milestone 1** (worlds and engines): CC5, CC7 and CC10 are published, giving three engines in three worlds (dynamical, organic, mystic), built on the CC2–CC3 taxonomy.
-- **scope of this repo:** CC1–CC15 (the owner approved CC12 on 2026-11-03, asked for CC13 and CC14 on 2026-11-04, and for CC15 on 2026-11-20) and SL0–SL11.
+- **scope of this repo:** CC1–CC16 (the owner approved CC12 on 2026-11-03, asked for CC13 and CC14 on 2026-11-04, for CC15 on 2026-11-20, and for CC16 on 2026-11-24) and SL0–SL11.
 - **repos:** this repo is the home of every engine, algorithm, renderer, control and gallery page, served at `gallery.eigenomar.com` (§1), and `eigenomar.com` presents it under art and links to it, never copying its code (shared decision SD1).
 - **tracking link:** [this file on GitHub](https://github.com/eigenomarksamy/creative_coding/blob/main/dev_plan.md) is the one link for following this work from other repos. it shows what is pushed to `main`. keep no copy of this plan anywhere else, because a copy can drift. confidential work is the exception: it never goes in this file, and the ecosystem's shared rules say where it goes (adding work, below).
 - **between the lanes:** SL1 needs CC14, which is done, and no CC ticket needs an SL ticket. the open tickets of both lanes meet in `build_gallery.py` (SL1's registry, and CC7 or CC10 only if they need new vocabulary, since CC5's scan lists a new engine folder by itself), the README and this file.
@@ -55,6 +55,7 @@ flowchart TD
     CC9 --> CC10["CC10 sigil lab: publish"]
     CC14["CC14 gallery directories"]
     CC15["CC15 tab icon"]
+    CC16["CC16 garden: tool dot color"]
   end
   subgraph SLL["seven levels (SL)"]
     SL0["SL0 data from the briefs"] --> SL1["SL1 gallery pipeline"]
@@ -113,6 +114,8 @@ the queue changes the original order in two ways. CC11 is split, so share links 
 **any time:** CC13 touched only the gallery footer and needed nothing, so it fitted between any two steps. done on 2026-11-07, after CC5. it stays out of the steps and the diagram above.
 
 **any time:** CC15 touches only the root's new `favicon.svg` and one line in each page's head, and needs nothing, so it fits between any two steps, as CC13 did.
+
+**any time:** CC16 is a bug fix in `canvas/artificial-garden/index.html` alone, and needs nothing, so it fits between any two steps. it can ride along with CC8, which opens that page anyway.
 
 **CC14:** done on 2026-11-05, ahead of CC5. it stays out of the steps, and the diagram shows it only because SL1 needs it, so SL1 now waits only on SL0.
 
@@ -347,6 +350,7 @@ world-based discovery in the gallery, and the interactive generative engines.
 | CC13 | footer button to eigenomar.com | xs | none | done |
 | CC14 | gallery directories | m | none | done |
 | CC15 | the ecosystem's tab icon | xs | none | todo |
+| CC16 | artificial garden: the tool's dot follows the seed | xs | none | todo |
 
 **order:** the queue in §0 sets the order. CC4 needs only CC1, so it runs alongside CC2–CC3. CC11a and CC11b both come before CC8, so that share links and export exist in two engines before anything is extracted (Q6).
 
@@ -676,6 +680,16 @@ every piece that exists today moves like this, and all 264 are accounted for:
   - the README's "adding work" says that a new engine's page links it the same way, so CC7 and CC10 pick it up.
 - **done when:** every gallery view, the three sketches and the strange attractor show the icon in their tab, on `gallery.eigenomar.com` and from `file://`. the build is clean and `node --test` passes.
 - **not here:** a `/favicon.ico`. the pages link the SVG, which every current browser reads.
+
+<a id="cc16"></a>
+
+#### CC16 · artificial garden: the tool's dot follows the seed · xs
+
+- **status:** a bug from CC7, found by CC11b on 2026-11-24.
+- **why:** the tool button's dot shows food in the visitor's food color, `palette(seed).fed`, which changes with the seed. the page sets the dot only in `setTool`, so after a new seed, a preset with a seed of its own (mandala), a link or a pasted link, the dot keeps the first seed's color until the tool is switched twice. checked in headless Chrome: after `n`, the dot still has seed 1's color, not seed 2's.
+- **do:** set the dot's color whenever the colors change, from `restart`, so every way of planting the garden again updates it, and keep stones' grey.
+- **done when:** after next seed, a preset with its own seed, a link loaded or pasted, and reset, the dot has the current seed's food color, with food in hand, and stones' grey with stones in hand, checked in headless Chrome. `python dev.py check` passes.
+- **not here:** changing the palette or the button's look.
 
 ### 4.2 seven levels (SL)
 
@@ -1275,3 +1289,4 @@ the ticket column names a ticket, a lane for a note about a whole lane, or none.
 | 2026-11-24 | CC7 | the owner decided two of CC6's open points: placing food and stones gets a keyboard equivalent, a ring on the plot moved by the arrow keys and placed with enter, and mandala keeps a seed of its own, one that stays exactly six-fold, so its note can promise it. both are in CC7's decided notes, with the checks they add. nothing was built |
 | 2026-11-24 | CC7 | artificial garden published, on the branch with CC6. the page draws the rule: a thread from each piece of food within reach to the part it pulls, and food out of reach dimmer, waiting, from `pullTargets` in `sim.js`. the hint answers each placement, for screen readers too. a ring moved by the arrow keys and placed with enter places food and stones without a pointer. a new preset, islands, stops with food out of reach until a trail of food leads the garden on, which holds on all of 200 seeds, and mandala keeps seed 3, which stays exactly six-fold. frames stay under 10 ms at the 95th percentile with software raster, so nothing was cut. 36 tests pass, 72 in all, 72 checks pass in headless Chrome from `file://`, and the build is clean with 274 items. not tried on a real phone or with a GPU. from a session in `meta-eigenomar` |
 | 2026-11-24 | CC11b | done: artificial garden's share links and save image, copying CC11a's pattern, so CC11 is done and CC8's gate is met. its hash holds the seed and every parameter, copy link gives the address and says what it leaves out, the food and stones placed or the rules changed while it grew, and save image downloads `artificial-garden-<seed>.png` without the keyboard ring. on the way, the page now scrolls its taller controls panel to the answer in small frames, and `draw` sets its own line ends, which a resize had reset, so a garden from a link matches the same garden set by hand pixel for pixel. 8 new tests pass, 80 in all, 90 checks pass in headless Chrome from `file://` and over http, and the build is clean with 274 items. not tried on a real phone. from a session in `meta-eigenomar` |
+| 2026-11-24 | CC16 | added: a bug from CC7 that CC11b found. the garden's tool button keeps the first seed's food color after the seed changes, until the tool is switched. `xs`, needing nothing. only this file changed |
