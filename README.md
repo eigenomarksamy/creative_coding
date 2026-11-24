@@ -199,8 +199,9 @@ A live sketch or engine also has its own page outside the gallery, such as
 engine's `index.html` itself rather than its folder, because a folder
 opened from disk shows a file listing.
 
-An engine's page takes a seed and its settings in the hash, which give the
-same start of the run in every browser:
+An engine with share links, so far strange attractor, takes a seed and its
+settings in the hash, which give the same start of the run in every
+browser:
 
 ```text
 canvas/strange-attractor/index.html#seed=59&rho=22&sigma=10&beta=2.6666666666666665&spread=0.05&tracers=24&speed=480
@@ -296,7 +297,11 @@ Because of these routes, no category in `CATEGORIES` can use the id `worlds`,
   `canvas/<id>/`: `index.html` is the page, `sim.js` holds the simulation with
   no canvas code, and `sim.test.js` tests it. `sim.js` is a classic script, not
   a module, so the page still works from disk. It sets a global in the browser
-  and assigns `module.exports` under node. Run the tests from the repository
+  and assigns `module.exports` under node. Its functions depend only on their
+  arguments, with no DOM, canvas, timers or globals, and anything that feeds
+  the state draws from a seeded generator, never `Math.random`, and avoids
+  `Math.sin`, `Math.log` and the like, which can differ between browsers.
+  Run the tests from the repository
   root with `node --test` (or `python dev.py test`), which needs no install.
   Files ending in `.test.js`
   aren't published. `index.html` carries the same meta block as a live
