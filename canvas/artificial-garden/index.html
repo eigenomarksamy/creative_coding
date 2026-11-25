@@ -18,127 +18,11 @@
         "concept": "emergence and indirect control: you never draw the garden, you only feed it and block it, and it finds its own way"
     }
     </script>
+    <!-- The look every engine shares, then this one's accent and tool -->
+    <link rel="stylesheet" href="../lib/engine.css">
     <style>
         :root {
-            --bg: #0a0a0c;
-            --surface: rgba(19, 19, 23, 0.88);
-            /* Panels cover the header in a small frame, so no text shows through */
-            --panel: #131317;
-            --border: #3a3a44;
-            --text: #e8e6e3;
-            --muted: #8f8d96;
             --accent: #8fd18a;
-
-            color-scheme: dark;
-        }
-
-        * {
-            box-sizing: border-box;
-        }
-
-        html,
-        body {
-            height: 100%;
-            margin: 0;
-            overflow: hidden;
-            background: var(--bg);
-            color: var(--text);
-            font: 13px/1.4 ui-sans-serif, system-ui, -apple-system, "Segoe UI",
-                Roboto, Helvetica, Arial, sans-serif;
-        }
-
-        /* A tap places food or a stone, and a swipe still scrolls the page
-           around the gallery's iframe, so the canvas takes taps only */
-        canvas {
-            position: fixed;
-            inset: 0;
-            display: block;
-            width: 100%;
-            height: 100%;
-            cursor: crosshair;
-            touch-action: manipulation;
-        }
-
-        .header {
-            position: fixed;
-            top: 8px;
-            left: 10px;
-            right: 10px;
-            margin: 0;
-            color: var(--muted);
-            pointer-events: none;
-        }
-
-        .header p {
-            margin: 0;
-        }
-
-        /* The name, then what the preset shows, then the numbers and the hint */
-        .header h1 {
-            margin: 0 0 2px;
-            color: var(--text);
-            font-size: 15px;
-            font-weight: 600;
-        }
-
-        /* In a frame, the page around it already names the piece */
-        .framed .header h1 {
-            display: none;
-        }
-
-        #note {
-            color: var(--text);
-        }
-
-        /* Both lines keep their height when empty, so the view doesn't jump */
-        #note,
-        #readout {
-            min-height: 1.4em;
-        }
-
-        #readout {
-            font-variant-numeric: tabular-nums;
-        }
-
-        .bar {
-            position: fixed;
-            left: 8px;
-            right: 8px;
-            bottom: 8px;
-            display: flex;
-            flex-wrap: wrap;
-            align-items: center;
-            gap: 6px;
-        }
-
-        button,
-        select,
-        summary,
-        input[type="number"],
-        input[type="text"] {
-            min-height: 32px;
-            padding: 4px 10px;
-            border: 1px solid var(--border);
-            border-radius: 6px;
-            background: var(--surface);
-            color: var(--text);
-            font: inherit;
-        }
-
-        button,
-        summary {
-            cursor: pointer;
-        }
-
-        button:hover,
-        select:hover,
-        summary:hover {
-            border-color: var(--muted);
-        }
-
-        :focus-visible {
-            outline: 2px solid var(--accent);
-            outline-offset: 1px;
         }
 
         /* The tool in hand, marked so it reads as a choice, not an action */
@@ -151,153 +35,6 @@
             border-radius: 50%;
             background: var(--tool-color, var(--accent));
             vertical-align: 0;
-        }
-
-        /* The two panels sit together at the right end of the bar */
-        #about {
-            margin-left: auto;
-        }
-
-        summary {
-            display: flex;
-            align-items: center;
-            list-style: none;
-            user-select: none;
-        }
-
-        summary::-webkit-details-marker {
-            display: none;
-        }
-
-        .panel {
-            position: absolute;
-            right: 0;
-            bottom: calc(100% + 6px);
-            width: min(290px, 100%);
-            max-height: calc(100vh - var(--bar-height, 32px) - 22px);
-            overflow-y: auto;
-            padding: 10px 12px;
-            border: 1px solid var(--border);
-            border-radius: 6px;
-            background: var(--panel);
-        }
-
-        .panel select {
-            width: 100%;
-            margin-bottom: 10px;
-        }
-
-        .row {
-            display: grid;
-            grid-template-columns: 1fr auto;
-            gap: 0 8px;
-            margin-bottom: 8px;
-        }
-
-        .row output {
-            color: var(--muted);
-            font-variant-numeric: tabular-nums;
-        }
-
-        .row input[type="range"] {
-            grid-column: 1 / -1;
-            width: 100%;
-            margin: 2px 0 0;
-            accent-color: var(--accent);
-        }
-
-        .group {
-            margin: 10px 0 6px;
-            color: var(--muted);
-        }
-
-        .seed {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .seed input {
-            flex: 1;
-            min-width: 0;
-        }
-
-        /* Sharing: a link to the garden's start, and the picture as it is */
-        .share {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 6px;
-            margin-top: 8px;
-        }
-
-        .share button {
-            flex: 1 1 auto;
-        }
-
-        #link {
-            width: 100%;
-            margin-top: 6px;
-            color: var(--muted);
-        }
-
-        #share-status {
-            margin: 6px 0 0;
-            color: var(--muted);
-        }
-
-        #share-status:empty {
-            margin: 0;
-        }
-
-        .keys {
-            margin: 8px 0 0;
-            color: var(--muted);
-        }
-
-        .about h2 {
-            margin: 0 0 4px;
-            font-size: 14px;
-            font-weight: 600;
-        }
-
-        .about p,
-        .about ul {
-            margin: 0 0 8px;
-        }
-
-        .about ul {
-            padding-left: 16px;
-        }
-
-        .about li + li {
-            margin-top: 4px;
-        }
-
-        .about .concept {
-            color: var(--muted);
-        }
-
-        /* Five controls fit one row of a 340px gallery card */
-        @media (max-width: 360px) {
-            button,
-            select,
-            summary {
-                padding: 4px 8px;
-            }
-        }
-
-        /* In a small frame the picture comes before the words */
-        @media (max-height: 300px) {
-            .header h1,
-            #note {
-                display: none;
-            }
-        }
-
-        @media (max-height: 200px) {
-            .header {
-                display: none;
-            }
         }
     </style>
 </head>
@@ -384,25 +121,17 @@
     </div>
 
     <script src="../lib/engine-sim.js"></script>
+    <script src="../lib/engine-page.js"></script>
     <script src="sim.js"></script>
     <script>
         (() => {
             'use strict';
 
-            const { FEED_RADIUS, FIELD_RADIUS, MAX_FOOD, MAX_STONES, PARAMS, PRESETS,
-                SOIL_RADIUS, STONE_RADIUS, advance, atRest, clampParams, createState,
-                decodeLink, encodeLink, feed, palette, placeStone, pullTargets,
-                removeStone, stoneAt, tips } = window.ArtificialGarden;
+            const { FEED_RADIUS, FIELD_RADIUS, MAX_FOOD, MAX_STONES, SOIL_RADIUS,
+                STONE_RADIUS, advance, atRest, createState, feed, palette, placeStone,
+                pullTargets, removeStone, stoneAt, tips } = window.ArtificialGarden;
 
-            // Never more than this much simulation in one frame, so a stall
-            // can't turn into a burst
-            const MAX_STEPS_PER_FRAME = 8;
-            const MAX_FRAME_MS = 100;
-
-            const REDUCED_MOTION_SPEED = 0.25;
-            const MAX_PIXEL_RATIO = 2;
             const BACKGROUND = '#0a0a0c';
-            const READOUT_MS = 200;
 
             // Branches are stroked in bands by thickness, which follows the
             // number of tips a branch carries, so old wood reads as a trunk
@@ -417,6 +146,7 @@
                 stone: 'the garden is at rest. lift a stone, or switch to food to grow it again',
             };
             const TOOL_LABELS = { food: 'food', stone: 'stones' };
+            const STONE_COLOR = '#8a8a96';
             const RING_HINT = {
                 food: 'arrows move the ring, shift for longer steps. enter drops food there',
                 stone: 'arrows move the ring, shift for longer steps. enter places or lifts a stone there',
@@ -425,12 +155,6 @@
             // The ring the arrow keys move, in plot units per press
             const RING_STEP = 0.03;
             const RING_FAST = 5;
-
-            // The address follows the settings, but not on every step of a
-            // slider: browsers throttle a page that rewrites its URL too often
-            const LINK_DELAY_MS = 250;
-            const LINK_PROBLEM_NOTE = 'part of this link couldn’t be used, so those settings are at their defaults or limits';
-            const NAME = 'artificial-garden';
 
             // What copy link says, by what the link can't rebuild
             const COPIED = {
@@ -446,22 +170,10 @@
             const LIVE_KEYS = ['reach', 'growth', 'branching', 'wander', 'speed'];
             const RESTART_KEYS = ['food', 'symmetry'];
 
-            const canvas = document.getElementById('stage');
-            const ctx = canvas.getContext('2d', { alpha: false });
-            const noteEl = document.getElementById('note');
             const readoutEl = document.getElementById('readout');
             const hintEl = document.getElementById('hint');
-            const pauseButton = document.getElementById('pause');
             const toolButton = document.getElementById('tool');
-            const presetSelect = document.getElementById('preset');
-            const seedInput = document.getElementById('seed');
-            const linkInput = document.getElementById('link');
-            const shareStatus = document.getElementById('share-status');
-            const headerEl = document.querySelector('.header');
-            const barEl = document.querySelector('.bar');
-            const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 
-            let params = clampParams(PRESETS[0].params);
             let state = null;
             let colors = null;
             let tool = 'food';
@@ -474,42 +186,121 @@
             // starts at the root, and keeps its place while it's hidden.
             const ring = { x: 0, y: 0, shown: false };
 
-            let width = 0;
-            let height = 0;
             const view = { x: 0, y: 0, scale: 1 };
-
-            let frame = null;
-            let lastFrame = null;
-            let lastReadout = 0;
-            let budget = 0;
-            let paused = false;
-            let pageVisible = !document.hidden;
-            let onScreen = true;
-
-            // A frame is drawn only when the picture has changed: growth,
-            // eaten food, or anything the visitor did
-            let dirty = true;
-            let resting = false;
 
             // What the garden has been through that its settings alone can't
             // rebuild: food or stones placed, and a rule changed while it grew
             let placed = false;
             let rulesChanged = false;
 
-            // The hash this page last read or wrote, and a pending write.
-            // Nothing is written until the visitor changes a setting.
-            let linkShown = location.hash.replace(/^#/, '');
-            let linkTimer = null;
+            // The arrow keys move the ring, which stays inside the plot
+            const ARROWS = { ArrowLeft: [-1, 0], ArrowRight: [1, 0], ArrowUp: [0, 1], ArrowDown: [0, -1] };
+
+            const page = EnginePage.create({
+                name: 'artificial-garden',
+                sim: window.ArtificialGarden,
+                sliders: [
+                    { heading: 'how it grows', keys: LIVE_KEYS },
+                    { heading: 'the soil, which plants it again', keys: RESTART_KEYS },
+                ],
+                restartKeys: RESTART_KEYS,
+                // Never more than this much simulation in one frame, so a
+                // stall can't turn into a burst
+                maxStepsPerFrame: 8,
+                restart,
+                fit: fitView,
+                step,
+                draw,
+                // The ring is drawn over the picture but isn't part of it
+                drawPicture: () => draw(false),
+                readout: updateReadout,
+                // Rest means nothing within reach is left to grow toward, so
+                // the picture can't change until the visitor does something
+                atRest: () => atRest(state),
+                stayAtRest: () => atRest(state),
+                onRest: updateHint,
+                onWake: updateHint,
+                paramChanged(key, restarted) {
+                    if (restarted) {
+                        // A new soil takes away what was placed, so the
+                        // answer to the last placement goes too
+                        updateHint();
+                    } else if (key !== 'speed') {
+                        // A link grows from the seed under the new rules, so
+                        // it can't rebuild a garden that changed them on the
+                        // way
+                        rulesChanged = rulesChanged || state.steps > 0;
+                    }
+                    // A change to the rules may wake a garden at rest
+                    state.idle = 0;
+                },
+                restarted: updateHint,
+                copied() {
+                    if (placed && rulesChanged) {
+                        return COPIED.both;
+                    }
+                    if (placed) {
+                        return COPIED.placed;
+                    }
+                    return rulesChanged ? COPIED.rules : COPIED.fresh;
+                },
+                // A held arrow keeps moving the ring. Sliders, menus and the
+                // seed box keep their own arrows.
+                heldKey(event) {
+                    if (!ARROWS[event.key]) {
+                        return false;
+                    }
+                    if (!event.target.closest('input, select')) {
+                        event.preventDefault();
+                        moveRing(...ARROWS[event.key], event.shiftKey);
+                    }
+                    return true;
+                },
+                key(event) {
+                    if (event.key === 'Enter') {
+                        // Enter already presses whatever button has focus.
+                        // The first enter shows the ring, and the next
+                        // places there.
+                        if (event.target.closest('button, summary')) {
+                            return true;
+                        }
+                        event.preventDefault();
+                        if (!ring.shown) {
+                            ring.shown = true;
+                            page.refresh();
+                            updateHint();
+                        } else {
+                            place(ring.x, ring.y);
+                        }
+                        return true;
+                    }
+                    if (event.key.toLowerCase() === 't') {
+                        setTool(tool === 'food' ? 'stone' : 'food');
+                        return true;
+                    }
+                    return false;
+                },
+                escape() {
+                    if (ring.shown) {
+                        hideRing();
+                    }
+                },
+                ready() {
+                    setTool('food');
+                },
+            });
+            const { canvas, ctx } = page;
 
             // Planting again from the seed: the same parameters and seed
-            // always give this same garden
+            // always give this same garden. The colors come from the seed,
+            // so the tool's dot follows them.
             function restart() {
                 placed = false;
                 rulesChanged = false;
-                state = createState(params);
-                colors = palette(params.seed);
-                budget = 0;
+                state = createState(page.params);
+                colors = palette(page.params.seed);
                 hintOverride = '';
+                showTool();
             }
 
             function hsl({ h, s, l }, alpha) {
@@ -533,8 +324,9 @@
 
             // The plot fills the space between the header and the bar
             function fitView() {
-                const top = headerEl.offsetHeight + 14;
-                const bottom = barEl.offsetHeight + 18;
+                const { width, height } = page;
+                const top = page.header.offsetHeight + 14;
+                const bottom = page.bar.offsetHeight + 18;
                 const side = 12;
                 const fitWidth = Math.max(width - side * 2, 1);
                 const fitHeight = Math.max(height - top - bottom, 1);
@@ -547,14 +339,14 @@
                 return [view.x + x * view.scale, view.y - y * view.scale];
             }
 
-            function draw() {
+            function draw(overlay = true) {
                 // A resize resets the context, so every frame sets its own
                 // line ends: the same garden is drawn the same, resized or not
                 ctx.globalCompositeOperation = 'source-over';
                 ctx.lineCap = 'round';
                 ctx.lineJoin = 'round';
                 ctx.fillStyle = BACKGROUND;
-                ctx.fillRect(0, 0, width, height);
+                ctx.fillRect(0, 0, page.width, page.height);
 
                 // The plot: where food can lie
                 ctx.beginPath();
@@ -568,7 +360,7 @@
                 drawFood();
                 drawStones();
                 drawBranches();
-                if (ring.shown) {
+                if (overlay && ring.shown) {
                     drawRing();
                 }
             }
@@ -577,7 +369,7 @@
             // and food out of reach is dim: it waits for the garden to come
             // nearer. That is the rule itself, drawn.
             function drawFood() {
-                pullTargets(state, params, targets);
+                pullTargets(state, page.params, targets);
                 const { foodCount, foodX, foodY, foodKind, nodeX, nodeY } = state;
 
                 ctx.beginPath();
@@ -698,402 +490,40 @@
                 } else if (ring.shown) {
                     hintEl.textContent = RING_HINT[tool];
                 } else {
-                    hintEl.textContent = resting ? REST_HINT[tool] : HINTS[tool];
+                    hintEl.textContent = page.resting ? REST_HINT[tool] : HINTS[tool];
                 }
             }
 
-            function stepSimulation(elapsed) {
-                const speed = params.speed * (reducedMotion.matches ? REDUCED_MOTION_SPEED : 1);
-                budget += (elapsed / 1000) * speed;
-                const steps = Math.min(Math.floor(budget), MAX_STEPS_PER_FRAME);
-                budget = budget - steps >= 1 ? 0 : budget - steps;
+            function step(elapsed) {
+                const steps = page.steps(elapsed, page.params.speed);
                 if (steps > 0) {
                     const before = state.eaten;
-                    const grown = advance(state, params, steps);
+                    const grown = advance(state, page.params, steps);
                     if (grown > 0 || state.eaten !== before) {
-                        dirty = true;
+                        page.changed();
                     }
                 }
             }
 
-            // Rest means nothing within reach is left to grow toward, so the
-            // picture can't change until the visitor does something
-            function checkRest() {
-                if (!atRest(state)) {
-                    return;
-                }
-                resting = true;
-                draw();
-                updateReadout();
-                updateHint();
-                updateRunning();
-            }
-
-            // Anything the visitor does may set the garden growing again
-            function wake() {
-                dirty = true;
-                if (resting && !atRest(state)) {
-                    resting = false;
-                    updateHint();
-                    updateRunning();
-                }
-            }
-
-            // The loop runs only while there is something to see: not paused,
-            // the page visible, the canvas on screen, and the garden growing
-            function tick(now) {
-                frame = requestAnimationFrame(tick);
-                const elapsed = lastFrame === null ? 0 : Math.min(now - lastFrame, MAX_FRAME_MS);
-                lastFrame = now;
-
-                stepSimulation(elapsed);
-                if (dirty) {
-                    dirty = false;
-                    draw();
-                }
-                if (now - lastReadout >= READOUT_MS) {
-                    lastReadout = now;
-                    updateReadout();
-                }
-                checkRest();
-            }
-
-            function updateRunning() {
-                const shouldRun = !paused && pageVisible && onScreen && !resting;
-                if (shouldRun && frame === null) {
-                    lastFrame = null;
-                    frame = requestAnimationFrame(tick);
-                } else if (!shouldRun && frame !== null) {
-                    cancelAnimationFrame(frame);
-                    frame = null;
-                }
-            }
-
-            // With the loop stopped, a change still has to reach the screen
-            function refresh() {
-                wake();
-                if (frame === null) {
-                    draw();
-                }
-                updateReadout();
-            }
-
-            function setPaused(value) {
-                paused = value;
-                pauseButton.textContent = paused ? 'play' : 'pause';
-                updateRunning();
-            }
-
-            function measure() {
-                const ratio = Math.min(window.devicePixelRatio || 1, MAX_PIXEL_RATIO);
-                width = canvas.clientWidth;
-                height = canvas.clientHeight;
-                canvas.width = Math.round(width * ratio);
-                canvas.height = Math.round(height * ratio);
-                ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
-                document.documentElement.style.setProperty('--bar-height', `${barEl.offsetHeight}px`);
-            }
-
-            function resize() {
-                measure();
-                fitView();
-                draw();
-            }
-
-            // Controls
-
-            const sliders = new Map();
-
-            function formatParam(key, value) {
-                const step = PARAMS[key].step;
-                if (Number.isInteger(step)) {
-                    return String(value);
-                }
-                const places = Math.max(0, -Math.floor(Math.log10(step)));
-                return value.toFixed(places);
-            }
-
-            function buildSliders() {
-                const parent = document.getElementById('sliders');
-                const groups = [
-                    ['how it grows', LIVE_KEYS],
-                    ['the soil, which plants it again', RESTART_KEYS],
-                ];
-
-                for (const [heading, keys] of groups) {
-                    const title = document.createElement('p');
-                    title.className = 'group';
-                    title.textContent = heading;
-                    parent.append(title);
-
-                    for (const key of keys) {
-                        const spec = PARAMS[key];
-                        const row = document.createElement('div');
-                        row.className = 'row';
-
-                        const label = document.createElement('label');
-                        label.htmlFor = `param-${key}`;
-                        label.textContent = spec.label;
-
-                        const output = document.createElement('output');
-                        output.htmlFor = `param-${key}`;
-
-                        const input = document.createElement('input');
-                        input.id = `param-${key}`;
-                        input.type = 'range';
-                        input.min = spec.min;
-                        input.max = spec.max;
-                        input.step = spec.step;
-
-                        input.addEventListener('input', () => {
-                            params = clampParams({ ...params, [key]: Number(input.value) });
-                            output.value = formatParam(key, params[key]);
-                            leavePreset();
-                            if (RESTART_KEYS.includes(key)) {
-                                restart();
-                            } else if (key !== 'speed') {
-                                // A link grows from the seed under the new
-                                // rules, so it can't rebuild a garden that
-                                // changed them on the way
-                                rulesChanged = rulesChanged || state.steps > 0;
-                            }
-                            // A change to the rules may wake a garden at rest
-                            state.idle = 0;
-                            refresh();
-                            settingsChanged();
-                        });
-
-                        row.append(label, output, input);
-                        parent.append(row);
-                        sliders.set(key, { input, output });
-                    }
-                }
-            }
-
-            function syncControls() {
-                for (const [key, { input, output }] of sliders) {
-                    input.value = params[key];
-                    output.value = formatParam(key, params[key]);
-                }
-                seedInput.value = params.seed;
-            }
-
-            function applyPreset(preset) {
-                params = clampParams({ ...params, ...preset.params });
-                presetSelect.value = preset.id;
-                noteEl.textContent = preset.note;
-                syncControls();
-                restart();
-                refresh();
-                updateHint();
-                settingsChanged();
-            }
-
-            function leavePreset() {
-                presetSelect.value = '';
-                noteEl.textContent = '';
-            }
-
-            function setSeed(value) {
-                params = clampParams({ ...params, seed: value });
-                seedInput.value = params.seed;
-
-                // A preset with its own seed only keeps its promise on that seed
-                const preset = PRESETS.find(({ id }) => id === presetSelect.value);
-                if (preset && 'seed' in preset.params && preset.params.seed !== params.seed) {
-                    leavePreset();
-                }
-                restart();
-                refresh();
-                updateHint();
-                settingsChanged();
-            }
-
-            function nextSeed() {
-                setSeed(params.seed >= PARAMS.seed.max ? PARAMS.seed.min : params.seed + 1);
-            }
-
-            function resetGarden() {
-                restart();
-                refresh();
-                updateHint();
+            // The tool in hand, with a dot in its color: food in this seed's
+            // color, stones in grey
+            function showTool() {
+                const other = tool === 'food' ? 'stone' : 'food';
+                toolButton.textContent = TOOL_LABELS[tool];
+                toolButton.setAttribute('aria-label', `in hand: ${TOOL_LABELS[tool]}. switch to ${TOOL_LABELS[other]}`);
+                toolButton.style.setProperty('--tool-color', tool === 'food' ? hsl(colors.fed, 1) : STONE_COLOR);
             }
 
             function setTool(value) {
                 tool = value;
-                const other = tool === 'food' ? 'stone' : 'food';
-                toolButton.textContent = TOOL_LABELS[tool];
-                toolButton.setAttribute('aria-label', `in hand: ${TOOL_LABELS[tool]}. switch to ${TOOL_LABELS[other]}`);
-                toolButton.style.setProperty('--tool-color', tool === 'food' ? hsl(colors.fed, 1) : '#8a8a96');
+                showTool();
                 hintOverride = '';
                 updateHint();
                 if (ring.shown && state) {
-                    refresh();
+                    page.refresh();
                 }
             }
 
-            // Share links: the hash holds the garden's initial configuration,
-            // in the format sim.js describes
-
-            function linkUrl() {
-                return `${location.href.split('#')[0]}#${encodeLink(params)}`;
-            }
-
-            function writeLink() {
-                clearTimeout(linkTimer);
-                linkTimer = null;
-                const text = encodeLink(params);
-                if (text === linkShown) {
-                    return;
-                }
-                linkShown = text;
-                try {
-                    history.replaceState(history.state, '', `#${text}`);
-                } catch (error) {
-                    // Changing only the hash doesn't reload the page
-                    location.replace(`#${text}`);
-                }
-            }
-
-            function settingsChanged() {
-                shareStatus.textContent = '';
-                linkInput.hidden = true;
-                clearTimeout(linkTimer);
-                linkTimer = setTimeout(writeLink, LINK_DELAY_MS);
-            }
-
-            // Settings from a link: on load, or when a link is pasted into
-            // the open page, which changes the hash without a reload
-            function applyLink(text) {
-                const link = decodeLink(text);
-                shareStatus.textContent = '';
-                linkInput.hidden = true;
-                params = link.params;
-                if (link.preset) {
-                    presetSelect.value = link.preset;
-                    noteEl.textContent = PRESETS.find(({ id }) => id === link.preset).note;
-                } else {
-                    leavePreset();
-                }
-                if (link.problems.length > 0) {
-                    noteEl.textContent = LINK_PROBLEM_NOTE;
-                }
-                syncControls();
-            }
-
-            window.addEventListener('hashchange', () => {
-                const text = location.hash.replace(/^#/, '');
-                if (text === linkShown) {
-                    return;
-                }
-                clearTimeout(linkTimer);
-                linkTimer = null;
-                linkShown = text;
-                applyLink(text);
-                restart();
-                refresh();
-                updateHint();
-            });
-
-            // The answer shows in the controls panel, which a key may have
-            // left closed. It is cleared first, so the same words are
-            // announced again.
-            const controlsPanel = document.getElementById('controls');
-            const controlsBody = controlsPanel.querySelector('.panel');
-
-            function setStatus(text) {
-                controlsPanel.open = true;
-                shareStatus.textContent = '';
-                setTimeout(() => {
-                    shareStatus.textContent = text;
-                    // In a small frame the panel scrolls, and the answer is
-                    // at its end, under the link
-                    controlsBody.scrollTop = controlsBody.scrollHeight;
-                }, 50);
-            }
-
-            async function copyLink() {
-                writeLink();
-                const url = linkUrl();
-                let copied = false;
-                try {
-                    await navigator.clipboard.writeText(url);
-                    copied = true;
-                } catch (error) {
-                    // No clipboard here, as in some frames: the field below
-                    // holds the link, selected, to copy by hand
-                }
-
-                linkInput.value = url;
-                linkInput.hidden = false;
-                controlsPanel.open = true;
-                if (!copied) {
-                    linkInput.focus();
-                    linkInput.select();
-                    setStatus('couldn’t copy here: the link above is selected, ready to copy');
-                } else if (placed && rulesChanged) {
-                    setStatus(COPIED.both);
-                } else if (placed) {
-                    setStatus(COPIED.placed);
-                } else if (rulesChanged) {
-                    setStatus(COPIED.rules);
-                } else {
-                    setStatus(COPIED.fresh);
-                }
-            }
-
-            // The picture as it is now, at the canvas's own resolution. The
-            // ring is drawn over the picture but isn't part of it, so the
-            // frame read here leaves it out. toBlob copies the canvas when
-            // it's called, so the ring can come back straight after.
-            function saveImage() {
-                const name = `${NAME}-${params.seed}.png`;
-                const ringShown = ring.shown;
-                ring.shown = false;
-                draw();
-                canvas.toBlob((blob) => {
-                    if (!blob) {
-                        setStatus('couldn’t save the image here');
-                        return;
-                    }
-                    const url = URL.createObjectURL(blob);
-                    const anchor = document.createElement('a');
-                    anchor.href = url;
-                    anchor.download = name;
-                    document.body.append(anchor);
-                    anchor.click();
-                    anchor.remove();
-                    setTimeout(() => URL.revokeObjectURL(url), 10000);
-                    setStatus(`image saved as ${name}`);
-                }, 'image/png');
-                ring.shown = ringShown;
-                if (ringShown) {
-                    draw();
-                }
-            }
-
-            document.getElementById('copy-link').addEventListener('click', copyLink);
-            document.getElementById('save-image').addEventListener('click', saveImage);
-
-            for (const preset of PRESETS) {
-                presetSelect.add(new Option(preset.label, preset.id));
-            }
-            const customOption = new Option('custom', '');
-            customOption.disabled = true;
-            presetSelect.add(customOption);
-
-            presetSelect.addEventListener('change', () => {
-                applyPreset(PRESETS.find((preset) => preset.id === presetSelect.value));
-            });
-
-            seedInput.min = PARAMS.seed.min;
-            seedInput.max = PARAMS.seed.max;
-            seedInput.step = PARAMS.seed.step;
-            seedInput.addEventListener('change', () => setSeed(seedInput.value));
-
-            document.getElementById('next-seed').addEventListener('click', nextSeed);
-            document.getElementById('reset').addEventListener('click', resetGarden);
-            pauseButton.addEventListener('click', () => setPaused(!paused));
             toolButton.addEventListener('click', () => setTool(tool === 'food' ? 'stone' : 'food'));
 
             // Food dropped, with how much of it the garden can feel. A drop
@@ -1104,7 +534,7 @@
                     return 'no food fits there';
                 }
                 placed = true;
-                pullTargets(state, params, targets);
+                pullTargets(state, page.params, targets);
                 let felt = 0;
                 for (let i = state.foodCount - added; i < state.foodCount; i++) {
                     felt += targets[i] >= 0 ? 1 : 0;
@@ -1140,7 +570,7 @@
                 } else {
                     hintOverride = 'a stone can’t cover the root';
                 }
-                refresh();
+                page.refresh();
                 updateHint();
             }
 
@@ -1150,9 +580,6 @@
                 }
                 place((event.offsetX - view.x) / view.scale, (view.y - event.offsetY) / view.scale);
             });
-
-            // The arrow keys move the ring, which stays inside the plot
-            const ARROWS = { ArrowLeft: [-1, 0], ArrowRight: [1, 0], ArrowUp: [0, 1], ArrowDown: [0, -1] };
 
             function moveRing(dx, dy, fast) {
                 const stepSize = RING_STEP * (fast ? RING_FAST : 1);
@@ -1167,183 +594,17 @@
                 ring.y = y;
                 ring.shown = true;
                 hintOverride = '';
-                refresh();
+                page.refresh();
                 updateHint();
             }
 
             function hideRing() {
                 ring.shown = false;
-                refresh();
+                page.refresh();
                 updateHint();
             }
 
-            // One panel at a time: they open in the same place
-            const panels = [...document.querySelectorAll('.bar details')];
-            for (const panel of panels) {
-                panel.addEventListener('toggle', () => {
-                    if (panel.open) {
-                        for (const other of panels) {
-                            if (other !== panel) {
-                                other.open = false;
-                            }
-                        }
-                    }
-                });
-            }
-
-            // Keys reach the page only while it has focus, so every action
-            // above also has a button
-            document.addEventListener('keydown', (event) => {
-                if (event.ctrlKey || event.metaKey || event.altKey) {
-                    return;
-                }
-
-                const target = event.target;
-
-                // A held arrow keeps moving the ring. Sliders, menus and the
-                // seed box keep their own arrows.
-                if (ARROWS[event.key]) {
-                    if (target.closest('input, select')) {
-                        return;
-                    }
-                    event.preventDefault();
-                    moveRing(...ARROWS[event.key], event.shiftKey);
-                    return;
-                }
-
-                // Any other held key must not restart the garden over and over
-                if (event.repeat) {
-                    return;
-                }
-
-                // Escape closes an open panel, from anywhere inside it too,
-                // and leaves focus on its button
-                if (event.key === 'Escape') {
-                    const open = panels.find((panel) => panel.open);
-                    if (open) {
-                        open.open = false;
-                        open.querySelector('summary').focus();
-                    } else if (ring.shown) {
-                        hideRing();
-                    }
-                    return;
-                }
-
-                if (target.closest('input[type="number"], input[type="text"], select')) {
-                    return;
-                }
-
-                if (event.key === 'Enter') {
-                    // Enter already presses whatever button has focus. The
-                    // first enter shows the ring, and the next places there.
-                    if (target.closest('button, summary')) {
-                        return;
-                    }
-                    event.preventDefault();
-                    if (!ring.shown) {
-                        ring.shown = true;
-                        refresh();
-                        updateHint();
-                    } else {
-                        place(ring.x, ring.y);
-                    }
-                } else if (event.key === ' ') {
-                    // Space already presses whatever button has focus
-                    if (target.closest('button, summary')) {
-                        return;
-                    }
-                    event.preventDefault();
-                    setPaused(!paused);
-                } else if (event.key.toLowerCase() === 'r') {
-                    resetGarden();
-                } else if (event.key.toLowerCase() === 'n') {
-                    nextSeed();
-                } else if (event.key.toLowerCase() === 't') {
-                    setTool(tool === 'food' ? 'stone' : 'food');
-                } else if (event.key.toLowerCase() === 'c') {
-                    copyLink();
-                } else if (event.key.toLowerCase() === 's') {
-                    saveImage();
-                } else if (PRESETS[Number(event.key) - 1]) {
-                    applyPreset(PRESETS[Number(event.key) - 1]);
-                }
-            });
-
-            // Lifecycle: stop when hidden, off screen or torn down
-
-            function onVisibilityChange() {
-                pageVisible = !document.hidden;
-                updateRunning();
-            }
-
-            const resizeObserver = new ResizeObserver(resize);
-            const screenObserver = 'IntersectionObserver' in window
-                ? new IntersectionObserver((entries) => {
-                    onScreen = entries[entries.length - 1].isIntersecting;
-                    updateRunning();
-                })
-                : null;
-
-            function connect() {
-                document.addEventListener('visibilitychange', onVisibilityChange);
-                resizeObserver.observe(canvas);
-                if (screenObserver) {
-                    screenObserver.observe(canvas);
-                }
-            }
-
-            function disconnect() {
-                document.removeEventListener('visibilitychange', onVisibilityChange);
-                resizeObserver.disconnect();
-                if (screenObserver) {
-                    screenObserver.disconnect();
-                }
-                if (frame !== null) {
-                    cancelAnimationFrame(frame);
-                    frame = null;
-                }
-            }
-
-            window.addEventListener('pagehide', disconnect);
-            window.addEventListener('pageshow', (event) => {
-                // Back from the page cache, where pagehide has stopped everything
-                if (event.persisted) {
-                    connect();
-                    updateRunning();
-                }
-            });
-
-            // The title and concept come from the meta block in the head,
-            // which the gallery reads too, so they're written once
-            try {
-                const meta = JSON.parse(document.getElementById('meta').textContent);
-                if (meta.title) {
-                    document.getElementById('title').textContent = meta.title;
-                    document.getElementById('about-title').textContent = meta.title;
-                }
-                document.getElementById('about-concept').textContent = meta.concept || '';
-            } catch (error) {
-                // The names written in the page stay as they are
-            }
-
-            // Comparing windows works across origins, also from file://
-            document.documentElement.classList.toggle('framed', window.self !== window.top);
-
-            buildSliders();
-            syncControls();
-            presetSelect.value = PRESETS[0].id;
-            noteEl.textContent = PRESETS[0].note;
-            if (linkShown !== '') {
-                applyLink(linkShown);
-            }
-            restart();
-            setTool('food');
-            measure();
-            fitView();
-            updateReadout();
-            draw();
-            connect();
-            updateRunning();
+            page.start();
         })();
     </script>
 </body>

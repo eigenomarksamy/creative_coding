@@ -324,6 +324,47 @@ Because of these routes, no category in `CATEGORIES` can use the id `worlds`,
   engine's source. In `CATEGORIES`, `"pages": "folders"` reads engines and
   `"pages": "files"` reads sketches. Engines are public at their URL as soon
   as they're on `main`.
+- **an engine's page** shares its look and its running with every other
+  engine, from two files in `canvas/lib/`, so a new one copies no lifecycle
+  code:
+  - `engine.css` is the look: the canvas behind everything, the header over
+    it, the bar of controls at the bottom and its two panels. The page links
+    it in its `<head>`, then sets its own `--accent` in a `<style>` of its
+    own, with anything only it has.
+  - `engine-page.js` is the running: the loop, which draws only when the
+    picture changed and stops while the run is at rest, the tab is hidden,
+    the frame is out of view or the visitor pauses, and after `pagehide`,
+    with `pageshow` starting it again. It also sizes the canvas to
+    `devicePixelRatio`, fills in the title and concept from the meta block,
+    hides the title inside the gallery's frame, keeps one panel open at a
+    time and closes it with Escape, and builds the preset menu, the seed box
+    and the sliders. The share controls are there too: the address kept up
+    to date with the run's link, a link applied on load and when one is
+    pasted, copy link and save image, and the keys every engine has (space,
+    `r`, `n`, `c`, `s` and the presets' numbers).
+  - The page loads `engine-sim.js`, `engine-page.js` and its `sim.js` as
+    classic scripts, in that order, then calls
+    `EnginePage.create({...}).start()` from its own script. It passes what
+    only the engine knows: its `name` (the folder's), its `sim`, its
+    `sliders` in panel order, the `restartKeys` that plant the run again,
+    `maxStepsPerFrame`, and `restart`, `fit`, `step`, `draw`, `readout` and
+    `atRest`. `engine-page.js` lists them, and the optional hooks for
+    anything else, such as `copied` for what copy link says or `key` for an
+    engine's own keys, at the top of `create`. `step` asks the page for its
+    whole steps with `page.steps(elapsed, perSecond)`, and calls
+    `page.changed()` when the picture changed. `draw` sets every context
+    state it uses, because a resize resets them.
+  - The page's markup is the contract, and the two engines show it: a
+    `canvas#stage`, a `.header` with `#title`, `#note`, `#readout` and
+    `#hint`, and a `.bar` with `#pause`, `#reset`, `select#preset` (in the
+    bar or at the top of the controls panel) and two `<details>` panels,
+    `#about` with `#about-title` and `#about-concept`, and `#controls` with
+    `#sliders`, `#seed`, `#next-seed`, `#copy-link`, `#save-image`, `#link`
+    and `#share-status`. Every parameter needs a `label`, and a `log` one
+    gets a log slider. A slider shows as many places as its `step` has,
+    unless the parameter's `places` says otherwise.
+  - `engine-page.test.js` checks the parts that run under node, and the
+    pages themselves are checked in a browser.
 - **the vocabulary** (12 worlds, systems, interactions and modes) is defined
   at the top of `build_gallery.py`. The build fails on any value it doesn't
   list. A piece with no classification at all still builds, as unclassified,

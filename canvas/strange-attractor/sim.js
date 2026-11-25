@@ -33,10 +33,12 @@
     // Half the smallest view, so a system that settles doesn't zoom to a point
     const MIN_HALF_EXTENT = 2;
 
-    // Every parameter has a default and a range, and clampParams enforces them
+    // Every parameter has a default and a range, and clampParams enforces them.
+    // places is how many its slider shows, where the step's own would be
+    // too few.
     const PARAMS = {
-        rho: { default: 28, min: 0, max: 200, step: 0.1, label: 'ρ heat' },
-        sigma: { default: 10, min: 0.1, max: 30, step: 0.1, label: 'σ viscosity' },
+        rho: { default: 28, min: 0, max: 200, step: 0.1, places: 2, label: 'ρ heat' },
+        sigma: { default: 10, min: 0.1, max: 30, step: 0.1, places: 2, label: 'σ viscosity' },
         beta: { default: 8 / 3, min: 0.1, max: 8, step: 0.01, label: 'β geometry' },
         spread: { default: 0.01, min: 0.000001, max: 1, log: true, label: 'starting gap' },
         tracers: { default: 24, min: 2, max: 64, step: 1, integer: true, label: 'paths' },
