@@ -304,6 +304,15 @@ Because of these routes, no category in `CATEGORIES` can use the id `worlds`,
   arguments, with no DOM, canvas, timers or globals, and anything that feeds
   the state draws from a seeded generator, never `Math.random`, and avoids
   `Math.sin`, `Math.log` and the like, which can differ between browsers.
+  What every engine's simulation shares is in `canvas/lib/engine-sim.js`,
+  the same kind of classic script, which the page loads in a script tag
+  before `sim.js`, by a path relative to its folder, and node finds with
+  `require`:
+  `mulberry32`, the seeded generator, `streamSeed`, which gives each part of
+  an engine its own stream of one seed, and `paramSet`, which takes the
+  engine's parameters with their defaults and ranges, its presets and the
+  order of its link's keys, and returns `defaults`, `clampParams`,
+  `matchPreset`, and `encodeLink` and `decodeLink` for its share links.
   Run the tests from the repository
   root with `node --test` (or `python dev.py test`), which needs no install.
   Files ending in `.test.js`
