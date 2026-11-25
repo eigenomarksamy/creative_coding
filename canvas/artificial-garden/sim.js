@@ -24,6 +24,17 @@
 (function (root) {
     'use strict';
 
+    // The generator, the parameter set and share links are every engine's,
+    // in ../lib/engine-sim.js. Node finds it by path, and the page loads it
+    // in a script before this one.
+    const shared = typeof module !== 'undefined' && module.exports
+        ? require('../lib/engine-sim.js')
+        : root.EngineSim;
+    if (!shared) {
+        throw new Error('load ../lib/engine-sim.js before sim.js');
+    }
+    const { mulberry32, paramSet, streamSeed } = shared;
+
     // Food is scattered inside this radius, and nothing grows past the edge
     const SOIL_RADIUS = 0.94;
     const FIELD_RADIUS = 1;
@@ -106,19 +117,8 @@
         },
     ];
 
-    // Small seeded generator, the same in every browser: mulberry32
-    function mulberry32(seed) {
-        let a = seed >>> 0;
-        return function next() {
-            a = (a + 0x6d2b79f5) | 0;
-            let t = Math.imul(a ^ (a >>> 15), 1 | a);
-            t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
-            return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
-        };
-    }
-
-    // The same generator, keeping its position in the state, so a step and
-    // a feeding draw from it without a closure and a garden can be copied
+    // mulberry32, keeping its position in the state, so a step and a
+    // feeding draw from it without a closure and a garden can be copied
     function nextRandom(state) {
         state.rand = (state.rand + 0x6d2b79f5) | 0;
         const a = state.rand;
@@ -127,117 +127,22 @@
         return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
     }
 
-    // Soil, growth and color draw from separate streams of one seed, an idea
-    // from render_engine.py: a change to the colors never moves a branch
+    // Soil, growth and color draw from separate streams of one seed: a
+    // change to the colors never moves a branch
     const SOIL_STREAM = 0x9e3779b9;
     const COLOR_STREAM = 0x85ebca77;
     const GROWTH_STREAM = 0xc2b2ae35;
 
-    function streamSeed(seed, stream) {
-        let h = Math.imul((seed ^ stream) >>> 0, 0x9e3779b1);
-        h = Math.imul(h ^ (h >>> 16), 0x85ebca6b);
-        return (h ^ (h >>> 13)) >>> 0;
-    }
-
-    function defaults() {
-        const params = {};
-        for (const key of Object.keys(PARAMS)) {
-            params[key] = PARAMS[key].default;
-        }
-        return params;
-    }
-
-    // A complete, valid parameter set from any input: missing or non-numeric
-    // values take their default, the rest are held to their range
-    function clampParams(input) {
-        const source = input || {};
-        const params = {};
-        for (const key of Object.keys(PARAMS)) {
-            const spec = PARAMS[key];
-            const raw = source[key];
-            const value = typeof raw === 'string' && raw.trim() !== '' ? Number(raw) : raw;
-            if (typeof value !== 'number' || !Number.isFinite(value)) {
-                params[key] = spec.default;
-                continue;
-            }
-            const held = Math.min(spec.max, Math.max(spec.min, value));
-            params[key] = spec.integer ? Math.round(held) : held;
-        }
-        return params;
-    }
-
-    // Share links hold a garden's initial configuration: the seed and every
-    // parameter, which plant the same garden in every browser. Never what a
-    // visitor did while it grew, the food and stones placed or a rule
-    // changed on the way, which parameters can't rebuild. The text is a URL
-    // hash, read with URLSearchParams, in the format strange attractor's
-    // links use:
+    // A share link holds the seed and every parameter, in this order, in
+    // the format ../lib/engine-sim.js describes, the same as strange
+    // attractor's. Never what a visitor did while it grew, the food and
+    // stones placed or a rule changed on the way:
     //
     //   seed=3&food=720&symmetry=6&reach=0.16&growth=0.012&branching=0.5&wander=0&speed=20
-    //
-    // A seed is a whole number from 0 to 4294967295, in decimal digits.
-    // Every other value is a decimal number, written as String writes it,
-    // so it reads back to the same bits. A link lists every parameter, so
-    // it keeps its garden if a default or a preset changes later.
     const LINK_KEYS = ['seed', 'food', 'symmetry', 'reach', 'growth', 'branching', 'wander', 'speed'];
-    const LINK_NUMBER = /^[+-]?(\d+\.?\d*|\.\d+)(e[+-]?\d+)?$/i;
 
-    function encodeLink(input) {
-        const params = clampParams(input);
-        const query = new URLSearchParams();
-        for (const key of LINK_KEYS) {
-            query.set(key, String(params[key]));
-        }
-        return query.toString();
-    }
-
-    // A preset whose every value the parameters keep, or null
-    function matchPreset(params) {
-        return PRESETS.find((preset) =>
-            Object.keys(preset.params).every((key) => params[key] === preset.params[key])) || null;
-    }
-
-    // Any text, from a link or typed by hand, to a complete, valid parameter
-    // set. A link may also name a preset (preset=islands) for the values it
-    // leaves out. A value that isn't a plain decimal number takes its default,
-    // one outside its range is held to it, and unknown keys are ignored.
-    // problems lists every key that couldn't be used as it was written.
-    function decodeLink(text) {
-        const query = new URLSearchParams(String(text || '').replace(/^[#?]+/, ''));
-        const problems = [];
-
-        let named = null;
-        if (query.has('preset')) {
-            named = PRESETS.find(({ id }) => id === query.get('preset')) || null;
-            if (!named) {
-                problems.push('preset');
-            }
-        }
-
-        const given = {};
-        for (const key of Object.keys(PARAMS)) {
-            if (!query.has(key)) {
-                continue;
-            }
-            const raw = query.get(key).trim();
-            const value = Number(raw);
-            if (!LINK_NUMBER.test(raw) || !Number.isFinite(value)) {
-                problems.push(key);
-                continue;
-            }
-            given[key] = value;
-        }
-
-        const params = clampParams({ ...(named ? named.params : {}), ...given });
-        for (const key of Object.keys(given)) {
-            if (params[key] !== given[key]) {
-                problems.push(key);
-            }
-        }
-
-        const preset = matchPreset(params);
-        return { params, preset: preset ? preset.id : null, problems };
-    }
+    const { clampParams, decodeLink, defaults, encodeLink, matchPreset } =
+        paramSet(PARAMS, PRESETS, LINK_KEYS);
 
     // The turns of a k-fold symmetry, as cosine and sine pairs. Each is the
     // one before it times the first, which is built from square roots

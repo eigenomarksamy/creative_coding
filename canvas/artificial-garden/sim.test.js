@@ -207,10 +207,12 @@ test('growth depends on the number of steps, not how they are batched', () => {
 
 test('the simulation needs no DOM, canvas, timers or globals of its own', () => {
     // A bare context has the language's built-ins and nothing else: no
-    // window, document, setTimeout or performance
-    const source = fs.readFileSync(path.join(__dirname, 'sim.js'), 'utf8');
+    // window, document, setTimeout or performance. The code every engine
+    // shares loads first, as the page loads it.
     const context = vm.createContext({});
-    vm.runInContext(source, context);
+    for (const file of ['../lib/engine-sim.js', 'sim.js']) {
+        vm.runInContext(fs.readFileSync(path.join(__dirname, file), 'utf8'), context);
+    }
     const bare = context.ArtificialGarden;
     assert.equal(typeof context.setTimeout, 'undefined');
 

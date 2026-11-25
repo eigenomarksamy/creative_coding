@@ -13,6 +13,17 @@
 (function (root) {
     'use strict';
 
+    // The generator, the parameter set and share links are every engine's,
+    // in ../lib/engine-sim.js. Node finds it by path, and the page loads it
+    // in a script before this one.
+    const shared = typeof module !== 'undefined' && module.exports
+        ? require('../lib/engine-sim.js')
+        : root.EngineSim;
+    if (!shared) {
+        throw new Error('load ../lib/engine-sim.js before sim.js');
+    }
+    const { mulberry32, paramSet, streamSeed } = shared;
+
     // Fixed step of the integrator, in the system's own time units
     const DT = 0.005;
 
@@ -64,125 +75,20 @@
         },
     ];
 
-    // Small seeded generator, the same in every browser: mulberry32
-    function mulberry32(seed) {
-        let a = seed >>> 0;
-        return function next() {
-            a = (a + 0x6d2b79f5) | 0;
-            let t = Math.imul(a ^ (a >>> 15), 1 | a);
-            t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
-            return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
-        };
-    }
-
-    // Geometry and color draw from separate streams of one seed, an idea from
-    // render_engine.py: a change to the colors never moves a trajectory
+    // Geometry and color draw from separate streams of one seed: a change
+    // to the colors never moves a trajectory
     const GEOMETRY_STREAM = 0x9e3779b9;
     const COLOR_STREAM = 0x85ebca77;
 
-    function streamSeed(seed, stream) {
-        let h = Math.imul((seed ^ stream) >>> 0, 0x9e3779b1);
-        h = Math.imul(h ^ (h >>> 16), 0x85ebca6b);
-        return (h ^ (h >>> 13)) >>> 0;
-    }
-
-    function defaults() {
-        const params = {};
-        for (const key of Object.keys(PARAMS)) {
-            params[key] = PARAMS[key].default;
-        }
-        return params;
-    }
-
-    // A complete, valid parameter set from any input: missing or non-numeric
-    // values take their default, the rest are held to their range
-    function clampParams(input) {
-        const source = input || {};
-        const params = {};
-        for (const key of Object.keys(PARAMS)) {
-            const spec = PARAMS[key];
-            const raw = source[key];
-            const value = typeof raw === 'string' && raw.trim() !== '' ? Number(raw) : raw;
-            if (typeof value !== 'number' || !Number.isFinite(value)) {
-                params[key] = spec.default;
-                continue;
-            }
-            const held = Math.min(spec.max, Math.max(spec.min, value));
-            params[key] = spec.integer ? Math.round(held) : held;
-        }
-        return params;
-    }
-
-    // Share links hold a run's initial configuration: the seed and every
-    // parameter, which give the same start in every browser. Never what a
-    // visitor did during the run, such as a tap, which parameters can't
-    // rebuild. The text is a URL hash, read with URLSearchParams:
+    // A share link holds the seed and every parameter, in this order, in
+    // the format ../lib/engine-sim.js describes, and never what a visitor
+    // did during the run, such as a tap:
     //
     //   seed=59&rho=22&sigma=10&beta=2.6666666666666665&spread=0.05&tracers=24&speed=480
-    //
-    // A seed is a whole number from 0 to 4294967295, in decimal digits.
-    // Every other value is a decimal number, written as String writes it,
-    // so it reads back to the same bits. A link lists every parameter, so
-    // it keeps its run if a default or a preset changes later.
     const LINK_KEYS = ['seed', 'rho', 'sigma', 'beta', 'spread', 'tracers', 'speed'];
-    const LINK_NUMBER = /^[+-]?(\d+\.?\d*|\.\d+)(e[+-]?\d+)?$/i;
 
-    function encodeLink(input) {
-        const params = clampParams(input);
-        const query = new URLSearchParams();
-        for (const key of LINK_KEYS) {
-            query.set(key, String(params[key]));
-        }
-        return query.toString();
-    }
-
-    // A preset whose every value the parameters keep, or null
-    function matchPreset(params) {
-        return PRESETS.find((preset) =>
-            Object.keys(preset.params).every((key) => params[key] === preset.params[key])) || null;
-    }
-
-    // Any text, from a link or typed by hand, to a complete, valid parameter
-    // set. A link may also name a preset (preset=settling) for the values it
-    // leaves out. A value that isn't a plain decimal number takes its default,
-    // one outside its range is held to it, and unknown keys are ignored.
-    // problems lists every key that couldn't be used as it was written.
-    function decodeLink(text) {
-        const query = new URLSearchParams(String(text || '').replace(/^[#?]+/, ''));
-        const problems = [];
-
-        let named = null;
-        if (query.has('preset')) {
-            named = PRESETS.find(({ id }) => id === query.get('preset')) || null;
-            if (!named) {
-                problems.push('preset');
-            }
-        }
-
-        const given = {};
-        for (const key of Object.keys(PARAMS)) {
-            if (!query.has(key)) {
-                continue;
-            }
-            const raw = query.get(key).trim();
-            const value = Number(raw);
-            if (!LINK_NUMBER.test(raw) || !Number.isFinite(value)) {
-                problems.push(key);
-                continue;
-            }
-            given[key] = value;
-        }
-
-        const params = clampParams({ ...(named ? named.params : {}), ...given });
-        for (const key of Object.keys(given)) {
-            if (params[key] !== given[key]) {
-                problems.push(key);
-            }
-        }
-
-        const preset = matchPreset(params);
-        return { params, preset: preset ? preset.id : null, problems };
-    }
+    const { clampParams, decodeLink, defaults, encodeLink, matchPreset } =
+        paramSet(PARAMS, PRESETS, LINK_KEYS);
 
     // One classical Runge-Kutta step of the point at positions[i..i+2]
     function rk4Step(positions, i, sigma, rho, beta, dt) {
