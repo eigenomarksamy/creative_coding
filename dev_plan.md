@@ -85,6 +85,7 @@ flowchart TD
     EO10["EO10 project.yaml off the gallery"]
     EO11["EO11 the product's documents"]
     EO12["EO12 the SCM strategy"]
+    EO14["EO14 the backlog in GitHub issues"]
   end
   CC14 --> SL1
 
@@ -1026,12 +1027,15 @@ the repo's place in the eigenomar ecosystem, a set of independent repos coordina
 | EO10 | `project.yaml` off the gallery | xxs | none | done |
 | EO11 | the product's documents | tbd | the ecosystem's document standard (`meta-eigenomar` ST1) | todo |
 | EO12 | the ecosystem's SCM strategy | tbd | the ecosystem's SCM strategy (`meta-eigenomar` ST2) | todo |
+| EO14 | the backlog moves into GitHub issues | m | GitHub as the home of the backlog (`meta-eigenomar` ST3) | todo |
 
 **checked on Windows on 2026-11-12, and again on 2026-11-13,** without installing anything: `python dev.py check` passes whether the drive letter is `c:`, as VS Code opens the folder, or `C:`, with 29 tests and 265 items, and changes nothing. so the gallery installs and runs on Windows, and the sketches are EO6's: their dependencies weren't installed, and one of them always compiles. no `.bat`, `.ps1` or `.sh` script exists, `.gitattributes` asks for LF, and no tracked code holds an absolute path.
 
 **Linux:** there is no CI (§0, question 3), so nothing runs the tests on Linux. the owner accepts that gap (2026-11-12): the tests cover a pure JavaScript simulation, and Cloudflare's build runs `build_gallery.py` on Linux on every push.
 
 **revisited on 2026-11-18,** at the owner's request: the ecosystem's contract is adding two standards every repo adopts, the documents each one keeps and how each one manages its source and delivers it. EO11 and EO12 adopt them here, each once its standard is designed, and may change what "stays as it is" above says about documents, CI, branches and releases.
+
+**revisited on 2026-11-27,** at the owner's request: a third standard, `meta-eigenomar` ST3, makes GitHub's issues the home of every repo's backlog, and its decisions were made that day. EO14 moves this file's tickets there, once ST3 is built. the lanes are numbered across the ecosystem, so EO14 follows EO12.
 
 **commits:** every commit so far is the owner's, made on `main`, so sessions here don't commit, and `CLAUDE.md` grants no standing approval for it. it couldn't for `main` anyway, because every push to `main` deploys.
 
@@ -1149,6 +1153,15 @@ the repo's place in the eigenomar ecosystem, a set of independent repos coordina
 - **do:** adopt it through its adoption checklist. today there is no CI, the owner chose to keep tests local (§0, question 3), work goes straight to `main`, every push deploys the gallery, and there are no tags, releases or changelog, so the log is the record. where the checklist changes one of these, the owner decides here first, since each was the owner's choice.
 - **needs:** the ecosystem's SCM strategy (`meta-eigenomar` ST2). until it is designed, this ticket's issue stays in the backlog.
 - **done when:** every item on the checklist is applied here, or recorded here as an exception the strategy allows, with its reason. `project.yaml`'s `delivery` and `CLAUDE.md` say what runs, any workflow passes on `main`, and the ecosystem's validator passes.
+
+<a id="eo14"></a>
+#### EO14 · the backlog moves into GitHub issues · m
+
+- **why:** the ecosystem's standard `meta-eigenomar` ST3 makes GitHub's issues and the ecosystem's Project the one home of every repo's backlog, so a ticket stops having a plan section and an issue to keep in step.
+- **do:** move this file's planning to GitHub all at once, following ST3's cutover steps. each open ticket's content moves into its issue's body, keeping its id and its issue's `<id>: <title>`. §7's ideas become draft items in the Project with status `idea`, hard needs are blocked-by links, and size, status and priority live only in the Project. done, dropped and moved tickets stay here as a frozen archive, and each open ticket's anchor stays, linking its issue. §0's direction, §1–§3, §5 and §6 stay as files, or move into the documents EO11 writes. the queue diagram becomes a generated view. every push to `main` deploys, but `.assetsignore` keeps this file off the gallery.
+- **needs:** GitHub as the home of the backlog (`meta-eigenomar` ST3), which includes the ecosystem's own cutover first and the backlog's backup. EO11 is a planning need: the direction moves into the vision before this file retires.
+- **done when:** every open ticket's content is in its issue, and this file holds only the archive, the anchors and what stays a file. `project.yaml`'s `documents.plan` is `null` and `planning.source` names GitHub, the ecosystem's validator passes, nothing confidential is in any issue, since this repo is public, and the owner approved the cutover.
+- **out of scope:** bringing tickets up to the ecosystem's ticket standard (`meta-eigenomar` ST4), which each ticket follows when it is picked up, and rewriting done tickets.
 
 **open questions for the owner,** answered on 2026-11-12:
 
@@ -1307,3 +1320,4 @@ the ticket column names a ticket, a lane for a note about a whole lane, or none.
 | 2026-11-25 | CC8b | done, so CC8 is done: `canvas/lib/engine.css` is the stylesheet both engine pages copied, and `canvas/lib/engine-page.js` the loop, lifecycle, panels, preset menu, seed box, sliders, share controls and shared keys, which each page now gets from `EnginePage.create` with hooks for what only it does. the pages went from 1177 and 1350 lines to 452 and 611, and the README says how to add an engine's page. on purpose: the attractor's controls panel scrolls to the share answer in a small frame, and a soil slider in the garden clears the last placement's answer, fixed at the owner's request. 6 new tests pass, 97 in all, and a frame-for-frame harness found no other difference from `main` in 39750 checks from `file://` and 39750 over http. both engines run in the gallery's frame, and the build is clean with 274 items. CC9 is next. from a session in `meta-eigenomar` |
 | 2026-11-25 | CC16 | done with CC8b: the garden's tool dot is set whenever the garden is planted again, so it follows the seed |
 | 2026-11-26 | none | priorities follow the issues: a ticket's priority is its issue's in the ecosystem's Project, and the queue's mapping, a lane's next tickets P1, holds only for an issue with none set. CC9 and SL5 stay P2, as their issues have them. only this file changed. from a session in `meta-eigenomar` |
+| 2026-11-27 | EO14 | added at the owner's request: this repo's cutover to GitHub as the home of its backlog (`meta-eigenomar` ST3), whose decisions were made that day. it needs ST3, so its issue waits as `blocked` |
