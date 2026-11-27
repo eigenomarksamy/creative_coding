@@ -886,7 +886,7 @@ checked by script on 2026-11-04. the good news first: tracks, nodes, 21 meta pai
 | 1 | all 51 `path` values and `base_path` start with `pycairo/` | drop them, since they're derived from `cc_pycairo/` | SL0 |
 | 2 | the 6 journeys are only in brief 08, not in the data | add a `journeys` list to the connections file | SL0 |
 | 3 | 9 of the journeys' 27 steps cross tracks with no bridge in the data (10 more stay inside one track) | give each step its own reason in `journeys`, leaving the 49 curated edges alone. the owner may prefer to change the journeys | SL0 |
-| 4 | information/chaos is one of the 10 emphasized meta links, but has no atomic bridge. universe/play, time/communication and time/play have none either | the owner decides whether to add a bridge for information/chaos. brief 08 asks for exactly 49, so that needs its count changed | SL0 |
+| 4 | information/chaos is one of the 10 emphasized meta links, but has no atomic bridge. universe/play, time/communication and time/play have none either | it was the owner's to decide whether to add a bridge for information/chaos. brief 08 asks for exactly 49, so that needs its count changed | SL0 |
 | 5 | no track has a signature color, though brief 08 expects one and accents repeat across tracks (violet 4 times, turquoise 3) | choose seven colors for the registry, and confirm them at the pilot review | SL0 |
 | 6 | the manifest's filenames, and the naming contract and migration table in brief 09, use level labels. the manifest also carries `book` and `author` | use the stems in §4.2.2 and SL2, and drop both fields | SL0 |
 | 7 | 14 of the 35 connected pairs are mirrored, so 49 directed edges are only 35 lines | draw 35 lines, marking the mirrored ones as two-way. keep all 49 in the data, since each direction has its own question | SL10 |
@@ -1152,7 +1152,7 @@ the repo's place in the eigenomar ecosystem, a set of independent repos coordina
 #### EO12 · the ecosystem's SCM strategy · tbd
 
 - **why:** the ecosystem's SCM strategy sets CI, branching, protection of `main`, versioning and releases, a health report and dependency updates for every repo.
-- **do:** adopt it through its adoption checklist. today there is no CI, the owner chose to keep tests local (§0, question 3), work goes straight to `main`, every push deploys the gallery, and there are no tags, releases or changelog, so the log is the record. where the checklist changes one of these, the owner decides here first, since each was the owner's choice.
+- **do:** adopt it through its adoption checklist. today there is no CI, the owner chose to keep tests local (§0, question 3), work goes straight to `main`, every push deploys the gallery, and there are no tags, releases or changelog, so the log is the record. where the checklist changes one of these, the owner's decision here comes first, since each was the owner's choice.
 - **needs:** the ecosystem's SCM strategy (`meta-eigenomar` ST2). until it is designed, this ticket's issue stays in the backlog.
 - **done when:** every item on the checklist is applied here, or recorded here as an exception the strategy allows, with its reason. `project.yaml`'s `delivery` and `CLAUDE.md` say what runs, any workflow passes on `main`, and the ecosystem's validator passes.
 
