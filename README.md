@@ -331,6 +331,12 @@ Because of these routes, no category in `CATEGORIES` can use the id `worlds`,
     it, the bar of controls at the bottom and its two panels. The page links
     it in its `<head>`, then sets its own `--accent` in a `<style>` of its
     own, with anything only it has.
+  - The tab icon is `favicon.svg` at the repository's root, the one every
+    app under `eigenomar.com` shows. The page's `<head>` links it right after
+    its `<title>` by a path relative to its folder,
+    `<link rel="icon" type="image/svg+xml" href="../../favicon.svg">`, so it
+    shows from disk too. A live sketch links `../favicon.svg` the same way,
+    and so does the gallery's own page.
   - `engine-page.js` is the running: the loop, which draws only when the
     picture changed and stops while the run is at rest, the tab is hidden,
     the frame is out of view or the visitor pauses, and after `pagehide`,

@@ -16,7 +16,7 @@ the work runs in lanes. each lane has its own ticket prefix, ticket table and or
 
 | lane | prefix | what it builds | tickets | next | done |
 |---|---|---|---|---|---|
-| worlds and engines | CC | interactive generative engines, and world-based discovery in the gallery | §4.1 | CC9 (step 7), the sigil lab's core, whose need, CC8, is done | CC1, CC2, CC3, CC12 (2026-11-03), CC4, CC14 (2026-11-05), CC5, CC13 (2026-11-07), CC11a (2026-11-18), CC6, CC7, CC11b (2026-11-24), CC8a, CC8b, CC16 (2026-11-25) |
+| worlds and engines | CC | interactive generative engines, and world-based discovery in the gallery | §4.1 | CC9 (step 7), the sigil lab's core, whose need, CC8, is done | CC1, CC2, CC3, CC12 (2026-11-03), CC4, CC14 (2026-11-05), CC5, CC13 (2026-11-07), CC11a (2026-11-18), CC6, CC7, CC11b (2026-11-24), CC8a, CC8b, CC16 (2026-11-25), CC15 (2026-11-27) |
 | seven levels | SL | static pycairo art for the seven reading tracks | §4.2 | SL5 (sound), whose need, SL3, is done, and which comes after SL4, done. the universe and chaos tracks' fourteen images are in the registry's folder, with information.3 from SL3's pilot | SL0 (2026-11-13), SL1 (2026-11-14), SL2, SL3 (2026-11-19), SL4 (2026-11-20) |
 | ecosystem onboarding | EO | the repo's place in the eigenomar ecosystem: a manifest, the shared Claude rules, issues in the ecosystem's Project, and the portability gaps | §4.3 | none ready: EO11 and EO12 wait on the ecosystem's standards in `meta-eigenomar` | EO1, EO4 (2026-11-12), EO2, EO3, EO9, EO8 (2026-11-13), EO5, EO6, EO7, EO10 (2026-11-14) |
 
@@ -91,7 +91,7 @@ flowchart TD
 
   classDef done fill:#e5f4e4,stroke:#2e7d32,color:#1b3a1d
   classDef next fill:#e7f1fb,stroke:#1565c0,stroke-width:2px,color:#0d2b4e
-  class CC12,CC2,CC3,CC4,CC14,CC5,CC11a,CC6,CC7,CC11b,CC8a,CC8b,CC16,SL0,SL1,SL2,SL3,SL4,EO1,EO4,EO2,EO3,EO9,EO8,EO5,EO6,EO7,EO10 done
+  class CC12,CC2,CC3,CC4,CC14,CC5,CC11a,CC6,CC7,CC11b,CC8a,CC8b,CC16,CC15,SL0,SL1,SL2,SL3,SL4,EO1,EO4,EO2,EO3,EO9,EO8,EO5,EO6,EO7,EO10 done
   class CC9,SL5 next
 ```
 
@@ -115,7 +115,7 @@ the queue changes the original order in two ways. CC11 is split, so share links 
 
 **any time:** CC13 touched only the gallery footer and needed nothing, so it fitted between any two steps. done on 2026-11-07, after CC5. it stays out of the steps and the diagram above.
 
-**any time:** CC15 touches only the root's new `favicon.svg` and one line in each page's head, and needs nothing, so it fits between any two steps, as CC13 did.
+**any time:** CC15 touched only the root's new `favicon.svg`, one line in each page's head and the README, and needed nothing, so it fitted between any two steps, as CC13 did. done on 2026-11-27.
 
 **any time:** CC16 was a bug fix in `canvas/artificial-garden/index.html` alone, and needed nothing, so it fitted between any two steps. done on 2026-11-25, riding along with CC8b, which opened that page anyway.
 
@@ -352,7 +352,7 @@ world-based discovery in the gallery, and the interactive generative engines.
 | CC12 | flicker and lifecycle fixes for the three old sketches | xs | CC1 | done |
 | CC13 | footer button to eigenomar.com | xs | none | done |
 | CC14 | gallery directories | m | none | done |
-| CC15 | the ecosystem's tab icon | xs | none | todo |
+| CC15 | the ecosystem's tab icon | xs | none | done |
 | CC16 | artificial garden: the tool's dot follows the seed | xs | none | done |
 
 **order:** the queue in §0 sets the order. CC4 needs only CC1, so it runs alongside CC2–CC3. CC11a and CC11b both come before CC8, so that share links and export exist in two engines before anything is extracted (Q6).
@@ -693,6 +693,8 @@ every piece that exists today moves like this, and all 264 are accounted for:
   - the README's "adding work" says that a new engine's page links it the same way, so CC7 and CC10 pick it up.
 - **done when:** every gallery view, the three sketches and the strange attractor show the icon in their tab, on `gallery.eigenomar.com` and from `file://`. the build is clean and `node --test` passes.
 - **not here:** a `/favicon.ico`. the pages link the SVG, which every current browser reads.
+- **result (2026-11-27):** `favicon.svg` at the root is shared decision SD5's icon, byte for byte. every page links it right after its `<title>`, by a relative path: `gallery/index.html` and the three sketches `../favicon.svg`, and both engines, the strange attractor and the artificial garden, which CC7 added since this ticket was written, `../../favicon.svg`. the README's "adding work" says a new engine's page and a new sketch link it the same way, so CC9 and CC10 pick it up.
+  - **checked:** in headless Chrome, the gallery, a gallery view, the three sketches and both engines each have one `image/svg+xml` icon, which loads as an image and whose bytes are the root's file, from `file://` and over http, in 14 page loads. both engines' folders, opened over http as `canvas/<id>/`, find it too. `python dev.py check` passes, the build clean with 274 items.
 
 <a id="cc16"></a>
 
@@ -1321,3 +1323,4 @@ the ticket column names a ticket, a lane for a note about a whole lane, or none.
 | 2026-11-25 | CC16 | done with CC8b: the garden's tool dot is set whenever the garden is planted again, so it follows the seed |
 | 2026-11-26 | none | priorities follow the issues: a ticket's priority is its issue's in the ecosystem's Project, and the queue's mapping, a lane's next tickets P1, holds only for an issue with none set. CC9 and SL5 stay P2, as their issues have them. only this file changed. from a session in `meta-eigenomar` |
 | 2026-11-27 | EO14 | added at the owner's request: this repo's cutover to GitHub as the home of its backlog (`meta-eigenomar` ST3), whose decisions were made that day. it needs ST3, so its issue waits as `blocked` |
+| 2026-11-27 | CC15 | done: `favicon.svg` at the root, shared decision SD5's icon, and a relative link to it in the head of the gallery, the three sketches and both engines, so their tabs show it on the site and from `file://`. the README says a new page links it the same way. checked in headless Chrome, and `python dev.py check` passes. from a session in `meta-eigenomar` |
